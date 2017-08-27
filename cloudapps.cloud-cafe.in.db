@@ -1,0 +1,13 @@
+$ORIGIN .
+$TTL 1 ; 1 seconds (for testing only)
+cloudapps.cloud-cafe.in IN SOA ns1.cloudapps.cloud-cafe.in. hostmaster.cloudapps.cloud-cafe.in. (
+        2011112909 ; serial
+        60 ; refresh (1 minute)
+        15 ; retry (15 seconds)
+        1800 ; expire (30 minutes)
+        10 ; minimum (10 seconds)
+)
+        NS      ns1.cloudapps.cloud-cafe.in.
+        MX      10 mail.cloudapps.cloud-cafe.in.
+$ORIGIN cloudapps.cloud-cafe.in.
+*       A       10.90.1.209

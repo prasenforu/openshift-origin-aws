@@ -1,0 +1,35 @@
+[OSEv3:children]
+nodes
+masters
+nfs
+etcd
+
+[OSEv3:vars]
+openshift_master_default_subdomain=cloudapps.cloud-cafe.in
+ansible_ssh_user=root
+deployment_type=origin
+os_sdn_network_plugin_name=cni
+openshift_use_calico=true
+openshift_use_openshift_sdn=false
+openshift_disable_check=disk_availability,memory_availability
+openshift_release=v3.6
+openshift_image_tag=v3.6.0
+
+
+# Comment the following to disable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/users.htpasswd'}]
+
+[nodes]
+ose-master  openshift_ip=10.90.1.208 openshift_public_ip=XXXXXXXXX openshift_hostname=ose-master.cloud-cafe.in openshift_public_hostname=XXXXXXXXX openshift_node_labels="{'region': 'infra'}" openshift_schedulable=False
+ose-hub  openshift_ip=10.90.1.209 openshift_public_ip=10.90.1.209 openshift_hostname=ose-hub.cloud-cafe.in openshift_public_hostname=ose-hub.cloud-cafe.in openshift_node_labels="{'region': 'infra'}" openshift_schedulable=True
+ose-node1  openshift_ip=10.90.2.210 openshift_public_ip=10.90.2.210 openshift_hostname=ose-node1.cloud-cafe.in openshift_public_hostname=ose-node1.cloud-cafe.in openshift_schedulable=True
+ose-node2  openshift_ip=10.90.2.211 openshift_public_ip=10.90.2.210 openshift_hostname=ose-node2.cloud-cafe.in openshift_public_hostname=ose-node2.cloud-cafe.in openshift_schedulable=True
+
+[masters]
+ose-master  openshift_ip=10.90.1.208 openshift_public_ip=XXXXXXXXX openshift_hostname=ose-master.cloud-cafe.in openshift_public_hostname=XXXXXXXXX
+
+[nfs]
+ose-hub  openshift_ip=10.90.1.209 openshift_public_ip=10.90.1.209 openshift_hostname=ose-hub.cloud-cafe.in openshift_public_hostname=ose-hub.cloud-cafe.in
+
+[etcd]
+ose-master  openshift_ip=10.90.1.208 openshift_public_ip=XXXXXXXXX openshift_hostname=ose-master.cloud-cafe.in openshift_public_hostname=XXXXXXXXX

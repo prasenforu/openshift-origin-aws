@@ -1,0 +1,19 @@
+OSE TIPS:
+
+To edit/view security in OCP
+
+   oc edit scc privileged
+
+To give cluster-admin role to a user
+
+1.	login as admin in openshift 
+
+2.	# Give cluster-admin role at the cluster scope
+
+	oadm policy add-cluster-role-to-user cluster-admin <user name> 
+	oadm policy add-cluster-role-to-user cluster-admin pkar	-- for example
+
+3.	# Give privileged scc access to the user
+	
+	oadm policy add-scc-to-user privileged <user name>
+	oadm policy add-scc-to-user privileged pkar	-- for example

@@ -1,0 +1,2 @@
+DEVS=/dev/xvdf
+VG=docker-vg

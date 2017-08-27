@@ -1,0 +1,22 @@
+$ORIGIN .
+$TTL 1 ; 1 seconds (for testing only)
+cloud-cafe.in IN SOA ns1.cloud-cafe.in. hostmaster.cloud-cafe.in. (
+        2011112909 ; serial
+        60 ; refresh (1 minute)
+        15 ; retry (15 seconds)
+        1800 ; expire (30 minutes)
+        10 ; minimum (10 seconds)
+)
+        NS      ns1.cloud-cafe.in.
+        MX      10 mail.cloud-cafe.in.
+$ORIGIN cloud-cafe.in.
+ns1             A       10.90.1.78
+ose-hub         A       10.90.1.209
+ose-master      A       10.90.1.208
+ose-node1       A       10.90.2.210
+ose-node2       A       10.90.2.211
+ip-10-90-1-78	A	10.90.1.78
+ip-10-90-1-208	A	10.90.1.208
+ip-10-90-1-209	A	10.90.1.209
+ip-10-90-2-210	A	10.90.2.210
+ip-10-90-2-211	A	10.90.2.211
