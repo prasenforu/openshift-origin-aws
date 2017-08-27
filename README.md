@@ -129,7 +129,7 @@ DNS is a requirement for OpenShift Enterprise. In fact most issues comes if you 
 6.	Then “Edit DHCP Option Set “
 7.	Then Select what you created from earlier.
 
-### Now launch an EC2 in Public Subnet with 10.90.1.78 ip 
+### Now launch an EC2 using CentOS community images ```ami-24959b47``` in Public Subnet with 10.90.1.78 ip 
 
 Add below content in user data in Advance section.
 ```
