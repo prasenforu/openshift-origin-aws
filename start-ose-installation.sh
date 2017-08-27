@@ -2,7 +2,7 @@
 
 # Installing PAckages for openshift
 
-git clone https://github.com/openshift/openshift-ansible.git
+git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
 
 # Editing ansible host file
 
