@@ -24,6 +24,9 @@ scp /home/ec2-user/aws-in-openshift/docker-storage-setup $node:/etc/sysconfig/do
 ssh $node "docker-storage-setup"
 ssh $node "systemctl enable docker"
 ssh $node "systemctl start docker"
+ssh $node "systemctl enable NetworkManager.service"
+ssh $node "systemctl restart NetworkManager.service"
+ssh $node "systemctl status NetworkManager.service"
 done
 
 # Docker Storage space check
