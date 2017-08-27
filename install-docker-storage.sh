@@ -9,7 +9,7 @@ ssh ose-master "yum -y install wget git net-tools bind-utils iptables-services b
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Running yum update on $node" && \
 ssh $node "echo 'nameserver 8.8.8.8' | sudo tee --append /etc/resolv.conf"
-ssh $node "yum install -y wget git net-tools bind-utils bash-completion epel-release ansible"
+ssh $node "yum install -y wget git net-tools bind-utils bash-completion epel-release ansible NetworkManager"
 ssh $node "yum -y update"
 done
 
