@@ -143,7 +143,7 @@ Once DNS host is up and running, login on that dns host and make ready dns host 
 ### Clone packeges 
 ```
 git clone https://github.com/prasenforu/openshift-origin-aws.git
-cd openshift-aws
+cd openshift-origin-aws
 ```
 ### Add EC2 key-pair (add pem key content to prasen.pem file) & change prmission
 
