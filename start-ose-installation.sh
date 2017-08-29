@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Installing PAckages for openshift
+# Installing Packages for openshift
 
+yum install -y ansible
 git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
 
 # Editing ansible host file
