@@ -1,0 +1,109 @@
+1. Run a prinvate registry on dns server (ns1.cloud-cafe.in)
+
+   docker run --restart=always -d -p 5000:5000 registry
+
+2. ADD below lines in all host's docker configuration (/etc/sysconfig/docker) file.
+
+
+   ADD_REGISTRY='--add-registry registry.access.redhat.com --add-registry ns1.cloud-cafe.in:5000'
+
+   INSECURE_REGISTRY='--insecure-registry ns1.cloud-cafe.in:5000'
+
+3. Restart docker daemon
+
+   systemctl restart docker
+
+
+4. Create two images and push to Private registry (ns1.cloud-cafe.in:5000)
+
+   git clone https://github.com/prasenforu/memorykiller.git
+ 
+5. Go to memorykiller and run below command
+
+   docker build -t test/memoryeater .
+
+6. Go to docker-stress and run below command
+
+   docker build -t pkar/dockstress .
+
+7. Make tagging
+        
+   docker tag `docker images | grep pkar/dockstress | grep -v REPOSITORY | awk '{print $3}'` ns1.cloud-cafe.in:5000/dockstress
+   docker tag `docker images | test/memoryeater | grep -v REPOSITORY | awk '{print $3}'` ns1.cloud-cafe.in:5000/memoryeater
+
+8. Push to private registry
+
+   docker push ns1.cloud-cafe.in:5000/dockstress
+   docker push ns1.cloud-cafe.in:5000/memoryeater   
+
+9. Create a project under "pkar" user
+
+   oc login -u admin 
+
+   oc new-project loadtest --description="CPU Memory Load Testing random Docker Images on OpenShift" --display-name="CPU Memory load test project"
+
+   oc policy add-role-to-user admin pkar -n loadtest
+   
+10. Make all pod shoud run as a root previledge
+   
+   oc project loadtest
+   oadm policy add-scc-to-user anyuid -z default	
+
+11. Create below two yml file and deploy as a user "pkar" with project "loadtest"
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dockstress
+  namespace: loadtest
+spec:
+  containers:
+  - image: ns1.cloud-cafe.in:5000/dockstress
+    imagePullPolicy: IfNotPresent
+    name: dockstress
+  restartPolicy: Always
+
+-----------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memoryeater
+  namespace: loadtest
+spec:
+  containers:
+  - image: ns1.cloud-cafe.in:5000/memoryeater
+    imagePullPolicy: IfNotPresent
+    name: memoryeater
+  restartPolicy: Always
+
+
+-----------
+
+12. Make sure all Pods are running file, then check utilization (memory and cpu)
+
+13. Login dockstress pod and execute load for five minutes.
+
+   os rsh < dockstress pod name >
+
+   stress --cpu 2 --vm 1 --vm-bytes 256M --timeout 300s 
+
+-----------------------------
+
+IF sum by(kubernetes_pod_name) (container_memory_usage_bytes{container_label_io_kubernetes_pod_namespace!=""}) / 1024 /1024 >= 300
+IF sum by(kubernetes_pod_name) (container_memory_usage_bytes{container_label_io_kubernetes_pod_namespace="loadtest"}) / 1024 /1024 >= 300
+
+
+ALERT PoDHighMEMUsage
+  IF sum by(kubernetes_pod_name) (container_memory_usage_bytes{container_label_io_kubernetes_pod_namespace!=""}) / 1024 /1024 >= 300
+  FOR 2m
+  LABELS {severity="page"}
+  ANNOTATIONS {summary="Memory usage of POD {{ $labels.kubernetes_pod_name }} utilization is  >= 300 MB (current value: {{ $value }}%)"}
+  
+ALERT HTTPConnectionRequests
+      IF haproxy_backend_connections_total{backend=~"^be_http_.*",job="haproxy"} >= 50000
+      FOR 2m
+      LABELS {severity="page"}
+      ANNOTATIONS {summary="Total HTTP request of {{ $labels.backend }}  is  >= 50000 MB (current value: {{ $value }}%)"}
+
+  

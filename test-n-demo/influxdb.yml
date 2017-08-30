@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-influxdb
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    path: "/ose/pvs/pv3"
+    server: 10.90.1.78
+  persistentVolumeReclaimPolicy: Retain
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-influxdb
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1G
+  volumeName: prometheus-influxdb
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: influxdb
+  name: influxdb-service
+spec:
+  clusterIP: 172.30.200.105
+  ports:
+  - name: 8086-tcp
+    port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    app: influxdb
+    deploymentconfig: influxdb-dc
+
+----
+
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: influxdb
+  name: influxdb-dc
+spec:
+  replicas: 1
+  selector:
+    app: influxdb
+    deploymentconfig: influxdb-dc
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: influxdb
+        deploymentconfig: influxdb-dc
+    spec:
+      containers:
+      - image: tutum/influxdb:latest
+        name: influxdb-image
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        env:
+          - name: PRE_CREATE_DB
+            value: "prometheus"
+        ports:
+        - name: http
+          containerPort: 8086
+        volumeMounts:
+        - mountPath: /var/lib/influxdb
+          name: influxdb-persistent-storage
+      volumes:
+      - name: influxdb-persistent-storage
+        persistentVolumeClaim:
+          claimName: prometheus-influxdb

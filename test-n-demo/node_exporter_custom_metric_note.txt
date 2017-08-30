@@ -1,0 +1,58 @@
+# Custom metric to Node Exporter
+# Below all need to be done in all hosts
+
+1. Create a script as follows, which will create two metric (DOC_VG_Total & DOC_VG_Free)
+
+#!/bin/sh
+
+# using linux pvs, lvs, vgs command
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin
+to=`vgs | grep docker-vg | awk '{print $6}' | sed 's/g/ g/;s/m/ m/;s/t/ t/'`
+fr=`vgs | grep docker-vg | awk '{print $7}' | sed 's/g/ g/;s/m/ m/;s/t/ t/'`
+echo $to | awk '{if($2 == "t") {a = ($1*1000*1000*1000); print "DOC_VG_Total " a;}}'
+echo $to | awk '{if($2 == "g") {a = ($1*1000*1000); print "DOC_VG_Total " a;}}'
+echo $to | awk '{if($2 == "m") {a = ($1*1000); print "DOC_VG_Total " a;}}'
+echo $fr | awk '{if($2 == "t") {b = ($1*1000*1000*1000); print "DOC_VG_Free " b;}}'
+echo $fr | awk '{if($2 == "g") {b = ($1*1000*1000); print "DOC_VG_Free " b;}}'
+echo $fr | awk '{if($2 == "m") {b = ($1*1000); print "DOC_VG_Free " b;}}'
+
+# Using dockerinfo command
+(docker info | grep "Space" | sed 's/ //;s/ /_/;s/ /_/; s/://') 2>/dev/null > /tmp/docinfop
+while IFS= read -r line; do
+  echo $line | awk '{if($3 == "TB") {c = ($2*1000*1000*1000); print $1 " " c;}}'
+  echo $line | awk '{if($3 == "GB") {c = ($2*1000*1000); print $1 " " c;}}'
+  echo $line | awk '{if($3 == "MB") {c = ($2*1000); print $1 " " c;}}'
+  echo $line | awk '{if($3 == "kB") {c = ($2 - 0); print $1 " " c;}}'
+done < /tmp/docinfop
+
+--
+Output will come as follow
+
+DOC_VG_Total 10485760
+DOC_VG_Free 6.27048e+06
+
+2. Create a folder " /var/lib/node_exporter/textfile_collector/"
+
+mkdir -p  /var/lib/node_exporter/textfile_collector 
+
+3. Create cron job with above script as follows
+   Basically output of script will write to a file "docvgstat.prom" in above folder
+
+* * * * * /root/dokvgstat.sh > /var/lib/node_exporter/textfile_collector/docvgstat.prom
+
+4. Edit Node-exporter yml file and add below two section.
+
+      volumeMounts:
+          - name: host-dvg
+            mountPath: /var/lib/node_exporter/textfile_collector
+            readOnly: true
+
+      volumes:
+        - name: host-dvg
+          hostPath:
+            path: /var/lib/node_exporter/textfile_collector
+            
+5. Execute below command
+
+chcon -Rt svirt_sandbox_file_t /var/lib/node_exporter/textfile_collector            

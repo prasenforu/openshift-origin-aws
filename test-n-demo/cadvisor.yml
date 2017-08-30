@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name:   cadvisor
+spec:
+  template:
+    metadata:
+      labels:
+        app: cadvisor
+      name: cadvisor
+    spec:
+      containers:
+        - name: cadvisor
+          image: google/cadvisor:v0.22.0
+          volumeMounts:
+            - name: rootfs
+              mountPath: /rootfs
+              readOnly: true
+            - name: var-run
+              mountPath: /var/run
+              readOnly: false
+            - name: sys
+              mountPath: /sys
+              readOnly: true
+            - name: docker
+              mountPath: /var/lib/docker
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+              hostPort: 9300
+          hostNetwork: true
+          hostPID: true
+          args:
+            - --profiling
+            - --housekeeping_interval=1s
+      volumes:
+        - name: rootfs
+          hostPath:
+            path: /
+        - name: var-run
+          hostPath:
+            path: /var/run
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: docker
+          hostPath:
+            path: /var/lib/docker
