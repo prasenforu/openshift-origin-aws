@@ -47,6 +47,10 @@ htpasswd -b /etc/origin/master/users.htpasswd pkar $userpas
 
 # Providing admin rights to users (admin & pkar)
 
+oadm policy add-cluster-role-to-user cluster-admin pkar
+oadm policy add-cluster-role-to-user cluster-admin admin
+oadm policy add-scc-to-user privileged pkar
+oadm policy add-scc-to-user privileged admin
 
 # Setting Router for collect metrics
 
