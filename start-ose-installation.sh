@@ -40,6 +40,7 @@ ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --
 ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 3000 -j ACCEPT"
 ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 9000 -j ACCEPT"
 ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 9300 -j ACCEPT"
+ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 2379 -j ACCEPT"
 ssh ose-hub "service iptables save"
 
 # Copy dokvgstat script to all node monitoring 
@@ -53,4 +54,5 @@ done
 
 # HAproxy metric image pull
 
-ssh ose-hub "docker pull prom/haproxy-exporter"
+# ssh ose-hub "docker pull prom/haproxy-exporter"
+ssh ose-hub "docker pull prom/haproxy-exporter:v0.7.1"
