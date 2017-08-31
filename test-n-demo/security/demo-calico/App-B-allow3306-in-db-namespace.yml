@@ -11,11 +11,16 @@ spec:
         name: app-b-allow3306
     spec:
       containers:
-      - image: prasenforu/phpappocp:1.0
+      - image: prasenforu/phpapp:5.0
         imagePullPolicy: Always
         name: app-b-allow3306
         ports:
         - containerPort: 80
+        env:
+        - name: EXTERNALIP
+          value: "PUT EXTERNAL DB IP"
+        - name: INTERNALIP
+          value: "PUT INTERNAL DB IP"
 ---
 apiVersion: v1
 kind: Service
