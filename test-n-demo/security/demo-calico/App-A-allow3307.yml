@@ -11,7 +11,7 @@ spec:
         name: app-a-allow3307
     spec:
       containers:
-      - image: prasenforu/phpappocp:1.0
+      - image: prasenforu/phpapp:5.0
         imagePullPolicy: Always
         name: app-a-allow3307
         ports:
