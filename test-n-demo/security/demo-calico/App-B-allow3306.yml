@@ -16,6 +16,11 @@ spec:
         name: app-b-allow3306
         ports:
         - containerPort: 80
+        env:
+        - name: EXTERNALIP
+          value: "PUT EXTERNAL DB IP"
+        - name: INTERNALIP
+          value: "PUT INTERNAL DB IP"
 ---
 apiVersion: v1
 kind: Service
