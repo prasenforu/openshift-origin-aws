@@ -2,15 +2,19 @@
 
 # Install Openshift 3.6 packages
 
-ssh ose-master "yum -y install wget git net-tools bind-utils iptables-services bridge-utils pythonvirtualenv gcc bash-completion epel-release ansible"
+#ssh ose-master "yum -y install wget git net-tools bind-utils iptables-services bridge-utils pythonvirtualenv gcc bash-completion epel-release ansible"
+ssh ose-master "yum -y install wget git net-tools bind-utils iptables-services bridge-utils pythonvirtualenv gcc bash-completion"
 
 # yum update on the master and all the nodes:
 
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Running yum update on $node" && \
 ssh $node "echo 'nameserver 8.8.8.8' | sudo tee --append /etc/resolv.conf"
-ssh $node "yum install -y wget git net-tools bind-utils bash-completion epel-release ansible NetworkManager"
+ssh $node "yum clean all"
+ssh $node "yum repolist"
 ssh $node "yum -y update"
+#ssh $node "yum install -y wget git net-tools bind-utils bash-completion epel-release ansible NetworkManager"
+ssh $node "yum install -y wget git net-tools bind-utils zip unzip telnet bash-completion NetworkManager"
 done
 
 # Install docker in all hosts.
