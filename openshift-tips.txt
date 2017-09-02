@@ -3,6 +3,10 @@ OSE TIPS:
 To edit/view security in OCP
 
    oc edit scc privileged
+   
+To edit/view ANY UID in OCP
+   
+   oc edit scc anyuid   
 
 To give cluster-admin role to a user
 
@@ -17,3 +21,16 @@ To give cluster-admin role to a user
 	
 	oadm policy add-scc-to-user privileged <user name>
 	oadm policy add-scc-to-user privileged pkar	-- for example
+	
+Run pod/container with root privilege
+       
+   oadm policy add-scc-to-user anyuid -z default
+   
+Enable Container Images that Require Root
+
+   oadm policy add-scc-to-user anyuid system:serviceaccount:<project>:<service account>
+   oadm policy add-scc-to-user anyuid system:serviceaccount:myproject:mysvcacct
+
+For any Security related
+
+   https://docs.openshift.com/enterprise/3.2/admin_guide/manage_scc.html
