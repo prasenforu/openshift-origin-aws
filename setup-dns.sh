@@ -6,7 +6,8 @@ echo 'nameserver 8.8.8.8' | sudo tee --append /etc/resolv.conf
 
 # Install packages
 
-sudo yum install -y yum-utils bind bind-utils rpcbind nfs-server nfs-lock nfs-idmap git wget unzip zip epel-release ansible
+#sudo yum install -y yum-utils bind bind-utils rpcbind nfs-server nfs-lock nfs-idmap git wget unzip zip epel-release ansible
+sudo yum install -y yum-utils bind bind-utils rpcbind nfs-server nfs-lock nfs-idmap git wget unzip zip telnet
 sudo yum -y install wget git net-tools bind-utils iptables-services bridge-utils pythonvirtualenv gcc bash-completion
 
 sudo systemctl enable named
@@ -48,6 +49,7 @@ sudo ssh-keygen -f /root/.ssh/id_rsa -N ''
 
 # Setting up yum repo for openshift
 
+sudo cp /root/openshift-origin-aws/open.repo /etc/yum.repos.d/open.repo
 sudo yum clean all
 sudo yum repolist
 sudo yum -y update
