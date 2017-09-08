@@ -69,6 +69,8 @@ But there is option if you want to change, see the OpenShift documentation.
 | HTTPS | TCP | 443 | 0.0.0.0/0 |
 | All ICMP | All | N/A | 10.90.0.0/16 |
 | NFS | TCP | 2049 | 10.90.0.0/16 |
+| Custom TCP | TCP | 179 | 10.90.0.0/16 |
+| Custom Protocol | IPIP | All | 10.90.0.0/16 |
 
 ** OSE-HUB-SG **
 
@@ -87,6 +89,8 @@ But there is option if you want to change, see the OpenShift documentation.
 | HTTPS| TCP | 443 | 0.0.0.0/0 |
 | All ICMP | All | N/A | 10.90.0.0/16 |
 | NFS | TCP | 2049 | 10.90.0.0/16 |
+| Custom TCP | TCP | 179 | 10.90.0.0/16 |
+| Custom Protocol | IPIP | All | 10.90.0.0/16 |
 
 ** OSE-NODE-SG **
 
@@ -105,6 +109,8 @@ But there is option if you want to change, see the OpenShift documentation.
 | HTTPS | TCP | 443 | 0.0.0.0/0 |
 | All ICMP | All | N/A | 10.90.0.0/16 |
 | NFS | TCP | 2049 | 10.90.0.0/16 |
+| Custom TCP | TCP | 179 | 10.90.0.0/16 |
+| Custom Protocol | IPIP | All | 10.90.0.0/16 |
 
 
 ## Deployment Steps
@@ -174,7 +180,7 @@ chmod 755 *.sh
 | ose-master | 10.90.1.208 | Yes | OSE-MASTER-SG | Public |
 | ose-hub | 10.90.1.209 | Yes |	OSE-HUB-SG | Public |
 | ose-node1 | 10.90.2.210 | No | OSE-NODE-SG | Private |
-|ose-node2 | 10.90.2.211 | No |	OSE-NODE-SG | Private |
+| ose-node2 | 10.90.2.211 | No | OSE-NODE-SG | Private |
 
 ### OR
 
