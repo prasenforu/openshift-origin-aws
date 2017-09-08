@@ -19,48 +19,59 @@ volg=volg
 
 # MASTER Server
 
-echo "Creating and Starting OSE MASTER Host .."
+echo "Creating and Starting OCP MASTER Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
 --instance-type $ity --key-name $knm --security-group-ids $sgidm \
 --subnet-id $subpuid --private-ip-address 10.90.1.208 --associate-public-ip-address --output text > /tmp/master-ins-$USER
 
 miid=`cat /tmp/master-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
-aws ec2 create-tags --resources i-$miid --tags Key=Name,Value=OSE-MASTER
+aws ec2 create-tags --resources i-$miid --tags Key=Name,Value=OCP-MASTER
 
-# HUB/Router Server
+# Disable Source/Dest. Check for MASTER Server
+aws ec2 modify-instance-attribute --instance-id i-$miid --source-dest-check "{\"Value\": false}"
 
-echo "Creating and Starting OSE HUB/Router Host .."
+# HUB/Infra/Router Server
+
+echo "Creating and Starting OCP HUB/Router Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
 --instance-type $ity --key-name $knm --security-group-ids $sgidh \
 --subnet-id $subpuid --private-ip-address 10.90.1.209 --associate-public-ip-address --output text > /tmp/hub-ins-$USER
 
 hiid=`cat /tmp/hub-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
-aws ec2 create-tags --resources i-$hiid --tags Key=Name,Value=OSE-HUB
+aws ec2 create-tags --resources i-$hiid --tags Key=Name,Value=OCP-HUB
+
+# Disable Source/Dest. Check for HUB/Infra/Router Server
+aws ec2 modify-instance-attribute --instance-id i-$hiid --source-dest-check "{\"Value\": false}"
 
 # NDOE1 Server
 
-echo "Creating and Starting OSE NODE-1 Host .."
+echo "Creating and Starting OCP NODE-1 Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
 --instance-type $ity --key-name $knm --security-group-ids $sgidn \
 --subnet-id $subprid --private-ip-address 10.90.2.210 --output text > /tmp/node1-ins-$USER
 
 n1iid=`cat /tmp/node1-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
-aws ec2 create-tags --resources i-$n1iid --tags Key=Name,Value=OSE-NODE-1
+aws ec2 create-tags --resources i-$n1iid --tags Key=Name,Value=OCP-NODE-1
 
+# Disable Source/Dest. Check for NDOE1 Server
+aws ec2 modify-instance-attribute --instance-id i-$n1iid --source-dest-check "{\"Value\": false}"
 
 # NDOE2 Server
 
-echo "Starting OSE NODE-2 Host .."
+echo "Creating and Starting OCP NODE-2 Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
 --instance-type $ity --key-name $knm --security-group-ids $sgidn \
 --subnet-id $subprid --private-ip-address 10.90.2.211 --output text > /tmp/node2-ins-$USER
 
 n2iid=`cat /tmp/node2-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
-aws ec2 create-tags --resources i-$n2iid --tags Key=Name,Value=OSE-NODE-2
+aws ec2 create-tags --resources i-$n2iid --tags Key=Name,Value=OCP-NODE-2
+
+# Disable Source/Dest. Check for NDOE1 Server
+aws ec2 modify-instance-attribute --instance-id i-$n2iid --source-dest-check "{\"Value\": false}"
 
 echo "Waiting all Hosts in running state .."
 sleep 90
