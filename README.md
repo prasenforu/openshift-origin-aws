@@ -6,6 +6,10 @@ This Quick Start reference deployment guide provides step-by-step instructions f
 ## OpenShift & AWS Architecture
 We will look at the OpenShift v3.x was created to reflect the additional information needed based on some key models below Docker, Kubernetes.
 
+<p align="center">
+  <img src="http://www.fillmurray.com/460/300">
+</p>
+
 - DNS: The host that contain Red Hat OpenShift control components, including the API server and the controller manager server. The master manages nodes in its Kubernetes
 - Master: The host that contain Red Hat OpenShift control components, including the API server and the controller manager server. The master manages nodes in its Kubernetes cluster and schedules pods to run on nodes.
 - Hub: The host that contain Red Hat OpenShift registry, router and NFS. This server some people call as Infra Server. This server is important, we will point our wild card DNS “cloudapps.cloud-cafe.in” in godaddy.in in my domain configuration.
