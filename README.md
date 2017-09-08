@@ -7,7 +7,7 @@ This Quick Start reference deployment guide provides step-by-step instructions f
 We will look at the OpenShift v3.x was created to reflect the additional information needed based on some key models below Docker, Kubernetes.
 
 <p align="center">
-  <img src="http://www.fillmurray.com/460/300">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/aws-arc.PNG">
 </p>
 
 - DNS: The host that contain Red Hat OpenShift control components, including the API server and the controller manager server. The master manages nodes in its Kubernetes
