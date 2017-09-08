@@ -15,8 +15,6 @@ We will look at the OpenShift v3.x was created to reflect the additional informa
 - Hub: The host that contain Red Hat OpenShift registry, router and NFS. This server some people call as Infra Server. This server is important, we will point our wild card DNS “cloudapps.cloud-cafe.in” in godaddy.in in my domain configuration.
 - Node1 and Node2: Nodes provide the runtime environments for containers. Each node in a Kubernetes cluster has the required services to be managed by the master. Nodes also have the required services to run pods, including Docker, a kubelet and a service proxy. 
 
-image
-
 ## Prerequisites 
 Before you deploy this Quick Start, we recommend that you become familiar with the following AWS services. (If you are new to AWS, see Getting Started with AWS.)
 
