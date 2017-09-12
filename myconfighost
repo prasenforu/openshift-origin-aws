@@ -12,7 +12,7 @@ openshift_use_calico=true
 calico_ipv4pool_ipip="cross-subnet"
 calico_ipv4pool_cidr="192.168.0.0/16"
 openshift_use_openshift_sdn=false
-openshift_disable_check=disk_availability,memory_availability
+openshift_disable_check=disk_availability,memory_availability,docker_storage
 openshift_release=v3.6
 openshift_image_tag=v3.6.0
 
