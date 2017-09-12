@@ -4,7 +4,7 @@
 
 yum -y install atomic-openshift-utils
 #yum install -y ansible
-#git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
+git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
 
 # Editing ansible host file
 
