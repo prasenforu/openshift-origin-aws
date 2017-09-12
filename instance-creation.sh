@@ -5,7 +5,8 @@
 # Variable declare, please change as per your environment
 
 iid=ami-24959b47
-ity=t2.medium
+ity=t2.micro
+#ity=t2.medium
 knm=prasen
 subprid=subnet-5861ed2e
 subpuid=subnet-84f095e0
@@ -36,7 +37,8 @@ aws ec2 modify-instance-attribute --instance-id i-$miid --source-dest-check "{\"
 echo "Creating and Starting OCP HUB/Router Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
---instance-type $ity --key-name $knm --security-group-ids $sgidh \
+--instance-type t2.medium --key-name $knm --security-group-ids $sgidh \
+#--instance-type $ity --key-name $knm --security-group-ids $sgidh \
 --subnet-id $subpuid --private-ip-address 10.90.1.209 --associate-public-ip-address --output text > /tmp/hub-ins-$USER
 
 hiid=`cat /tmp/hub-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
@@ -78,36 +80,36 @@ sleep 90
 
 # Setting up Volume
 
-echo "Creating a volume for Master..."
+#echo "Creating a volume for Master..."
 
-aws ec2 create-volume --size $volsz --availability-zone $aza > /tmp/$volg-$aza-$USER
-vid=`cat /tmp/$volg-$aza-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
-sleep 20
-aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Master
-aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$miid --device /dev/sdf
+#aws ec2 create-volume --size $volsz --availability-zone $aza > /tmp/$volg-$aza-$USER
+#vid=`cat /tmp/$volg-$aza-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
+#sleep 20
+#aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Master
+#aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$miid --device /dev/sdf
 
-echo "Creating a volume for Hub..."
+#echo "Creating a volume for Hub..."
 
-aws ec2 create-volume --size $volsz --availability-zone $aza > /tmp/$volg-$aza-$USER
-vid=`cat /tmp/$volg-$aza-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
-sleep 20
-aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Hub
-aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$hiid --device /dev/sdf
+#aws ec2 create-volume --size $volsz --availability-zone $aza > /tmp/$volg-$aza-$USER
+#vid=`cat /tmp/$volg-$aza-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
+#sleep 20
+#aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Hub
+#aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$hiid --device /dev/sdf
 
-echo "Creating a volume for Node-1..."
+#echo "Creating a volume for Node-1..."
 
-aws ec2 create-volume --size $volsz --availability-zone $azb > /tmp/$volg-$azb-$USER
-vid=`cat /tmp/$volg-$azb-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
-sleep 20
-aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Node-1
-aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$n1iid --device /dev/sdf
+#aws ec2 create-volume --size $volsz --availability-zone $azb > /tmp/$volg-$azb-$USER
+#vid=`cat /tmp/$volg-$azb-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
+#sleep 20
+#aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Node-1
+#aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$n1iid --device /dev/sdf
 
-echo "Creating a volume for Node-2..."
+#echo "Creating a volume for Node-2..."
 
-aws ec2 create-volume --size $volsz --availability-zone $azb > /tmp/$volg-$azb-$USER
-vid=`cat /tmp/$volg-$azb-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
-sleep 20
-aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Node-2
-aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$n2iid --device /dev/sdf
+#aws ec2 create-volume --size $volsz --availability-zone $azb > /tmp/$volg-$azb-$USER
+#vid=`cat /tmp/$volg-$azb-$USER | awk '{print $6}' | cut -d "-" -f2 | cut -d '"' -f1`
+#sleep 20
+#aws ec2 create-tags --resources vol-$vid --tags Key=Name,Value=Docker-Storage-Node-2
+#aws ec2 attach-volume --volume-id vol-$vid --instance-id i-$n2iid --device /dev/sdf
 
 aws ec2 describe-instances --instance-id i-$miid | grep INSTANCES | awk '{print $13}' > /tmp/master-pubip-$USER
