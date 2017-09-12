@@ -2,8 +2,8 @@
 
 # Installing Packages for openshift
 
-yum -y install atomic-openshift-utils
-#yum install -y ansible
+#yum -y install atomic-openshift-utils
+yum install -y ansible
 git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
 
 # Editing ansible host file
@@ -14,8 +14,8 @@ sed -i "s/XXXXXXXXX/$maspubip/g" myconfighost
 
 # Run ansible playbook
 
-ansible-playbook -i myconfighost /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml
-#ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/byo/config.yml
+#ansible-playbook -i myconfighost /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml
+ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/byo/config.yml
 
 # copy post OSE setup script
 scp /root/openshift-origin-aws/post-ose-setup.sh  ose-master:/root/
