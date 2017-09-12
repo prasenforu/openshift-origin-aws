@@ -38,7 +38,6 @@ echo "Creating and Starting OCP HUB/Router Host .."
 
 aws ec2 run-instances --image-id $iid --count 1 \
 --instance-type t2.medium --key-name $knm --security-group-ids $sgidh \
-#--instance-type $ity --key-name $knm --security-group-ids $sgidh \
 --subnet-id $subpuid --private-ip-address 10.90.1.209 --associate-public-ip-address --output text > /tmp/hub-ins-$USER
 
 hiid=`cat /tmp/hub-ins-$USER | grep INSTANCES | awk '{print $7}' | cut -d "-" -f2 | cut -d '"' -f1`
