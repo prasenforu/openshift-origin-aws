@@ -143,7 +143,7 @@ Add below content in user data in Advance section.
 ```
 #!/bin/bash
 echo nameserver 8.8.8.8 >> /etc/resolv.conf
-yum install git unzip -y
+yum install git unzip dos2unix -y
 ```
 
 Once DNS host is up and running, login on that dns host and make ready dns host for staring installation
@@ -152,6 +152,7 @@ Once DNS host is up and running, login on that dns host and make ready dns host 
 ```
 git clone https://github.com/prasenforu/openshift-origin-aws.git
 cd openshift-origin-aws
+dos2unix *
 ```
 ### Add EC2 key-pair (add pem key content to prasen.pem file) & change prmission
 
