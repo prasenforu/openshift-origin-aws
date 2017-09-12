@@ -1,7 +1,6 @@
 [OSEv3:children]
 nodes
 masters
-nfs
 etcd
 
 [OSEv3:vars]
@@ -29,9 +28,6 @@ ose-node2  openshift_ip=10.90.2.211 openshift_public_ip=10.90.2.210 openshift_ho
 
 [masters]
 ose-master  openshift_ip=10.90.1.208 openshift_public_ip=XXXXXXXXX openshift_hostname=ose-master.cloud-cafe.in openshift_public_hostname=XXXXXXXXX
-
-[nfs]
-ose-hub  openshift_ip=10.90.1.209 openshift_public_ip=10.90.1.209 openshift_hostname=ose-hub.cloud-cafe.in openshift_public_hostname=ose-hub.cloud-cafe.in
 
 [etcd]
 ose-master  openshift_ip=10.90.1.208 openshift_public_ip=XXXXXXXXX openshift_hostname=ose-master.cloud-cafe.in openshift_public_hostname=XXXXXXXXX
