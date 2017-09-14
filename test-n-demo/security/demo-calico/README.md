@@ -17,18 +17,22 @@ docker run --name mysqldb-3307 -d -p 3307:3306 -e 'MYSQL_PASS=mypassword' prasen
 - Namespace: ```allow3306, allow3307, denydball, test-db```
 - Deployment: ```demodb```, ```App-A-allow3307```, ```App-B-allow3306```, ```Web-server-deny-db-all```
 
-### 1. First create Namespace:
+### 1. First create Project:
 
 ```
-# kubectl create ns allow3306 allow3307 denydball test-db
+# oc new-project allow3306 
+# oc adm policy add-scc-to-user anyuid -z default
 
-# kubectl create ns allow3307
+# oc new-project allow3307
+# oc adm policy add-scc-to-user anyuid -z default
 
-# kubectl create ns denydball
+# oc new-project denydball
+# oc adm policy add-scc-to-user anyuid -z default
 
-# kubectl create ns test-db
+# oc new-project test-db
+# oc adm policy add-scc-to-user anyuid -z default
 
-# kubectl get ns
+# oc get ns
 NAME          STATUS    AGE
 allow3306     Active    20h
 allow3307     Active    20h
