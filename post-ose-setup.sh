@@ -37,8 +37,7 @@ oc get namespace default -o yaml
 
 # Restart openshift services master
 
-systemctl restart atomic-openshift-master
-systemctl status atomic-openshift-master
+kill -9 `ps -elf | grep open | grep -v grep | awk '{print $4}'`
 
 # Setting Authentication openshift
 
