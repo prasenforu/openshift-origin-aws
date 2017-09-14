@@ -13,8 +13,8 @@ ssh $node "echo 'nameserver 8.8.8.8' | sudo tee --append /etc/resolv.conf"
 ssh $node "yum clean all"
 ssh $node "yum repolist"
 ssh $node "yum -y update"
-ssh $node "yum install -y wget git net-tools bind-utils zip unzip telnet bash-completion epel-release ansible NetworkManager"
-#ssh $node "yum install -y wget git net-tools bind-utils zip unzip telnet bash-completion NetworkManager"
+ssh $node "yum install -y wget git net-tools bind-utils zip unzip telnet tcpdump bash-completion epel-release ansible NetworkManager"
+#ssh $node "yum install -y wget git net-tools bind-utils zip unzip telnet tcpdump bash-completion NetworkManager"
 done
 
 # Install docker in all hosts.
