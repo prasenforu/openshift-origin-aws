@@ -45,6 +45,22 @@ ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --
 ssh ose-hub "iptables -A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 2379 -j ACCEPT"
 ssh ose-hub "service iptables save"
 
+# Solution for inter POD communication
+
+for node in {ose-node1,ose-node2}; do
+echo "Accept default iptable policies on $node" && \
+ssh $node "iptables -P INPUT ACCEPT"
+ssh $node "iptables -P FORWARD ACCEPT"
+ssh $node "iptables -P OUTPUT ACCEPT"
+echo ""
+echo "Flush the NAT and mangle tables on $node"
+ssh $node "iptables -t nat -F"
+ssh $node "iptables -t mangle -F"
+ssh $node "iptables -F"
+ssh $node "iptables -X"
+ssh $node "service iptables save"
+done
+
 # Copy dokvgstat script to all node monitoring 
 
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
