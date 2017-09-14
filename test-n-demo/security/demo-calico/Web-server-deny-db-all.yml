@@ -46,7 +46,7 @@ metadata:
   namespace: denydball
 spec:
   host: web-server.cloudapps.cloud-cafe.in
-    port:
+  port:
     targetPort: 80
   to:
     kind: Service
