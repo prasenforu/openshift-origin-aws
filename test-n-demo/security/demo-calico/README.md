@@ -77,9 +77,9 @@ http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout.php
 http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout1.php
 http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbin.php
 
-http://web-server.cloudapps.cloud-cafe.in/connectdbin.php
 http://web-server.cloudapps.cloud-cafe.in/connectdbout.php
 http://web-server.cloudapps.cloud-cafe.in/connectdbout1.php
+http://web-server.cloudapps.cloud-cafe.in/connectdbin.php
 ```
 
 ### 7. Now we are going to setup calico policy from AppA & AppB to all (external & internal) db allow/deny network connection.
@@ -89,7 +89,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
 - apiVersion: v1
   kind: policy
   metadata:
-    name: egress-allow-from-allow3306-to-external-db-3306
+    name: allow3306-to-external-db-3306
   spec:
     egress:
     - action: allow
@@ -107,7 +107,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
     - action: allow
       protocol: tcp
       destination:
-        net: 172.31.18.58/32
+        net: 10.90.1.222/32
         ports:
         - 3306
     order: 500
@@ -115,7 +115,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
 - apiVersion: v1
   kind: policy
   metadata:
-    name: egress-allow-from-allow3307-to-external-db-3307
+    name: allow3307-to-external-db-3307
   spec:
     egress:
     - action: allow
@@ -133,7 +133,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
     - action: allow
       protocol: tcp
       destination:
-        net: 172.31.18.58/32
+        net: 10.90.1.222/32
         ports:
         - 3307
     order: 501
@@ -152,10 +152,9 @@ http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout.php      -- it shoul
 http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout1.php     -- it should work (it will connect external DB on port 3306)
 http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbin.php       -- it should work (it will connect container DB)
 
-http://web-server.cloudapps.cloud-cafe.in/connectdbin.php            -- As no policy implemented, it should work
 http://web-server.cloudapps.cloud-cafe.in/connectdbout.php           -- As no policy implemented, it should work
 http://web-server.cloudapps.cloud-cafe.in/connectdbout1.php          -- As no policy implemented, it should work
-
+http://web-server.cloudapps.cloud-cafe.in/connectdbin.php            -- As no policy implemented, it should work
 ```
 
 ### 9. Now are are going to block all db (internal & external) from Web Server, using below policy
@@ -183,13 +182,13 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
     - action: deny
       protocol: tcp
       destination:
-        net: 172.31.18.58/32
+        net: 10.90.1.222/32
         ports:
         - 3307
     - action: deny
       protocol: tcp
       destination:
-        net: 172.31.18.58/32
+        net: 10.90.1.222/32
         ports:
         - 3306
     order: 502
