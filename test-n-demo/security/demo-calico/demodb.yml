@@ -11,7 +11,7 @@ spec:
         name: demodb
     spec:
       containers:
-      - image: prasenforu/mysql-db:1.0
+      - image: prasenforu/mysql-db:2.0
         imagePullPolicy: IfNotPresent
         name: demodb
         ports:
