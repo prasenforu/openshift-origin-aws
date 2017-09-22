@@ -3,7 +3,7 @@
 
 ## Lets start !!
 
-#### Start/Launch an EC2 in Private Subnet with ```10.90.1.222``` & use security Group ```OSE-DB-SG```
+#### Start/Launch an EC2 in Public Subnet with ```10.90.1.222``` & use security Group ```OSE-DB-SG```
 
 Before using check any Network Policy in used. And make sure on host ```10.90.1.222``` MYSQL Database should run on port ```3306``` & ```3307```
 
