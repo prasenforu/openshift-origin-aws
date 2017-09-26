@@ -85,19 +85,19 @@ http://web-server.cloudapps.cloud-cafe.in/connectdbin.php
 ### 7. Now we are going to setup calico policy from AppA & AppB to all (external & internal) db allow/deny network connection.
 
 ```
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
+calicoctl apply -f - <<EOF
 - apiVersion: v1
   kind: policy
   metadata:
     name: allow3306-to-external-db-3306
   spec:
-    egress:
+    ingress:
     - action: allow
-      protocol: udp
+      protocol: tcp
       destination:
-        selector: calico/k8s_ns == 'kube-system' && k8s-app=='kube-dns'
         ports:
-        - 53
+        - 80
+    egress:
     - action: allow
       protocol: tcp
       destination:
@@ -110,20 +110,20 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
         net: 10.90.1.222/32
         ports:
         - 3306
-    order: 500
+    order: 502
     Selector: calico/k8s_ns == 'allow3306'
 - apiVersion: v1
   kind: policy
   metadata:
     name: allow3307-to-external-db-3307
   spec:
-    egress:
+    ingress:
     - action: allow
-      protocol: udp
+      protocol: tcp
       destination:
-        selector: calico/k8s_ns == 'kube-system' && k8s-app=='kube-dns'
         ports:
-        - 53
+        - 80
+    egress:
     - action: allow
       protocol: tcp
       destination:
@@ -136,7 +136,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
         net: 10.90.1.222/32
         ports:
         - 3307
-    order: 501
+    order: 503
     Selector: calico/k8s_ns == 'allow3307'
 EOF
 ```
@@ -144,12 +144,12 @@ EOF
 ### 8. At this time, now execute below URL, check which URL coming timout
 
 ```
-http://app-a-allow3307.cloudapps.cloud-cafe.in/connectdbout.php      -- it should work (it will connect external DB on port 3307)
-http://app-a-allow3307.cloudapps.cloud-cafe.in/connectdbout1.php     -- it should fail (it try to connect external DB on port 3306)
+http://app-a-allow3307.cloudapps.cloud-cafe.in/connectdbout.php      -- it should fail (it will try to connect external DB on port 3307)
+http://app-a-allow3307.cloudapps.cloud-cafe.in/connectdbout1.php     -- it should work (it will connect external DB on port 3307)
 http://app-a-allow3307.cloudapps.cloud-cafe.in/connectdbin.php       -- it should work (it will connect container DB)
 
-http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout.php      -- it should fail (it try to connect external DB on port 3307)
-http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout1.php     -- it should work (it will connect external DB on port 3306)
+http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout.php      -- it should work (it will connect external DB on port 3306)
+http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbout1.php     -- it should fail (it will try to connect external DB on port 3307)
 http://app-b-allow3306.cloudapps.cloud-cafe.in/connectdbin.php       -- it should work (it will connect container DB)
 
 http://web-server.cloudapps.cloud-cafe.in/connectdbout.php           -- As no policy implemented, it should work
@@ -160,19 +160,19 @@ http://web-server.cloudapps.cloud-cafe.in/connectdbin.php            -- As no po
 ### 9. Now are are going to block all db (internal & external) from Web Server, using below policy
 
 ```
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
+calicoctl apply -f - <<EOF
 - apiVersion: v1
   kind: policy
   metadata:
-    name: egress-deny-from-denydball-to-all-db
+    name: deny-from-denydball-to-all-db-internal-and-external
   spec:
-    egress:
+    ingress:
     - action: allow
-      protocol: udp
+      protocol: tcp
       destination:
-        selector: calico/k8s_ns == 'kube-system' && k8s-app=='kube-dns'
         ports:
-        - 53
+        - 80
+    egress:
     - action: deny
       protocol: tcp
       destination:
@@ -191,7 +191,7 @@ kubectl exec -ti -n kube-system calicoctl -- /calicoctl apply -f - <<EOF
         net: 10.90.1.222/32
         ports:
         - 3306
-    order: 502
+    order: 503
     Selector: calico/k8s_ns == 'denydball'
 EOF
 ```
@@ -206,13 +206,13 @@ http://web-server.cloudapps.cloud-cafe.in/connectdbout1.php          -- it shoul
 ```
 #### Check list of policy
 ```
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl get policy
+calicoctl get policy
 ```
 #### Delete policys
 ```
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl delete policy egress-allow-from-allow3306-to-external-db-3306
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl delete policy egress-allow-from-allow3307-to-external-db-3307
-kubectl exec -ti -n kube-system calicoctl -- /calicoctl delete policy egress-deny-from-denydball-to-all-db
+calicoctl delete policy allow3306-to-external-db-3306
+calicoctl delete policy allow3307-to-external-db-3307
+calicoctl delete policy deny-from-denydball-to-all-db-internal-and-external
 ```
 
 #### At the end you can delete entire deployment
