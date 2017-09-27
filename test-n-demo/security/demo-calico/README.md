@@ -1,5 +1,5 @@
 # Calico Policy Demo
-![Alt text](https://github.com/prasenforu/container-platform/blob/master/kube/Networking/demo-calico/demo-calico.png "Overview")
+![Alt text](https://github.com/prasenforu/openshift-origin-aws/blob/master/test-n-demo/security/demo-calico/demo-calico.png "Overview")
 
 ## Lets start !!
 
