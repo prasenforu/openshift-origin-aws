@@ -15,8 +15,8 @@ sudo systemctl start named
 
 # Download (clone) openshift-aws from github
 
-mkdir -p /root/openshift-origin-aws
-git clone https://github.com/prasenforu/openshift-aws.git /root/openshift-origin-aws/
+#mkdir -p /root/openshift-origin-aws
+#git clone https://github.com/prasenforu/openshift-origin-aws.git /root/openshift-origin-aws/
 
 # Setting and configuring DNS 
 
