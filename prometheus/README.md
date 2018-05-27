@@ -8,6 +8,16 @@ This Quick Start reference deployment guide provides step-by-step instructions f
  ```
     ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/openshift-prometheus/config.yml
  ```
+Need to modify Prometheus configMap to enable our new rules for alerts. 
+
+```
+   oc edit cm prometheus
+```
+Now we will configure our mail client for the alert manager, edit configMap
+
+```
+   oc edit cm prometheus-alerts
+```
 
 ## Install & Configuring Grafana
 
