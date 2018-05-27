@@ -12,7 +12,7 @@ This Quick Start reference deployment guide provides step-by-step instructions f
 ## Install & Configuring Grafana
 
 ```
-    git clone https://github.com/mrsiano/grafana-ocp
+    git clone https://github.com/prasenforu/grafana-ocp
     cd grafana-ocp
     ./setup-grafana.sh prometheus-ocp openshift-metrics true
 ```
@@ -29,3 +29,4 @@ Login to the Grafana dashboard and add new source:
 ```
     https://prometheus.openshift-metrics.svc.cluster.local
 ```
+https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png
