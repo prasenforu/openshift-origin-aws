@@ -11,6 +11,7 @@ This Quick Start reference deployment guide provides step-by-step instructions f
 Need to modify Prometheus configMap to enable our new rules for alerts. 
 
 ```
+   oc project openshift-metrics
    oc edit cm prometheus
 ```
 Now we will configure our mail client for the alert manager, edit configMap
