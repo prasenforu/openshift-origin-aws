@@ -1,5 +1,13 @@
 10.90.1.78       ns1     ns1.cloud-cafe.in
-10.90.1.208      ose-master      ose-master.cloud-cafe.in	
-10.90.1.209      ose-hub         ose-hub.cloud-cafe.in
+10.90.1.201      ose-master1     ose-master1.cloud-cafe.in
+10.90.1.202      ose-master2     ose-master2.cloud-cafe.in
+10.90.1.203      ose-master3     ose-master3.cloud-cafe.in
+10.90.1.204      ose-master      ose-master.cloud-cafe.in
+10.90.1.205      ose-etcd1       ose-etcd1.cloud-cafe.in
+10.90.1.206      ose-etcd2       ose-etcd2.cloud-cafe.in
+10.90.1.207      ose-etcd3       ose-etcd3.cloud-cafe.in
+10.90.1.208      ose-hub1        ose-hub1.cloud-cafe.in
+10.90.1.209      ose-hub2        ose-hub2.cloud-cafe.in
 10.90.2.210      ose-node1       ose-node1.cloud-cafe.in
 10.90.2.211      ose-node2       ose-node2.cloud-cafe.in
+10.90.2.212      ose-node3       ose-node3.cloud-cafe.in
