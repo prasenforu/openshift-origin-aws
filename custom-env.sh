@@ -12,6 +12,7 @@ sed -i 's/cloud-cafe.in/XXXXXXX/g' *
 
 # Hostname Update
 
+sed -i 's/ose/ocp/g' hostfile
 sed -i 's/ose-master/ocp-master/g' *
 sed -i 's/ose-hub/ocp-hub/g' *
 sed -i 's/ose-node1/ocp-node1/g' *
