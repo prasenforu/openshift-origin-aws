@@ -215,6 +215,15 @@ chmod 755 *.sh
 	ssh ose-master
 	./post-ose-setup.sh
 ```
+### Installation & Configuration Prometheus on OCP
+```
+  ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/openshift-prometheus/config.yml
+```
+
+### Uninstall OCP
+```
+  ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/adhoc/uninstall.yml
+```
 ### Check status from master host and get console URL
 ```
   oc get pods
