@@ -171,11 +171,17 @@ chmod 755 *.sh
 ```
 	./install-docker-storage.sh
 ```
-#### 6.	Starting OSE 3.3 Installation using ansible
+#### 6.	Edit ansible host file
 ```
-	./start-ose-installation.sh
+	vi myconfighost
+		or
+	vi myconfighost_etcd_ha
 ```
-#### 7.	After OSE 3.3 Installation, there few setup need to make environment ready
+#### 7.	Starting OCP 3.9 Installation using ansible
+```
+	ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/deploy_cluster.yml
+```
+#### 8.	After OSE 3.9 Installation, there few setup need to make environment ready
 	Login authentication using htpassword, edit this file as per your requirement.
 	
 	### Note: This script need to run from ose-master host
