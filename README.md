@@ -118,6 +118,10 @@ Once DNS host is up and running, login on that dns host and make ready dns host 
 git clone https://github.com/prasenforu/openshift-origin-aws.git
 cd openshift-origin-aws
 dos2unix *
+cd /root
+git clone https://github.com/openshift/openshift-ansible.git /root/openshift-ansible/
+cd openshift-ansible
+git checkout release-3.9
 ```
 ### Add EC2 key-pair (add pem key content to prasen.pem file) & change prmission
 
