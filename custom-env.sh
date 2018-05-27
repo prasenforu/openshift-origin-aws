@@ -4,7 +4,7 @@
 
 cd /root/openshift-origin-aws
 
-# Domain Update - Please domain name #####
+# Domain Update - Please edt domain name XXXXXXX
 
 mv cloudapps.cloud-cafe.in.db cloudapps.XXXXXXX.db
 mv cloud-cafe.in.db XXXXXXX.db
