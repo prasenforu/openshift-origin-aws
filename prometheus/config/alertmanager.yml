@@ -1,0 +1,20 @@
+global:
+ smtp_smarthost: 'in-v3.mailjet.com:25'
+ smtp_from: 'pkagiletcs@gmail.com'
+ smtp_auth_username: '10ca08858234fa063230b1640706ec8b'
+ smtp_auth_password: 'c5bb87648909e32546747f76d4c5553e'
+route:
+ # default route if none match
+ receiver: all
+ group_by: []
+receivers:
+- name: mail
+  email_configs:
+  - to: "kar.prasenjit@tcs.com"
+    send_resolved: true
+- name: all
+  email_configs:
+  - to: "prasenforu@gmail.com"
+    send_resolved: true
+  webhook_configs:
+  - url: http://localhost:9099/topics/alerts 

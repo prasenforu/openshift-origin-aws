@@ -1,0 +1,80 @@
+groups:
+- name: ocp-cluster-rules
+  interval: 30s # defaults to global interval
+  rules:
+  - alert: "Node Down"
+    expr: up{job="kubernetes-nodes"} == 0
+    annotations:
+      miqTarget: "ContainerNode"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "Node {{$labels.instance}} is down"
+  - alert: "Openshift API Down"
+    expr: up{job="kubernetes-apiservers"} == 0
+    annotations:
+      miqTarget: "APINode"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "API {{$labels.instance}} is down"
+  - alert: "Openshift Controllers Down"
+    expr: up{job="kubernetes-controllers"} == 0
+    annotations:
+      miqTarget: "ControllersNode"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "Controllers Node {{$labels.instance}} is down"
+  - alert: "Node Exporter Down"
+    expr: up{job="kubernetes-nodes-exporter"} == 0
+    annotations:
+      miqTarget: "NodeExporter"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "Node Exporter {{$labels.instance}} is down"
+  - alert: "ETCD Node Exporter Down"
+    expr: up{job="openshift-etcd-node-exporter"} == 0
+    annotations:
+      miqTarget: "NodeExporter"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "ETCD Node Exporter {{$labels.instance}} is down"
+  - alert: "ETCD Down"
+    expr: up{job="etcd"} == 0
+    annotations:
+      miqTarget: "etcd"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "ETCD Host {{$labels.instance}} is down"             
+  - alert: "Openshift Service Endpoints Down"
+    expr: up{job="kubernetes-service-endpoints"} == 0
+    annotations:
+      miqTarget: "ServiceEndpoints"
+      severity: "ERROR"
+      url: "http://dns.tcs-ally.tk:8080/"  
+      message: "Service Endpoints {{$labels.instance}} is down"         
+  - alert: "Too Many Pods"
+    expr: sum(kubelet_running_pod_count) > 15
+    annotations:
+      miqTarget: "ExtManagementSystem"  
+      severity: "ERROR"
+      url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk"  
+      message: "Too many running pods"
+  - alert: "Node CPU Usage"
+    expr: (100 - (avg by (instance) (irate(node_cpu{app="prometheus-node-exporter",mode="idle"}[5m])) * 100)) > 3
+    for: 30s
+    labels:
+      severity: "ERROR"
+    annotations:
+      miqTarget: "ExtManagementSystem"
+      severity: "ERROR"
+      url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk"  
+      message: "{{$labels.instance}}: CPU usage is above 4% (current value is: {{ $value }})"
+  - alert: "Node Memory Usage"
+    expr: avg by (instance) (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 15
+    for: 30s
+    labels:
+      severity: "ERROR"
+    annotations:
+      miqTarget: "ExtManagementSystem"
+      severity: "ERROR"
+      url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk"  
+      message: "{{$labels.instance}}: Memory usage is above 4% (current value is: {{ $value }})"
