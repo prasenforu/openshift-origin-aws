@@ -46,72 +46,37 @@ But there is option if you want to change, see the OpenShift documentation.
 | ------ | ------ | ------ | ------ |
 | HTTP | TCP | 80 | 0.0.0.0/0 |
 | SSH | TCP | 22 | 0.0.0.0/0 |
-| Custom TCP | TCP | 8443 | 10.90.0.0/16 |
-| DNS (UDP) | UDP | 53 | 10.90.0.0/16 |
-| DNS (TCP) | TCP | 53 | 10.90.0.0/16 |
+| All traffic | All | All | 10.90.0.0/16 |
 | HTTPS| TCP | 443 | 0.0.0.0/0 |
-| All ICMP | All | N/A | 10.90.0.0/16 |
 
  ** OSE-MASTER-SG **
  
 | Type | Protocol | Port Range | Source |
 | ------ | ------ | ------ | ------ |
-| Custom UDP | UDP | 10250 | 10.90.0.0/16 |
-| HTTP | TCP | 80 | 0.0.0.0/0  |
-| Custom TCP | TCP | 4789 | 10.90.0.0/16 |
-| SSH | TCP | 22 | OSE-DNS-SG  |
-| Custom TCP | TCP | 8443 | 0.0.0.0/0 |
-| Custom UDP | UDP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 10250 | 10.90.0.0/16 |
-| DNS (UDP) | UDP | 53 | 10.90.0.0/16 |
-| DNS (TCP) | TCP | 53 | 10.90.0.0/16 |
-| Custom UDP | UDP | 4789 | 10.90.0.0/16 |
-| HTTPS | TCP | 443 | 0.0.0.0/0 |
-| All ICMP | All | N/A | 10.90.0.0/16 |
-| NFS | TCP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 179 | 10.90.0.0/16 |
-| Custom Protocol | IPIP | All | 10.90.0.0/16 |
+| HTTP | TCP | 80 | 0.0.0.0/0 |
+| SSH | TCP | 22 | OSE-DNS-SG |
+| All traffic | All | All | 10.90.0.0/16 |
+| HTTPS| TCP | 443 | 0.0.0.0/0 |
+| HTTPS| TCP | 8443 | 0.0.0.0/0 |
 
 ** OSE-HUB-SG **
 
 | Type | Protocol | Port Range | Source |
 | ------ | ------ | ------ | ------ |
-| Custom UDP | UDP | 10250 | 10.90.0.0/16 |
 | HTTP | TCP | 80 | 0.0.0.0/0 |
-| Custom TCP | TCP | 4789 | 10.90.0.0/16 |
 | SSH | TCP | 22 | OSE-DNS-SG |
-| Custom TCP | TCP | 8443 | 10.90.0.0/16 |
-| Custom UDP | UDP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 10250 | 10.90.0.0/16 |
-| DNS (UDP) | UDP | 53 | 10.90.0.0/16 |
-| DNS (TCP) | TCP | 53 | 10.90.0.0/16 |
-| Custom UDP | UDP | 4789| 10.90.0.0/16 |
+| All traffic | All | All | 10.90.0.0/16 |
 | HTTPS| TCP | 443 | 0.0.0.0/0 |
-| All ICMP | All | N/A | 10.90.0.0/16 |
-| NFS | TCP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 179 | 10.90.0.0/16 |
-| Custom Protocol | IPIP | All | 10.90.0.0/16 |
+| HTTPS| TCP | 8443 | 0.0.0.0/0 |
 
 ** OSE-NODE-SG **
 
 | Type | Protocol | Port Range | Source |
 | ------ | ------ | ------ | ------ |
-| Custom UDP | UDP | 10250 | 10.90.0.0/16 |
 | HTTP | TCP | 80 | 0.0.0.0/0 |
-| Custom TCP | TCP | 4789 | 10.90.0.0/16 |
 | SSH | TCP | 22 | OSE-DNS-SG |
-| Custom TCP | TCP | 8443 | 10.90.0.0/16 |
-| Custom UDP | UDP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 10250 | 10.90.0.0/16 |
-| DNS (UDP) | UDP | 53 | 10.90.0.0/16 |
-| DNS (TCP) | TCP | 53 | 10.90.0.0/16 |
-| Custom UDP | UDP | 4789 | 10.90.0.0/16 |
-| HTTPS | TCP | 443 | 0.0.0.0/0 |
-| All ICMP | All | N/A | 10.90.0.0/16 |
-| NFS | TCP | 2049 | 10.90.0.0/16 |
-| Custom TCP | TCP | 179 | 10.90.0.0/16 |
-| Custom Protocol | IPIP | All | 10.90.0.0/16 |
-
+| All traffic | All | All | 10.90.0.0/16 |
+| HTTPS| TCP | 443 | 0.0.0.0/0 |
 
 ## Deployment Steps
 
