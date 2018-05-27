@@ -6,6 +6,7 @@ cd /root/openshift-origin-aws
 
 # Domain Update - Please edt domain name XXXXXXX
 
+sed -i 's/ose/ocp/g' cloud-cafe.in.db
 mv cloudapps.cloud-cafe.in.db cloudapps.XXXXXXX.db
 mv cloud-cafe.in.db XXXXXXX.db
 sed -i 's/cloud-cafe.in/XXXXXXX/g' *
