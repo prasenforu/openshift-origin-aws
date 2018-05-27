@@ -29,4 +29,6 @@ Login to the Grafana dashboard and add new source:
 ```
     https://prometheus.openshift-metrics.svc.cluster.local
 ```
-https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png
+<p align="center">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png">
+</p>
