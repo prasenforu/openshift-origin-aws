@@ -6,7 +6,9 @@ cd /root/openshift-origin-aws
 
 # Domain Update - Please domain name #####
 
-sed -i 's/cloud-cafe.in/####/g' *
+mv cloudapps.cloud-cafe.in.db cloudapps.XXXXXXX.db
+mv cloud-cafe.in.db XXXXXXX.db
+sed -i 's/cloud-cafe.in/XXXXXXX/g' *
 
 # Hostname Update
 
