@@ -32,3 +32,9 @@ Login to the Grafana dashboard and add new source:
 <p align="center">
   <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png">
 </p>
+
+## Uninstall Prometheus
+
+ ```
+    ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/openshift-prometheus/uninstall.yml
+ ```
