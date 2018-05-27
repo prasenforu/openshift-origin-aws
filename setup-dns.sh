@@ -49,7 +49,7 @@ sudo ssh-keygen -f /root/.ssh/id_rsa -N ''
 
 # Setting up yum repo for openshift
 
-#sudo cp /root/openshift-origin-aws/open.repo /etc/yum.repos.d/open.repo
+sudo cp /root/openshift-origin-aws/open.repo /etc/yum.repos.d/open.repo
 sudo yum clean all
 sudo yum repolist
 sudo yum -y update
