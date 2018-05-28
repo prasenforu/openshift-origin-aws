@@ -11,3 +11,4 @@ cloudapps.cloud-cafe.in IN SOA ns1.cloudapps.cloud-cafe.in. hostmaster.cloudapps
         MX      10 mail.cloudapps.cloud-cafe.in.
 $ORIGIN cloudapps.cloud-cafe.in.
 *       A       10.90.1.209
+*       A       10.90.1.208
