@@ -16,6 +16,22 @@ ssh $node "yum -y update"
 ssh $node "yum install -y wget git net-tools bind-utils iptables-services bridge-utils pythonvirtualenv gcc bash-completion ansible kexec-tools sos psacct yum-utils"
 done
 
+# Disable Firewalld & enable Iptable
+
+systemctl disable firewalld
+systemctl stop firewalld
+
+for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
+echo "Stoping and Disable Firewalld on $node" && \
+ssh $node "systemctl disable firewalld"
+ssh $node "systemctl stop firewalld"
+ssh $node "systemctl status firewalld"
+echo "Starting and Enable Iptable on $node"
+ssh $node "systemctl enable iptables"
+ssh $node "systemctl start iptables"
+ssh $node "systemctl status iptables"
+done
+
 # Install docker in all hosts.
 
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
