@@ -20,6 +20,8 @@ done
 
 systemctl disable firewalld
 systemctl stop firewalld
+systemctl enable iptables
+systemctl start iptables
 
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Stoping and Disable Firewalld on $node" && \
