@@ -23,7 +23,7 @@
   "rows": [
     {
       "collapse": false,
-      "height": 160,
+      "height": 193,
       "panels": [
         {
           "cacheTimeout": null,
@@ -73,7 +73,7 @@
               "to": "3"
             }
           ],
-          "span": 3,
+          "span": 4,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -115,6 +115,188 @@
           "editable": true,
           "error": false,
           "fill": 0,
+          "id": 46,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(rate(grpc_server_started_total{grpc_type=\"unary\"}[5m]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "RPC Rate",
+              "metric": "grpc_server_started_total",
+              "refId": "A",
+              "step": 1
+            },
+            {
+              "expr": "sum(rate(grpc_server_handled_total{grpc_type=\"unary\",grpc_code!=\"OK\"}[5m]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "RPC Failed Rate",
+              "metric": "grpc_server_handled_total",
+              "refId": "B",
+              "step": 1
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "RPC Rate",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "id": 47,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": false,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 4,
+          "stack": true,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(grpc_server_started_total{grpc_service=\"etcdserverpb.Watch\",grpc_type=\"bidi_stream\"}) - sum(grpc_server_handled_total{grpc_service=\"etcdserverpb.Watch\",grpc_type=\"bidi_stream\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "Watch Streams",
+              "metric": "grpc_server_handled_total",
+              "refId": "A",
+              "step": 1
+            },
+            {
+              "expr": "sum(grpc_server_started_total{grpc_service=\"etcdserverpb.Lease\",grpc_type=\"bidi_stream\"}) - sum(grpc_server_handled_total{grpc_service=\"etcdserverpb.Lease\",grpc_type=\"bidi_stream\"})",
+              "format": "time_series",
+              "hide": true,
+              "intervalFactor": 2,
+              "legendFormat": "Lease Streams",
+              "metric": "grpc_server_handled_total",
+              "refId": "B",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Active Streams",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": "",
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "editable": true,
+          "error": false,
+          "fill": 0,
           "id": 42,
           "legend": {
             "alignAsTable": true,
@@ -137,7 +319,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 4,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -209,11 +391,13 @@
           "fill": 0,
           "id": 23,
           "legend": {
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
-            "show": false,
+            "rightSide": true,
+            "show": true,
             "total": false,
             "values": false
           },
@@ -227,35 +411,25 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
+          "span": 4,
           "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(rate(grpc_server_started_total{grpc_type=\"unary\"}[5m]))",
+              "expr": "avg by (instance) (((node_memory_MemTotal {job=\"openshift-etcd-node-exporter\"}) - (node_memory_MemFree {job=\"openshift-etcd-node-exporter\"}) - (node_memory_Cached {job=\"openshift-etcd-node-exporter\"})) / (node_memory_MemTotal {job=\"openshift-etcd-node-exporter\"}) * 100)",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "RPC Rate",
+              "legendFormat": "{{ instance }}",
               "metric": "grpc_server_started_total",
               "refId": "A",
-              "step": 1
-            },
-            {
-              "expr": "sum(rate(grpc_server_handled_total{grpc_type=\"unary\",grpc_code!=\"OK\"}[5m]))",
-              "format": "time_series",
-              "hide": false,
-              "intervalFactor": 2,
-              "legendFormat": "RPC Failed Rate",
-              "metric": "grpc_server_handled_total",
-              "refId": "B",
               "step": 1
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "RPC Rate",
+          "title": "Memory Usage",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -272,7 +446,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "deckbytes",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -298,13 +472,15 @@
           "editable": true,
           "error": false,
           "fill": 0,
-          "id": 41,
+          "id": 48,
           "legend": {
+            "alignAsTable": true,
             "avg": false,
             "current": false,
             "max": false,
             "min": false,
-            "show": false,
+            "rightSide": true,
+            "show": true,
             "total": false,
             "values": false
           },
@@ -318,35 +494,25 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "spaceLength": 10,
-          "span": 3,
-          "stack": true,
+          "span": 4,
+          "stack": false,
           "steppedLine": false,
           "targets": [
             {
-              "expr": "sum(grpc_server_started_total{grpc_service=\"etcdserverpb.Watch\",grpc_type=\"bidi_stream\"}) - sum(grpc_server_handled_total{grpc_service=\"etcdserverpb.Watch\",grpc_type=\"bidi_stream\"})",
+              "expr": "(100 - (avg by(instance) (irate(node_cpu{job=\"openshift-etcd-node-exporter\",mode=\"idle\"}[5m])) * 100))",
               "format": "time_series",
               "hide": false,
               "intervalFactor": 2,
-              "legendFormat": "Watch Streams",
-              "metric": "grpc_server_handled_total",
+              "legendFormat": "{{ instance }}",
+              "metric": "grpc_server_started_total",
               "refId": "A",
               "step": 1
-            },
-            {
-              "expr": "sum(grpc_server_started_total{grpc_service=\"etcdserverpb.Lease\",grpc_type=\"bidi_stream\"}) - sum(grpc_server_handled_total{grpc_service=\"etcdserverpb.Lease\",grpc_type=\"bidi_stream\"})",
-              "format": "time_series",
-              "hide": true,
-              "intervalFactor": 2,
-              "legendFormat": "Lease Streams",
-              "metric": "grpc_server_handled_total",
-              "refId": "B",
-              "step": 4
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Active Streams",
+          "title": "CPU Usage",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -363,8 +529,8 @@
           },
           "yaxes": [
             {
-              "format": "short",
-              "label": "",
+              "format": "locale",
+              "label": "core",
               "logBase": 1,
               "max": null,
               "min": null,
