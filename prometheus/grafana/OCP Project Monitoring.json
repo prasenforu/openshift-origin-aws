@@ -23,7 +23,7 @@
   "rows": [
     {
       "collapse": false,
-      "height": -27,
+      "height": 36,
       "panels": [
         {
           "cacheTimeout": null,
@@ -90,7 +90,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "65, 90",
@@ -157,7 +157,7 @@
               "to": "null"
             }
           ],
-          "span": 4,
+          "span": 3,
           "sparkline": {
             "fillColor": "rgba(31, 118, 189, 0.18)",
             "full": false,
@@ -173,7 +173,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "65, 90",
@@ -257,7 +257,7 @@
               "legendFormat": "",
               "metric": "",
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "65, 90",
@@ -341,11 +341,95 @@
               "legendFormat": "",
               "metric": "",
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "65, 90",
-          "title": "No. of POD",
+          "title": "PODs",
+          "type": "singlestat",
+          "valueFontSize": "50%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "rgba(50, 172, 45, 0.97)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(245, 54, 54, 0.9)"
+          ],
+          "datasource": "Prometheus",
+          "decimals": null,
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "height": "180px",
+          "id": 43,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "span": 1,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": false
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "expr": " sum by(namespace) (count by(namespace) (container_start_time_seconds{container_name!=\"POD\",namespace=~\"^$Project$\"}))",
+              "format": "time_series",
+              "hide": false,
+              "interval": "10s",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "metric": "",
+              "refId": "A",
+              "step": 10
+            }
+          ],
+          "thresholds": "65, 90",
+          "title": "Containers",
           "type": "singlestat",
           "valueFontSize": "50%",
           "valueMaps": [
@@ -423,7 +507,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "",
@@ -504,7 +588,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "",
@@ -667,7 +751,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "",
@@ -749,7 +833,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "",
@@ -831,7 +915,7 @@
               "interval": "10s",
               "intervalFactor": 1,
               "refId": "A",
-              "step": 30
+              "step": 10
             }
           ],
           "thresholds": "",
@@ -1191,7 +1275,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ route }}",
               "refId": "A",
-              "step": 4
+              "step": 1
             }
           ],
           "thresholds": [],
@@ -1296,7 +1380,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {
