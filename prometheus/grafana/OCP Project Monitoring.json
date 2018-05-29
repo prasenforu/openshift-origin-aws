@@ -17,7 +17,7 @@
   "gnetId": 315,
   "graphTooltip": 0,
   "hideControls": false,
-  "id": 6,
+  "id": 11,
   "links": [],
   "refresh": "1m",
   "rows": [
@@ -857,7 +857,7 @@
     },
     {
       "collapse": false,
-      "height": 213,
+      "height": 215,
       "panels": [
         {
           "aliasColors": {},
@@ -1146,6 +1146,97 @@
       "showTitle": false,
       "title": "Pods CPU usage",
       "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": 210,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fill": 1,
+          "id": 42,
+          "legend": {
+            "alignAsTable": true,
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 12,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum by (route) (haproxy_backend_connections_total{backend=~\"https\",namespace=~\"^$Project$\",job=\"haproxy\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 2,
+              "legendFormat": "{{ route }}",
+              "refId": "A",
+              "step": 4
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Route Traffic",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": false,
+      "title": "Dashboard Row",
+      "titleSize": "h6"
     }
   ],
   "schemaVersion": 14,
@@ -1158,8 +1249,9 @@
       {
         "allValue": ".*",
         "current": {
-          "text": "default",
-          "value": "default"
+          "tags": [],
+          "text": "openshift-metrics",
+          "value": "openshift-metrics"
         },
         "datasource": "Prometheus",
         "hide": 0,
