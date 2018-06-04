@@ -34,6 +34,15 @@ data:
      - match:
          severity: critical
        receiver: email-n-etcd
+     - match:
+         severity: warning
+       receiver: email-n-etcd
+     - match:
+         severity: medium
+       receiver: email-n-node
+     - match:
+         severity: MEDIUM
+       receiver: email-n-node       
 
     receivers:
     - name: email-team
@@ -57,4 +66,4 @@ data:
       - to: "yyyyy@gmail.com"
         send_resolved: true
       webhook_configs:
-      - url: http://172.30.200.104:9000/hooks/ose-sn-pod-hook       
+      - url: http://172.30.200.104:9000/hooks/ose-sn-etcd-hook       
