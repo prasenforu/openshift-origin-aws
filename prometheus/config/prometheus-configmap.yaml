@@ -16,6 +16,7 @@ data:
         annotations:
           description: If one more etcd member goes down the cluster will be unavailable
           message: etcd cluster insufficient members
+          severity: critical
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: NoLeader
         expr: etcd_server_has_leader{job="etcd"} == 0
@@ -25,6 +26,7 @@ data:
         annotations:
           description: etcd member {{ $labels.instance }} has no leader
           message: etcd member has no leader
+          severity: critical
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfLeaderChanges
         expr: increase(etcd_server_leader_changes_seen_total{job="etcd"}[1h]) > 3
@@ -34,6 +36,7 @@ data:
           description: etcd instance {{ $labels.instance }} has seen {{ $value }} leader
             changes within the last hour
           message: a high number of leader changes within the etcd cluster are happening
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfFailedGRPCRequests
         expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="etcd"}[5m])) BY (grpc_service, grpc_method)
@@ -45,6 +48,7 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.grpc_method }} failed 
             on etcd instance {{ $labels.instance }}'
           message: a high number of gRPC requests are failing
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfFailedGRPCRequests
         expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="etcd"}[5m])) BY (grpc_service, grpc_method)
@@ -56,6 +60,7 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.grpc_method }} failed
             on etcd instance {{ $labels.instance }}'
           message: a high number of gRPC requests are failing
+          severity: critical
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: GRPCRequestsSlow
         expr: histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{job="etcd",grpc_type="unary"}[5m])) by (grpc_service, grpc_method, le))
@@ -67,6 +72,7 @@ data:
           description: on etcd instance {{ $labels.instance }} gRPC requests to {{ $labels.grpc_method
             }} are slow
           message: slow gRPC requests
+          severity: critical
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfFailedHTTPRequests
         expr: sum(rate(etcd_http_failed_total{job="etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="etcd"}[5m]))
@@ -78,6 +84,7 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.method }} failed on etcd
             instance {{ $labels.instance }}'
           message: a high number of HTTP requests are failing
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfFailedHTTPRequests
         expr: sum(rate(etcd_http_failed_total{job="etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="etcd"}[5m]))
@@ -89,6 +96,7 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.method }} failed on etcd
             instance {{ $labels.instance }}'
           message: a high number of HTTP requests are failing
+          severity: critical
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HTTPRequestsSlow
         expr: histogram_quantile(0.99, rate(etcd_http_successful_duration_seconds_bucket[5m]))
@@ -100,6 +108,7 @@ data:
           description: on etcd instance {{ $labels.instance }} HTTP requests to {{ $labels.method
             }} are slow
           message: slow HTTP requests
+          severity: warning
       - alert: EtcdMemberCommunicationSlow
         expr: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[5m]))
           > 0.15
@@ -110,6 +119,7 @@ data:
           description: etcd instance {{ $labels.instance }} member communication with
             {{ $labels.To }} is slow
           message: etcd member communication is slow
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighNumberOfFailedProposals
         expr: increase(etcd_server_proposals_failed_total{job="etcd"}[1h]) > 5
@@ -119,6 +129,7 @@ data:
           description: etcd instance {{ $labels.instance }} has seen {{ $value }} proposal
             failures within the last hour
           message: a high number of proposals within the etcd cluster are failing
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighFsyncDurations
         expr: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m]))
@@ -129,6 +140,7 @@ data:
         annotations:
           description: etcd instance {{ $labels.instance }} fync durations are high
           message: high fsync durations
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
       - alert: HighCommitDurations
         expr: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[5m]))
@@ -139,6 +151,7 @@ data:
         annotations:
           description: etcd instance {{ $labels.instance }} commit durations are high
           message: high commit durations
+          severity: warning
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"  
 
   prometheus.rules:
@@ -176,19 +189,19 @@ data:
       - alert: "Node Exporter Down"
         expr: up{job="kubernetes-nodes-exporter"} == 0
         labels:
-          severity: "CRITICAL"
+          severity: "MEDIUM"
         annotations:
           miqTarget: "NodeExporter"
-          severity: "CRITICAL"
+          severity: "MEDIUM"
           url: "http://dns.tcs-ally.tk:8080/"  
           message: "Node Exporter {{$labels.instance}} is down"
       - alert: "ETCD Node Exporter Down"
         expr: up{job="openshift-etcd-node-exporter"} == 0
         labels:
-          severity: "CRITICAL"
+          severity: "MEDIUM"
         annotations:
           miqTarget: "NodeExporter"
-          severity: "CRITICAL"
+          severity: "MEDIUM"
           url: "http://dns.tcs-ally.tk:8080/"  
           message: "ETCD Node Exporter {{$labels.instance}} is down"
       - alert: "ETCD Down"
