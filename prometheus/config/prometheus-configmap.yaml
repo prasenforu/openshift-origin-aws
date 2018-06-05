@@ -4,7 +4,7 @@ metadata:
   name: prometheus
   namespace: openshift-metrics
 data:
-  etcd.rules:
+  etcd.rules: |
     groups:
     - name: etcd3-rules
       rules:
@@ -16,8 +16,8 @@ data:
         annotations:
           description: If one more etcd member goes down the cluster will be unavailable
           message: etcd cluster insufficient members
-          severity: critical
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "critical"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: NoLeader
         expr: etcd_server_has_leader{job="etcd"} == 0
         for: 1m
@@ -26,8 +26,8 @@ data:
         annotations:
           description: etcd member {{ $labels.instance }} has no leader
           message: etcd member has no leader
-          severity: critical
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "critical"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfLeaderChanges
         expr: increase(etcd_server_leader_changes_seen_total{job="etcd"}[1h]) > 3
         labels:
@@ -36,8 +36,8 @@ data:
           description: etcd instance {{ $labels.instance }} has seen {{ $value }} leader
             changes within the last hour
           message: a high number of leader changes within the etcd cluster are happening
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfFailedGRPCRequests
         expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="etcd"}[5m])) BY (grpc_service, grpc_method)
           / sum(rate(grpc_server_handled_total{job="etcd"}[5m])) BY (grpc_service, grpc_method) > 0.01
@@ -48,8 +48,8 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.grpc_method }} failed 
             on etcd instance {{ $labels.instance }}'
           message: a high number of gRPC requests are failing
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfFailedGRPCRequests
         expr: sum(rate(grpc_server_handled_total{grpc_code!="OK",job="etcd"}[5m])) BY (grpc_service, grpc_method)
           / sum(rate(grpc_server_handled_total{job="etcd"}[5m])) BY (grpc_service, grpc_method) > 0.05
@@ -60,8 +60,8 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.grpc_method }} failed
             on etcd instance {{ $labels.instance }}'
           message: a high number of gRPC requests are failing
-          severity: critical
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "critical"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: GRPCRequestsSlow
         expr: histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{job="etcd",grpc_type="unary"}[5m])) by (grpc_service, grpc_method, le))
           > 0.15
@@ -72,8 +72,8 @@ data:
           description: on etcd instance {{ $labels.instance }} gRPC requests to {{ $labels.grpc_method
             }} are slow
           message: slow gRPC requests
-          severity: critical
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "critical"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfFailedHTTPRequests
         expr: sum(rate(etcd_http_failed_total{job="etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="etcd"}[5m]))
           BY (method) > 0.01
@@ -84,8 +84,8 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.method }} failed on etcd
             instance {{ $labels.instance }}'
           message: a high number of HTTP requests are failing
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfFailedHTTPRequests
         expr: sum(rate(etcd_http_failed_total{job="etcd"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job="etcd"}[5m]))
           BY (method) > 0.05
@@ -96,8 +96,8 @@ data:
           description: '{{ $value }}% of requests for {{ $labels.method }} failed on etcd
             instance {{ $labels.instance }}'
           message: a high number of HTTP requests are failing
-          severity: critical
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "critical"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HTTPRequestsSlow
         expr: histogram_quantile(0.99, rate(etcd_http_successful_duration_seconds_bucket[5m]))
           > 0.15
@@ -108,7 +108,7 @@ data:
           description: on etcd instance {{ $labels.instance }} HTTP requests to {{ $labels.method
             }} are slow
           message: slow HTTP requests
-          severity: warning
+          severity: "warning"
       - alert: EtcdMemberCommunicationSlow
         expr: histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket[5m]))
           > 0.15
@@ -119,8 +119,8 @@ data:
           description: etcd instance {{ $labels.instance }} member communication with
             {{ $labels.To }} is slow
           message: etcd member communication is slow
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighNumberOfFailedProposals
         expr: increase(etcd_server_proposals_failed_total{job="etcd"}[1h]) > 5
         labels:
@@ -129,8 +129,8 @@ data:
           description: etcd instance {{ $labels.instance }} has seen {{ $value }} proposal
             failures within the last hour
           message: a high number of proposals within the etcd cluster are failing
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighFsyncDurations
         expr: histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket[5m]))
           > 0.5
@@ -140,8 +140,8 @@ data:
         annotations:
           description: etcd instance {{ $labels.instance }} fync durations are high
           message: high fsync durations
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"
       - alert: HighCommitDurations
         expr: histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket[5m]))
           > 0.25
@@ -151,10 +151,10 @@ data:
         annotations:
           description: etcd instance {{ $labels.instance }} commit durations are high
           message: high commit durations
-          severity: warning
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring"  
-
-  prometheus.rules:
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-etcd-monitoring" 
+          
+  prometheus.rules: |
     groups:
     - name: ocp-cluster-rules
       interval: 30s # defaults to global interval
@@ -166,7 +166,7 @@ data:
         annotations:
           miqTarget: "ContainerNode"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "Node {{$labels.instance}} is down"
       - alert: "Openshift API Down"
         expr: up{job="kubernetes-apiservers"} == 0
@@ -175,7 +175,7 @@ data:
         annotations:
           miqTarget: "APINode"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "API {{$labels.instance}} is down"
       - alert: "Openshift Controllers Down"
         expr: up{job="kubernetes-controllers"} == 0
@@ -184,7 +184,7 @@ data:
         annotations:
           miqTarget: "ControllersNode"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "Controllers Node {{$labels.instance}} is down"
       - alert: "Node Exporter Down"
         expr: up{job="kubernetes-nodes-exporter"} == 0
@@ -193,7 +193,7 @@ data:
         annotations:
           miqTarget: "NodeExporter"
           severity: "MEDIUM"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "Node Exporter {{$labels.instance}} is down"
       - alert: "ETCD Node Exporter Down"
         expr: up{job="openshift-etcd-node-exporter"} == 0
@@ -202,7 +202,7 @@ data:
         annotations:
           miqTarget: "NodeExporter"
           severity: "MEDIUM"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "ETCD Node Exporter {{$labels.instance}} is down"
       - alert: "ETCD Down"
         expr: up{job="etcd"} == 0
@@ -211,7 +211,7 @@ data:
         annotations:
           miqTarget: "etcd"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "ETCD Host {{$labels.instance}} is down"    
       - alert: "Router Down"
         expr: up{job="haproxy"} == 0
@@ -220,7 +220,7 @@ data:
         annotations:
           miqTarget: "haproxy"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "Router Host {{$labels.instance}} is down"           
       - alert: "Openshift Service Endpoints Down"
         expr: up{job="kubernetes-service-endpoints"} == 0
@@ -229,26 +229,26 @@ data:
         annotations:
           miqTarget: "ServiceEndpoints"
           severity: "CRITICAL"
-          url: "http://dns.tcs-ally.tk:8080/"  
+          url: "http://dns.tcs-ally.tk:8080/" 
           message: "Service Endpoints {{$labels.instance}} is down"         
       - alert: "Too Many Pods"
         expr: sum(kubelet_running_pod_count) > 15
         labels:
-          severity: "WARNING"
+          severity: "warning"
         annotations:
           miqTarget: "ExtManagementSystem"  
-          severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-cluster-monitoring"  
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-cluster-monitoring" 
           message: "Too many running pods"
       - alert: "High number of Container running in Project"
         expr: sum by (namespace) (count (container_start_time_seconds {namespace!="",container_name!="POD"}) by (namespace)) >=6
         labels:
-          severity: "WARNING"
+          severity: "warning"
         annotations:
           miqTarget: "ExtManagementSystem"  
-          severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"  
-          message: "High number of Container running in this project {{ $labels.namespace }} and (current value: {{ $value }}%)"          
+          severity: "warning"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring" 
+          message: "High number of Container running in this project {{ $labels.namespace }} and (current value: {{ $value }})"          
       - alert: "PoD High CPU Usage"
         expr: sum by (pod_name,kubernetes_io_hostname,namespace)( rate(container_cpu_usage_seconds_total{namespace!=""}[2m]) )  >= 0.01
         for: 2m
@@ -257,8 +257,8 @@ data:
         annotations:
           miqTarget: "ExtManagementSystem"  
           severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"   
-          message: "CPU usage of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) utilization is  >= 0.01 cores (current value: {{ $value }}%)"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"  
+          message: "CPU usage of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) utilization is  >= 0.01 cores (current value: {{ $value }})"
       - alert: "PoD High Memory Usage"
         expr: sum by(pod_name,namespace,kubernetes_io_hostname) (container_memory_max_usage_bytes{namespace!=""}) /1024/1024 >=200
         for: 2m
@@ -267,8 +267,8 @@ data:
         annotations:
           miqTarget: "ExtManagementSystem"  
           severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"   
-          message: "Memory usage of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) utilization is  >= 200 MB (current value: {{ $value }}%)"
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"  
+          message: "Memory usage of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) utilization is  >= 200 MB (current value: {{ $value }})"
       - alert: "PoD High Router Usage"
         expr: (sum by (namespace,route)  (haproxy_backend_connections_total{namespace!="",job="haproxy"})) >=1500
         for: 2m
@@ -277,8 +277,8 @@ data:
         annotations:
           miqTarget: "ExtManagementSystem"  
           severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"   
-          message: "Total HTTP request of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) is  >= 1500 (current value: {{ $value }}%)"          
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-project-monitoring"  
+          message: "Total HTTP request of POD ( {{ $labels.pod_name }} ) in Project ( {{ $labels.namespace }} ) is  >= 1500 (current value: {{ $value }})"          
       - alert: "Node CPU Usage"
         expr: (100 - (avg by (instance) (irate(node_cpu{app="prometheus-node-exporter",mode="idle"}[5m])) * 100)) > 3
         for: 30s
@@ -287,7 +287,7 @@ data:
         annotations:
           miqTarget: "ExtManagementSystem"
           severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring"  
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring" 
           message: "{{$labels.instance}}: CPU usage is above 4% (current value is: {{ $value }})"
       - alert: "Node Memory Usage"
         expr: avg by (instance) (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 15
@@ -297,15 +297,16 @@ data:
         annotations:
           miqTarget: "ExtManagementSystem"
           severity: "WARNING"
-          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring"  
+          url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring" 
           message: "{{$labels.instance}}: Memory usage is above 4% (current value is: {{ $value }})"
-
-  prometheus.yml:
+  prometheus.yml: >
     rule_files:
       - '*.rules'
 
     # well as HA API server deployments.
+
     scrape_configs:
+
     - job_name: 'kubernetes-apiservers'
 
       kubernetes_sd_configs:
@@ -325,7 +326,10 @@ data:
         regex: default;kubernetes;https
 
     # Scrape config for controllers.
-    # Each master node exposes a /metrics endpoint on :8444 that contains operational metrics for the controllers.
+
+    # Each master node exposes a /metrics endpoint on :8444 that contains
+    operational metrics for the controllers.
+
     - job_name: 'kubernetes-controllers'
 
       scheme: https
@@ -350,7 +354,10 @@ data:
         replacement: $1:8444
 
     # Scrape config for nodes.
-    # Each node exposes a /metrics endpoint that contains operational metrics for the Kubelet and other components.
+
+    # Each node exposes a /metrics endpoint that contains operational metrics
+    for the Kubelet and other components.
+
     - job_name: 'kubernetes-nodes'
       scheme: https
       tls_config:
@@ -367,15 +374,16 @@ data:
       relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
- 
+
     # Scrape config for cAdvisor.
+
     - job_name: 'kubernetes-cadvisor'
 
       scheme: https
       tls_config:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
- 
+
       metrics_path: /metrics/cadvisor
 
       kubernetes_sd_configs:
@@ -389,18 +397,29 @@ data:
         action: drop
         regex: 'container_(cpu_user_seconds_total|cpu_cfs_periods_total|memory_usage_bytes|memory_swap|memory_working_set_bytes|memory_cache|last_seen|fs_(read_seconds_total|write_seconds_total|sector_(.*)|io_(.*)|reads_merged_total|writes_merged_total)|tasks_state|memory_failcnt|memory_failures_total|spec_memory_swap_limit_bytes|fs_(.*)_bytes_total|spec_(.*))'
 
-
       relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
 
     # Scrape config for service endpoints.
-    # The relabeling allows the actual service scrape endpoint to be configured # via the following annotations:
+
+    # The relabeling allows the actual service scrape endpoint to be configured
+    # via the following annotations:
+
     # * `prometheus.io/scrape`: Only scrape services that have a value of `true`
-    # * `prometheus.io/scheme`: If the metrics endpoint is secured then you will need # to set this to `https` & most likely set the `tls_config` of the scrape config.
-    # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
-    # * `prometheus.io/port`: If the metrics are exposed on a different port to the
+
+    # * `prometheus.io/scheme`: If the metrics endpoint is secured then you will
+    need # to set this to `https` & most likely set the `tls_config` of the
+    scrape config.
+
+    # * `prometheus.io/path`: If the metrics path is not `/metrics` override
+    this.
+
+    # * `prometheus.io/port`: If the metrics are exposed on a different port to
+    the
+
     # service then set this appropriately.
+
     - job_name: 'kubernetes-service-endpoints'
 
       tls_config:
@@ -410,7 +429,7 @@ data:
 
       kubernetes_sd_configs:
       - role: endpoints
-   
+
       relabel_configs:
         # only scrape infrastructure components
         - source_labels: [__meta_kubernetes_namespace]
@@ -448,13 +467,15 @@ data:
         - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name]
           action: drop
           regex: default;router
- 
-    # Scrape config for node-exporter, which is expected to be running on port 9100.
+
+    # Scrape config for node-exporter, which is expected to be running on port
+    9100.
+
     - job_name: 'kubernetes-nodes-exporter'
- 
+
       tls_config:
         ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
- 
+
       kubernetes_sd_configs:
       - role: node
 
@@ -495,6 +516,7 @@ data:
         regex: __meta_kubernetes_node_label_(.+)
 
     # Scrape config for the template service broker
+
     - job_name: 'openshift-template-service-broker'
       scheme: https
       tls_config:
@@ -509,7 +531,7 @@ data:
       - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
         action: keep
         regex: openshift-template-service-broker;apiserver;https
-    
+        
     - job_name: 'openshift-etcd-node-exporter'
       static_configs:
       - targets: ['10.90.1.205:9100','10.90.1.206:9100','10.90.1.207:9100'] 
@@ -526,7 +548,7 @@ data:
         target_label: instance
         regex: 10.90.1.207:9100
         replacement: ose-etcd3.tcs-ally.tk
-  
+      
     - job_name: 'etcd'
       scheme: https
       tls_config:
@@ -552,7 +574,7 @@ data:
 
     - job_name: 'haproxy'
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
- 
+
       kubernetes_sd_configs:
       - role: endpoints
         namespaces:
@@ -569,4 +591,4 @@ data:
       - scheme: http
         static_configs:
         - targets:
-          - "localhost:9093"   
+          - "localhost:9093"
