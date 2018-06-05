@@ -1,17 +1,13 @@
 apiVersion: v1
-
 kind: ConfigMap
-
 metadata:
-  
   name: alertmanager
-  
   namespace: openshift-metrics
 data:
-  alertmanager.yml:
+  alertmanager.yml: |
     global:
      smtp_smarthost: 'in-v3.mailjet.com:25'
-     smtp_from: 'zzzzzzz@gmail.com'
+     smtp_from: 'pkkkkkk@gmail.com'
      smtp_auth_username: 'user token'
      smtp_auth_password: 'pass token'
 
@@ -20,7 +16,7 @@ data:
      group_by: ['alertname', 'cluster', 'service']
      # A default receiver
      receiver: email-team
- 
+     
      # The child route trees.
      routes:
      # This routes performs a regular expression match on alert labels to
@@ -36,34 +32,34 @@ data:
        receiver: email-n-etcd
      - match:
          severity: warning
-       receiver: email-n-etcd
-     - match:
-         severity: medium
-       receiver: email-n-node
+       receiver: email-n-etcd  
      - match:
          severity: MEDIUM
+       receiver: email-n-node
+     - match:
+         severity: medium
        receiver: email-n-node       
 
     receivers:
     - name: email-team
       email_configs:
-      - to: "kar.prasenjit@xxxx.com"
+      - to: "kar.prasenjit@ttt.com"
         send_resolved: true
     - name: email-n-pod
       email_configs:
-      - to: "yyyyy@gmail.com"
+      - to: "zzzz@gmail.com"
         send_resolved: true
       webhook_configs:
-      - url: http://172.30.200.104:9000/hooks/ose-sn-pod-hook 
+      - url: http://172.30.200.104:9000/hooks/ose-sn-pod-hook
     - name: email-n-node
       email_configs:
-      - to: "yyyyy@gmail.com"
+      - to: "zzzz@gmail.com"
         send_resolved: true
       webhook_configs:
-      - url: http://172.30.200.104:9000/hooks/ose-sn-node-hook 
+      - url: http://172.30.200.104:9000/hooks/ose-sn-node-hook
     - name: email-n-etcd
       email_configs:
-      - to: "yyyyy@gmail.com"
+      - to: "zzzz@gmail.com"
         send_resolved: true
       webhook_configs:
-      - url: http://172.30.200.104:9000/hooks/ose-sn-etcd-hook       
+      - url: http://172.30.200.104:9000/hooks/ose-sn-etcd-hook      
