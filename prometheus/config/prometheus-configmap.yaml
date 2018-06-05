@@ -283,20 +283,20 @@ data:
         expr: (100 - (avg by (instance) (irate(node_cpu{app="prometheus-node-exporter",mode="idle"}[5m])) * 100)) > 3
         for: 30s
         labels:
-          severity: "WARNING"
+          severity: "warning"
         annotations:
           miqTarget: "ExtManagementSystem"
-          severity: "WARNING"
+          severity: "warning"
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring" 
           message: "{{$labels.instance}}: CPU usage is above 4% (current value is: {{ $value }})"
       - alert: "Node Memory Usage"
         expr: avg by (instance) (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 15
         for: 30s
         labels:
-          severity: "WARNING"
+          severity: "warning"
         annotations:
           miqTarget: "ExtManagementSystem"
-          severity: "WARNING"
+          severity: "warning"
           url: "https://grafana-ocp-grafana.cloudapps.tcs-ally.tk/dashboard/db/ocp-resources-monitoring" 
           message: "{{$labels.instance}}: Memory usage is above 4% (current value is: {{ $value }})"
   prometheus.yml: >
