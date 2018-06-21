@@ -22,12 +22,13 @@ chmod +x /usr/local/sbin/docker-compose
 ```
 vi harbor.cfg
 ```
-######## Required parameters
+######## Required parameters 
+```
 hostname: IP or DNS - Do NOT use localhost or 127.0.0.1 for the hostname.
 ui_url_protocol: (http or https. Default is http)
 db_password: (Default is root) - Change this password for any production use!
 harbor_admin_password: (Default is Harbor12345) - Change this password for any production use!
-
+```
 ##### Step 3
 ```
 ./install.sh --with-clair
