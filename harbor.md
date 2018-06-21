@@ -22,7 +22,7 @@ chmod +x /usr/local/sbin/docker-compose
 ```
 vi harbor.cfg
 ```
-######## Required parameters 
+###### Required parameters 
 ```
 hostname: IP or DNS - Do NOT use localhost or 127.0.0.1 for the hostname.
 ui_url_protocol: (http or https. Default is http)
