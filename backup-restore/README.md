@@ -1,7 +1,6 @@
 # Openshift Container Platform backup & Restore
  
-###### Little script that will do a massive backup on OpenShift.
-###### It will backup:
+###### Little script that will do a massive backup on OpenShift & It will backup.
 
 #### OpenShift Cluster
 
@@ -48,6 +47,7 @@ and
 ```
 
 -  Mysqldumps can be restored by running 
+
 ```oc -n $PROJECT exec $POD — /usr/bin/sh -c ‘PATH=$PATH:/opt/rh/mysql55/root/usr/bin:/opt/rh/rh-mysql56/root/usr/bin/ mysql -h 127.0.0.1 -u $MYSQL_USER –password=$MYSQL_PASSWORD $MYSQL_DATABASE’ </backup/mysql/$PROJECT/$DC.sql
 ```
 
