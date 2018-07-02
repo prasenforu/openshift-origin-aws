@@ -2,6 +2,8 @@
  
 ###### Little script that will do a massive backup on OpenShift & It will backup.
 
+## BACKUP:
+
 #### OpenShift Cluster
 
 ```
@@ -23,7 +25,7 @@ And saves the backup:
 If run inside a container (CronJob), then attach a PV to /backup.
 If /backup is a git repo it will do a git commit for version controlled backups.
 
-#### To Restore:
+## RESTORE:
 
 - Individual objects that where exported with oc export can be re-imported with 
 ```
