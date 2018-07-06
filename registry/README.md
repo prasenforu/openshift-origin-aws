@@ -29,9 +29,39 @@ ui_url_protocol: (http or https. Default is http)
 db_password: (Default is root) - Change this password for any production use!
 harbor_admin_password: (Default is Harbor12345) - Change this password for any production use!
 ```
-##### Step 3
+###### For HTTPS configuration
+
+###### Step A - Create your own CA certificate:
+
 ```
-./install.sh --with-clair
+  openssl req \
+    -newkey rsa:4096 -nodes -sha256 -keyout server.key \
+    -x509 -days 365 -out server.crt
+```
+###### Step B - Move your CA certificate to folder (/root/cert/)
+
+```
+cp yourdomain.com.crt /root/cert/
+cp yourdomain.com.key /root/cert/ 
+```
+
+###### Step C - Edit the file harbor.cfg , update the hostname and the protocol, and update the attributes ssl_cert and ssl_cert_key:
+
+```
+  #set hostname
+  hostname = reg.yourdomain.com
+  #set ui_url_protocol
+  ui_url_protocol = https
+  ......
+  #The path of cert and key files for nginx, they are applied only the protocol is set to https 
+  ssl_cert = /root/cert/yourdomain.com.crt
+  ssl_cert_key = /root/cert/yourdomain.com.key
+```
+
+##### Step 3
+##### NOTE: to Setup Notary "ui_url_protocol" should be "https" in harbor.cfg 
+```
+./install.sh --with-clair --with-notary
 ```
 
 ##### Step 4
