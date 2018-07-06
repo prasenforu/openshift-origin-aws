@@ -36,7 +36,7 @@ docker ps -a
 #### Accessing Concourse
 
 <p align="center">
-  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/cicd/concourse.png">
 </p>
 
 ###### Start download concourse CLI (fly), to install the Concourse CLI (fly) on your system, click on the Linux logo to download, and run the following commands…
