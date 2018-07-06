@@ -35,16 +35,11 @@ docker ps -a
 ```
 #### Accessing Concourse
 
-```
-http://<docker host>:8080/).
-```
+<p align="center">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png">
+</p>
 
-###### Start download concourse CLI (fly)
-```
-docker-compose stop
-```
-
-###### To install the Concourse CLI (fly) on your system, click on the Linux logo to download, and run the following commands…
+###### Start download concourse CLI (fly), to install the Concourse CLI (fly) on your system, click on the Linux logo to download, and run the following commands…
 ```
 $ cd ~/Downloads/
 $ install fly /usr/local/sbin
@@ -58,28 +53,11 @@ $ fly -v
 
 ###### Login using the fly login command.
 
-To change Harbor's configuration, first stop existing Harbor instance and update harbor.cfg. Then run prepare script to populate the configuration. Finally re-create and start Harbor's instance:
-
 ```
-docker-compose down -v
-vi harbor.cfg
-prepare
-docker-compose up -d
-```
-###### Removing Harbor's containers while keeping the image data and Harbor's database files on the file system:
-
-```
-$ fly login -t hello -c http://192.168.99.100:8080
+$ fly login -t hello -c http://<docker host>:8080
 logging in to team 'main'
 
 target saved
-```
-
-###### Removing Harbor's database and image data (for a clean re-installation):
-
-```
-rm -r /data/database
-rm -r /data/registry
 ```
 
 ##### Setting up a Pipeline (example)
