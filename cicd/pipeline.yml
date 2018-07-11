@@ -8,9 +8,9 @@ resources:
 - name: push-harbor-image
   type: docker-image
   source:
-    username: "uuuuu"
-    password: "ppppp"
-    repository: "harbor:443/ocp-dev/hello-world"
+    username: ((RegistryUser))
+    password: ((RegistryPass))
+    repository: "ns1.tcs-ally.tk/ocp-dev/hello-world"
     tag: "latest"
 
 jobs:
