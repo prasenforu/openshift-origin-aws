@@ -62,7 +62,7 @@ target saved
 
 ##### Setting up a Pipeline (example)
 
-```fly -t hello sp -p hello-world -c pipeline.yml 
+```fly -t hello sp -p hello-world -c pipeline.yml -l parameter.yml
 ```
 You’ll see a single job pipeline called “hello-world” and the top navigation will be blue. This color confirms that you’re pipeline is paused.
 
@@ -73,10 +73,16 @@ fly -t hello up -p hello-world
 ```
 The navigation bar should lose its blue colouring at this point. Indicating that it’s ready to run jobs.
 
-##### This pipeline doesn’t have any Resources that can trigger the “simple” job, so we’ll use fly trigger-job to do it manually.
+##### This pipeline doesn’t have any Resources that can trigger the “hello-world” job, so we’ll use fly trigger-job to do it manually.
 
 ```
-fly -t hello trigger-job -j hello-world/simple
+fly -t hello trigger-job -p hello-world
+```
+
+##### Delete Pipeline (dp)
+
+```
+fly -t hello dp -p hello-world
 ```
 
 ##### Concourse Tutorial
