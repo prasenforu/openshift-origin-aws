@@ -44,8 +44,8 @@ harbor_admin_password: (Default is Harbor12345) - Change this password for any p
 ###### Step B - Move your CA certificate to folder (/root/cert/)
 
 ```
-cp yourdomain.com.crt /root/cert/
-cp yourdomain.com.key /root/cert/ 
+cp server.key /root/cert/
+cp server.crt /root/cert/ 
 ```
 
 ###### Step C - Edit the file harbor.cfg , update the hostname and the protocol, and update the attributes ssl_cert and ssl_cert_key:
@@ -57,8 +57,8 @@ cp yourdomain.com.key /root/cert/
   ui_url_protocol = https
   ......
   #The path of cert and key files for nginx, they are applied only the protocol is set to https 
-  ssl_cert = /root/cert/yourdomain.com.crt
-  ssl_cert_key = /root/cert/yourdomain.com.key
+  ssl_cert = /root/cert/server.crt
+  ssl_cert_key = /root/cert/server.key
 ```
 
 ##### Step 3
