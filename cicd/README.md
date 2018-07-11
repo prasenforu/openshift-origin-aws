@@ -62,17 +62,14 @@ target saved
 
 ##### Setting up a Pipeline (example)
 
+```fly -t hello sp -p hello-world -c pipeline.yml 
 ```
-wget -nv https://raw.githubusercontent.com/concourse/testflight/master/pipelines/fixtures/simple.yml
+You’ll see a single job pipeline called “hello-world” and the top navigation will be blue. This color confirms that you’re pipeline is paused.
 
-fly -t hello set-pipeline -p hello-world -c simple.yml 
-```
-You’ll see a single job pipeline called “simple” and the top navigation will be blue. This color confirms that you’re pipeline is paused.
-
-##### At this point, we’re able to do conduct actions like unpause-pipeline and trigger-pipeline via the web interface or fly.
+##### At this point, we’re able to do conduct actions like unpause-pipeline (up) and trigger-pipeline via the web interface or fly.
 
 ```
-fly -t hello unpause-pipeline -p hello-world
+fly -t hello up -p hello-world
 ```
 The navigation bar should lose its blue colouring at this point. Indicating that it’s ready to run jobs.
 
