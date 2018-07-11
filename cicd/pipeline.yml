@@ -1,0 +1,25 @@
+resources:
+- name: git-dockerapp
+  type: git
+  source:
+    uri: https://github.com/prasenforu/dockerapp.git
+    branch: master
+
+- name: push-harbor-image
+  type: docker-image
+  source:
+    username: "uuuuu"
+    password: "ppppp"
+    repository: "harbor:443/ocp-dev/hello-world"
+    tag: "latest"
+
+jobs:
+- name: build-docker-image
+  public: true
+  serial: true
+  plan:
+  - get: git-dockerapp
+    trigger: true
+  - put: push-harbor-image
+    params:
+      build: git-dockerapp
