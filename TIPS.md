@@ -1,3 +1,5 @@
+# How to push docker images to openshift internal registry and create application from it.
+
 *  Grab the Cluster IP Address of internal docker registry 
 *  tag the local image to internal docker registry 
 *  grab the auth token and login to inter docker registry
