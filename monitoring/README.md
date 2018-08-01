@@ -4,6 +4,7 @@
 
 ```
 oc new-project ocp-ops-view
+oc patch namespace ocp-ops-view -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
 oc create sa kube-ops-view
 oc adm policy add-scc-to-user anyuid -z kube-ops-view
 oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:ocp-ops-view:kube-ops-view
