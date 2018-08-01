@@ -1,7 +1,8 @@
 # Openshift Operation View
+Openshift-ops-view features a dashboard that allows you to get information on the capacity of your cluster among other things. 
 
 
-
+### Installation of Openshift-ops-view 
 ```
 oc new-project ocp-ops-view
 oc patch namespace ocp-ops-view -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
