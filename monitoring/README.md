@@ -1,5 +1,6 @@
 # Openshift Operation View
-Openshift-ops-view features a dashboard that allows you to get information on the capacity of your cluster among other things. 
+Openshift Operation View is a dashboard that allows you to get information on the capacity of your cluster among other things. 
+This will help to identify issues in cluster.
 
 
 ### Installation of Openshift-ops-view 
