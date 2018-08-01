@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     application: ocp-ops-view
-    version: v0.0.1
+    version: v0.0.2
   name: ocp-ops-view
 spec:
   replicas: 1
@@ -14,12 +14,12 @@ spec:
     metadata:
       labels:
         application: ocp-ops-view
-        version: v0.0.1
+        version: v0.0.2
     spec:
       serviceAccount: ocp-ops-view
       containers:
       - name: service
-        image: prasenforu/ocp-ops-view:1.0
+        image: prasenforu/ocp-ops-view:2.0
         args:
         - --redis-url=redis://ocp-ops-view-redis:6379
         ports:
