@@ -44,6 +44,19 @@ Login to the Grafana dashboard and add new source:
   <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/prometheus/grafana-datasrote.png">
 </p>
 
+### Update Prometheus configuration
+
+We need to reload the configuration, for test environment we could just kill the Prometheus pod with the command:
+
+```
+oc delete pod prometheus-0 --grace-period=0 --force
+```
+
+But for production environment it is not a good idea just to kill Prometheus in order to reload the configuration, because you interrupt the monitoring. There is an alternative way, for this you need to submit an empty POST to Prometheus URL with the suffix “-/reload”. 
+
+```
+oc exec prometheus-0 -c prometheus -- curl -X POST http://localhost:9090/-/reload
+```
 ## Uninstall Prometheus
 
  ```
