@@ -23,8 +23,8 @@ Now we will configure our mail client for the alert manager, edit configMap
 ## Install & Configuring Grafana
 
 ```
-    git clone https://github.com/prasenforu/grafana-ocp
-    cd grafana-ocp
+    git clone https://github.com/prasenforu/openshift-grafana
+    cd openshift-grafana
     ./setup-grafana.sh prometheus-ocp openshift-metrics true
 ```
 
