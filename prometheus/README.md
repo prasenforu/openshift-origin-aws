@@ -59,6 +59,7 @@ After upload configmap restart Prometheus & Alertmanger service
     git clone https://github.com/prasenforu/openshift-grafana
     cd openshift-grafana
     oc new-project grafana --description="Grafana Dash board"
+    oc patch namespace grafana -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
     oc new-app -f grafana-ocp.yaml
     oc expose svc grafana-ocp
 ```
