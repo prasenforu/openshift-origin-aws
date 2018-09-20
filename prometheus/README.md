@@ -1,4 +1,4 @@
-# Configure Prometheus Monitoring on Openshift Container Platform
+# Configure Prometheus Monitoring on Openshift
 
 ## Overview
 This Quick Start reference deployment guide provides step-by-step instructions for deploying Prometheus on OpenShift 
