@@ -25,7 +25,9 @@ Now we will configure our mail client for the alert manager, edit configMap
 ```
     git clone https://github.com/prasenforu/openshift-grafana
     cd openshift-grafana
-    ./setup-grafana.sh prometheus-ocp openshift-metrics true
+    oc new-project grafana --description="Grafana Dash board"
+    oc new-app -f grafana-ocp.yaml
+    oc expose svc grafana-ocp
 ```
 
 To configure Grafana to consume Prometheus, we will link grafana and openshift-metrics projects:
