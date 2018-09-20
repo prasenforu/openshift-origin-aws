@@ -8,16 +8,49 @@ This Quick Start reference deployment guide provides step-by-step instructions f
  ```
     ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/openshift-prometheus/config.yml
  ```
-Need to modify Prometheus configMap to enable our new rules for alerts. 
+Need to modify Prometheus configMap for Prometheus & Alermanager to enable our new rules for alerts. 
 
 ```
+   git clone https://github.com/prasenforu/openshift-origin-aws.git
+   cd openshift-origin-aws/prometheus/config
+   dos2unix *
+   cd prometheus/config
    oc project openshift-metrics
-   oc edit cm prometheus
+   oc delete cm prometheus
+   
 ```
-Now we will configure our mail client for the alert manager, edit configMap
+
+Edit Prometheus configmap as per requirement.
 
 ```
-   oc edit cm prometheus-alerts
+  vi prometheus-configmap.yaml
+```
+
+Edit Alermanager configmap as per requirement.
+
+```
+  vi alertmanager-configmap.yml
+```
+
+Now we will delete configMap for Alertmanager & Prometheus
+
+```
+   oc delete cm prometheus alertmanager
+```
+
+Now we will recreate configMap for Alertmanager & Prometheus
+
+```
+   oc create -f prometheus-configmap.yaml
+   oc create -f alertmanager-configmap.yml
+   
+```
+
+Now restart Prometheus & Alertmanger service
+```
+   oc exec prometheus-0 -c prometheus -- curl -X POST http://localhost:9090/-/reload
+   oc exec prometheus-0 -c alertmanger -- curl -X POST http://localhost:9093/-/reload
+   
 ```
 
 ## Install & Configuring Grafana
