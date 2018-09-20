@@ -1,4 +1,4 @@
-# Configure Monitoring on OCP
+# Configure Prometheus Monitoring on Openshift Container Platform
 
 ## Overview
 This Quick Start reference deployment guide provides step-by-step instructions for deploying Prometheus on OpenShift 
@@ -32,13 +32,13 @@ Edit Alermanager configmap as per requirement.
   vi alertmanager-configmap.yml
 ```
 
-Now we will delete configMap for Alertmanager & Prometheus
+Now delete configMap for Alertmanager & Prometheus
 
 ```
    oc delete cm prometheus alertmanager
 ```
 
-Now we will recreate configMap for Alertmanager & Prometheus
+Next step create configMap for Alertmanager & Prometheus
 
 ```
    oc create -f prometheus-configmap.yaml
@@ -46,7 +46,7 @@ Now we will recreate configMap for Alertmanager & Prometheus
    
 ```
 
-Now restart Prometheus & Alertmanger service
+After upload configmap restart Prometheus & Alertmanger service
 ```
    oc exec prometheus-0 -c prometheus -- curl -X POST http://localhost:9090/-/reload
    oc exec prometheus-0 -c alertmanger -- curl -X POST http://localhost:9093/-/reload
