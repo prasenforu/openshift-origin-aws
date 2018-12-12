@@ -213,6 +213,12 @@ chmod 755 *.sh
 docker rm `docker ps -a | grep -v CONTAINER | grep Exited | awk '{print $1}'`
 
 ```
+### Force delete pod command
+
+```
+kubectl delete pod NAME --grace-period=0 --force
+
+```
 
 ### Permission denied on accessing host directory in docker
 
