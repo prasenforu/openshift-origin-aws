@@ -1,0 +1,101 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: promcheck
+  namespace: openshift-metrics
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: promcheck
+  namespace: openshift-metrics
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - namespaces
+  verbs:
+  - delete
+  - get
+  - list
+  - watch
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: promcheck
+roleRef:
+  kind: ClusterRole
+  name: promcheck
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: promcheck
+  namespace: openshift-metrics
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: promcheck
+  name: promcheck-script1-configmap
+  namespace: openshift-metrics
+data:
+  promcheck.sh: |-
+    #!/bin/bash
+    # OCP Authentication
+    TOKEN=`more /run/secrets/kubernetes.io/serviceaccount/token`
+
+    url=prometheus-openshift-metrics.apps.anupala.com
+    OCPURL=masterb.anupala.com
+
+    prom_cmd=`curl -s -k -H "Authorization: Bearer $TOKEN" https://$url:443/api/v1/query?query=up --connect-timeout 5 --max-time 30`
+    curl_resp=$(eval $curl_prom)
+
+
+    if [[$curl_resp =="[]" ]]
+    then
+      echo "Prometheus in $url is *NOT* returing data for up metric."
+       #curl -s -k -X DELETE -H "Authorization: Bearer $TOKEN" https://$OCPURL:8443/api/v1/namespaces/openshift-metrics/pods/prometheus-0 
+   
+    else 
+      echo "Prometheus in $url return data as a result of the up query. system look ok."
+    fi 
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: promcheck
+  name: promcheck-cronjob
+  namespace: openshift-metrics
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccount: promcheck
+          serviceAccountName: promcheck
+          containers:
+          - name: prom-cronjob
+            image: prasenforu/cronbash:v.0.1
+            command: 
+            - /bin/bash
+            - /cronjob/promcheck.sh
+            volumeMounts:
+            - mountPath: /cronjob/promcheck.sh
+              subPath: promcheck.sh
+              name: promcheck-script1-volume-config
+          restartPolicy: OnFailure
+          volumes:
+          - configMap:
+              defaultMode: 493
+              name: promcheck-script1-configmap
+            name: promcheck-script1-volume-config
