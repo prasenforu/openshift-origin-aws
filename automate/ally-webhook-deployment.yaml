@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webhook
+  name: webhook-service
+spec:
+  clusterIP: 172.30.200.104
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: webhook
+    deploymentconfig: webhook-dc
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: webhook
+  name: webhook-dc
+spec:
+  replicas: 1
+  selector:
+    app: webhook
+    deploymentconfig: webhook-dc
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: webhook
+        deploymentconfig: webhook-dc
+    spec:
+      containers:
+      - image: prasenforu/kubewebhook:7.5
+        name: webhook-image
+        ports:
+        - name: webhook
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/hooks.json
+          subPath: hooks.json
+          name: webhook-hooks-volume-config
+        - mountPath: /etc/webhook/ocp-pod-restart.sh
+          subPath: ocp-pod-restart.sh
+          name: webhook-ocp-pod-restart-volume-config
+        env:
+        - name: KUBEHOST
+          value: "masterb"
+        - name: KUBEPORT
+          value: "8443"
+        - name: KUBEUSER
+          value: "admin"
+        - name: KUBEPASS
+          value: "redhat"
+        - name: KUBETOKEN
+          value: "T O K E N"
+        - name: SNURL
+          value: ""
+        - name: SNUSER
+          value: ""
+        - name: SNPASS
+          value: ""
+        - name: SNCALLID
+          value: "containeradmin"
+        - name: SNPRIORITY
+          value: "1"
+        - name: SNCATAGORY
+          value: "Software"
+        - name: SNASSINGRP
+          value: "Container"
+        - name: SNASSINTO
+          value: ""
+        - name: SNINCID
+          value: "ServiceNow Incident ID"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: webhook-hooks-configmap
+        name: webhook-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-ocp-pod-restart-configmap
+        name: webhook-ocp-pod-restart-volume-config
