@@ -1,10 +1,10 @@
 1. Deploy configmap yaml
 
-        oc create -f ally-webhook-configmap.yaml
+        oc create -f webhook-configmap.yaml
 
 2. Deploy POD
 
-        oc create -f ally-webhook-deployment.yaml
+        oc create -f webhook-deployment.yaml
         oc adm policy add-scc-to-user privileged -z webhook
 
 3. Add entry in alertmanager configmap
