@@ -35,7 +35,7 @@ spec:
         deploymentconfig: webhook-dc
     spec:
       containers:
-      - image: prasenforu/kubewebhook:7.5
+      - image: xxxxxxxxxxxxxxx
         name: webhook-image
         ports:
         - name: webhook
