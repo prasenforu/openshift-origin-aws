@@ -51,18 +51,16 @@ data:
     # OCP Authentication
     TOKEN=`more /run/secrets/kubernetes.io/serviceaccount/token`
 
-    url=prometheus-openshift-metrics.apps.anupala.com
-    OCPURL=masterb.anupala.com
+    url=prometheus-openshift-metrics.apps.xxxxx.com
+    OCPURL=masterb.xxxxx.com
 
-    prom_cmd=`curl -s -k -H "Authorization: Bearer $TOKEN" https://$url:443/api/v1/query?query=up --connect-timeout 5 --max-time 30`
-    curl_resp=$(eval $curl_prom)
-
-
-    if [[$curl_resp =="[]" ]]
+    prom_cmd=`curl -s -k -H "Authorization: Bearer $TOKEN" https://$url:443/api/v1/query?query=up --connect-timeout 5 --max-time 30 --silent | jq ".data.result"`
+    echo $prom_cmd
+    if [[ $prom_cmd == "null" ]]
     then
       echo "Prometheus in $url is *NOT* returing data for up metric."
-       #curl -s -k -X DELETE -H "Authorization: Bearer $TOKEN" https://$OCPURL:8443/api/v1/namespaces/openshift-metrics/pods/prometheus-0 
-   
+      #curl -s -k -X DELETE -H "Authorization: Bearer $TOKEN" https://$OCPURL:8443/api/v1/namespaces/openshift-metrics/pods/prometheus-0 
+      sleep 60 
     else 
       echo "Prometheus in $url return data as a result of the up query. system look ok."
     fi 
