@@ -40,6 +40,7 @@ data:
     #!/bin/sh
 
     # OCP Authentication
+    KUBETOKEN=`more /run/secrets/kubernetes.io/serviceaccount/token`
 
     if [ $KUBEPASS != "" ]; then
        oc login https://$KUBEHOST:$KUBEPORT --username=$KUBEUSER --password=$KUBEPASS --insecure-skip-tls-verify=true
