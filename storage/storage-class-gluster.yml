@@ -1,0 +1,11 @@
+
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: heketi
+provisioner: kubernetes.io/glusterfs
+parameters:
+  resturl: "http://ocpmaster1:8080"
+  restuser: "admin"
+  restuserkey: "$PASSWORD_ADMIN"
+  volumetype: "none"
