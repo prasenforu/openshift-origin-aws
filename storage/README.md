@@ -131,7 +131,7 @@ HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/gl
 Creating cluster ... ID: 14c5094b0dbbc6bf34608ae5c47fa121
         Allowing file volumes on cluster.
         Allowing block volumes on cluster.
-        Creating node ocpnode1 ... Unable to create node: New Node doesn't have glusterd running
+        Creating node ocpgluster1 ... Unable to create node: New Node doesn't have glusterd running
 
 ####### Workaround/Solution: Setup passwordless ssh from master to gluster server.
 
@@ -139,6 +139,15 @@ Creating cluster ... ID: 14c5094b0dbbc6bf34608ae5c47fa121
 
 heketi-cli setup-openshift-heketi-storage
 Error: No space
+
+When creating PVC it will show 
+
+oc get pvc
+
+NAME         STATUS    VOLUME    CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+heketi-pvc   Pending                                       heketi         1m
+
+oc describe pvc heketi-pvc
 
 Warning  ProvisioningFailed  2s (x6 over 1m)  persistentvolume-controller  Failed to provision volume with StorageClass "heketi": failed to create volume: failed to create volume: Failed to allocate new volume: No space
 
