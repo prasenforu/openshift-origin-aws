@@ -170,3 +170,8 @@ heketi-cli volume list
 #### Heketi-cli command man page
 
 https://www.mankier.com/8/heketi-cli 
+
+#### Finally enable gluster metric in promethus
+
+```oc create -f gluster-metric.yml -n openshift-monitoring```
+
