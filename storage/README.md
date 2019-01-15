@@ -1,4 +1,4 @@
-# Install Heketi and GlusterFS in Openshift for dynamic Persistent-Volume management
+# Install Heketi and GlusterFS in Openshift 
 
 Heketi provides a RESTful management interface which can be used to manage the life cycle of GlusterFS volumes. With Heketi, cloud services like OpenStack Manila, Kubernetes, and OpenShift can dynamically provision GlusterFS volumes with any of the supported durability types. Heketi will automatically determine the location for bricks across the cluster, making sure to place bricks and its replicas across different failure domains. Heketi also supports any number of GlusterFS clusters, allowing cloud services to provide network file storage without being limited to a single GlusterFS cluster.
 
@@ -24,56 +24,11 @@ cp /etc/heketi/heketi.json /etc/heketi/heketi.json_ori
 vi /etc/heketi/heketi.json
 ```
 
-{
-  "_port_comment": "Heketi Server Port Number",
-  "port": "8080",
-
-  "_use_auth": "Enable JWT authorization. Please enable for deployment",
-  "use_auth": false,
-
-  "_jwt": "Private keys for access",
-  "jwt": {
-    "_admin": "Admin has access to all APIs",
-    "admin": {
-      "key": "My Secret"
-    },
-    "_user": "User only has access to /volumes endpoint",
-    "user": {
-      "key": "My Secret"
-    }
-  },
-  "_glusterfs_comment": "GlusterFS Configuration",
-  "glusterfs": {
-   "executor": "ssh",
-   "sshexec": {
-     "keyfile": "/etc/heketi/heketi_key",
-     "user": "root",
-     "port": "22",
-     "fstab": "/etc/fstab"
-   }
-  },
-  "_db_comment": "Database file name",
-  "db": "/var/lib/heketi/heketi.db",
-  "loglevel" : "debug"
-  }
-}
-
-------
-
-
-
 ### 4. Configure Firewall access
 
  ##### a. Create /etc/firewalld/services/heketi.xml file for firewalld heketi service
 
-----
-<?xml version="1.0" encoding="utf-8"?> 
-<service>
- <short>Heketi</short>
- <description>Heketi glusterfs REST API</description>
- <port protocol="tcp" port="8080"/>
-</service>
-----
+```vi /etc/firewalld/services/heketi.xml```
 
  ##### b. Set proper right on the file
 
@@ -119,36 +74,7 @@ total 16
 
 ### 7. Create the GlusterFS Cluster topology in file /root/topology-ocp.json
 
-TOPOLOGY : /root/topology-ocp.json
-
-----
-
-{
-  "clusters": [
-    {
-      "nodes": [
-        {
-          "node": {
-            "hostnames": {
-              "manage": [
-                "ocpgluster1"
-              ],
-              "storage": [
-                "10.138.0.6"
-              ]
-            },
-            "zone": 1
-          },
-          "devices": [
-            "/dev/sdc"
-          ]
-        }
-      ]
-    }
-  ]
-}
-
------
+```vi /root/topology-ocp.json```
 
 ### 8. Now load topology json file
 
@@ -174,44 +100,13 @@ Creating cluster ... ID: 73965a6e9cf0d85dde108b199d6bf511
 
 ##### 1. Create a StorageClass 
 
-Vi storage-class-gluster.yml
+```vi storage-class-gluster.yml```
 
----
-
-storage-class-gluster.yml :
-
-apiVersion: storage.k8s.io/v1beta1
-kind: StorageClass
-metadata:
-  name: heketi
-provisioner: kubernetes.io/glusterfs
-parameters:
-  resturl: "http://ocpmaster1:8080"
-  restuser: "admin"
-  restuserkey: "$PASSWORD_ADMIN"
-  volumetype: "none"
-
----
 
 ##### 2. Create a PVC using the StorageCLass
 
+```vi testing-pvc.yml```
 
-vi testing-pvc.yml
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
- name: heketi-pvc
- annotations:
-   volume.beta.kubernetes.io/storage-class: heketi
-spec:
- accessModes:
-  - ReadWriteMany
- resources:
-   requests:
-     storage: 4Gi
-
----
 Notice: This is by the annotation that you tell the PVC which storageclass to use
 
 ##### 3. Create objects in openshift 
