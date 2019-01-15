@@ -39,7 +39,7 @@ chmod 640 /etc/firewalld/services/heketi.xml
 
 ##### c. Add Heketi service into internal firewalld zone
 
-````firewall-cmd --zone=internal --add-service=heketi --permanent```
+```firewall-cmd --zone=internal --add-service=heketi --permanent```
 
 ##### d. Add an access to that zone for every node in the cluster
 
