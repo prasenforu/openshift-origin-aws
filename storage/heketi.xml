@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<service>
+ <short>Heketi</short>
+ <description>Heketi glusterfs REST API</description>
+ <port protocol="tcp" port="8080"/>
+</service>
