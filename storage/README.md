@@ -125,17 +125,36 @@ oc create -f testing-pvc.yml
 heketi-cli volume create --durability=none --size=1
 
 
-#### ISSUE :
+#### ISSUE 1 (Unable to create node) :
+
+HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/gluster-kubernetes/deploy/topology-ocp.json --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY
+Creating cluster ... ID: 14c5094b0dbbc6bf34608ae5c47fa121
+        Allowing file volumes on cluster.
+        Allowing block volumes on cluster.
+        Creating node ocpnode1 ... Unable to create node: New Node doesn't have glusterd running
+
+####### Workaround/Solution: Setup passwordless ssh from master to gluster server.
+
+#### ISSUE 2 (No space) :
+
+heketi-cli setup-openshift-heketi-storage
+Error: No space
 
 Warning  ProvisioningFailed  2s (x6 over 1m)  persistentvolume-controller  Failed to provision volume with StorageClass "heketi": failed to create volume: failed to create volume: Failed to allocate new volume: No space
 
+From this error response, it should be “obvious” because we have configured gluster server with single node. Apparently, this command has default replication factor of 3 and it cannot be changed.
+
+####### Workaround/Solution: add 3rd node to cluster or use ```--durability=none```
+
+```heketi-cli volume create --durability=none --size=1```
+
+Also in storage-class-gluster.yml file need to add ``` volumetype: "none" ```
 
 
-HEKETI Commands: 
+#### HEKETI Commands: 
 
-
+```
 heketi-cli node list
-
 heketi-cli node info <NODE-ID>
-
 heketi-cli volume list
+```
