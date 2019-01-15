@@ -1,0 +1,24 @@
+{
+  "clusters": [
+    {
+      "nodes": [
+        {
+          "node": {
+            "hostnames": {
+              "manage": [
+                "ocpgluster1"
+              ],
+              "storage": [
+                "10.138.0.6"
+              ]
+            },
+            "zone": 1
+          },
+          "devices": [
+            "/dev/sdc"
+          ]
+        }
+      ]
+    }
+  ]
+}
