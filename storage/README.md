@@ -1,24 +1,28 @@
-## Install Heketi and GlusterFS with Openshift to allow dynamic Persistent-Volume management
+# Install Heketi and GlusterFS with Openshift to allow dynamic Persistent-Volume management
 
 Heketi provides a RESTful management interface which can be used to manage the life cycle of GlusterFS volumes. With Heketi, cloud services like OpenStack Manila, Kubernetes, and OpenShift can dynamically provision GlusterFS volumes with any of the supported durability types. Heketi will automatically determine the location for bricks across the cluster, making sure to place bricks and its replicas across different failure domains. Heketi also supports any number of GlusterFS clusters, allowing cloud services to provide network file storage without being limited to a single GlusterFS cluster.
 
-#### Install Heketi on the MASTER_1 server :
+##### Install Heketi on the MASTER_1 server :
 
-1. Add epel release repository and install heketi
+### 1. Add epel release repository and install heketi
+```
+yum install -y epel-release
+yum -y --enablerepo=epel install heketi heketi-client
+```
 
-# yum install -y epel-release
-# yum -y --enablerepo=epel install heketi heketi-client
+### 2. Copy the ssh key created for ansible install to /etc/heketi/heket_key
 
-2. Copy the ssh key created for ansible install to /etc/heketi/heket_key
+```
+cp /root/.ssh/id_rsa /etc/heketi/heketi_key
+chown heketi: /etc/heketi/heketi_key
+```
 
-# cp /root/.ssh/id_rsa /etc/heketi/heketi_key
-# chown heketi: /etc/heketi/heketi_key
+### 3. Backup original configuration & edit /etc/heketi/heketi.json config file
 
-3. Backup original configuration & edit /etc/heketi/heketi.json config file
-
+```
 cp /etc/heketi/heketi.json /etc/heketi/heketi.json_ori
-
 vi /etc/heketi/heketi.json
+```
 
 {
   "_port_comment": "Heketi Server Port Number",
@@ -58,9 +62,9 @@ vi /etc/heketi/heketi.json
 
 
 
-4. Configure Firewall access
+### 4. Configure Firewall access
 
- a. Create /etc/firewalld/services/heketi.xml file for firewalld heketi service
+ ##### a. Create /etc/firewalld/services/heketi.xml file for firewalld heketi service
 
 ----
 <?xml version="1.0" encoding="utf-8"?> 
@@ -71,34 +75,34 @@ vi /etc/heketi/heketi.json
 </service>
 ----
 
- b. Set proper right on the file
+ ##### b. Set proper right on the file
 
-# restorecon /etc/firewalld/services/heketi.xml
-# chmod 640 /etc/firewalld/services/heketi.xml
+```
+restorecon /etc/firewalld/services/heketi.xml
+chmod 640 /etc/firewalld/services/heketi.xml
+```
 
- c. Add Heketi service into internal firewalld zone
+##### c. Add Heketi service into internal firewalld zone
 
-# firewall-cmd --zone=internal --add-service=heketi --permanent
+````firewall-cmd --zone=internal --add-service=heketi --permanent```
 
- d. Add an access to that zone for every node in the cluster
+##### d. Add an access to that zone for every node in the cluster
 
-# firewall-cmd --zone=internal --add-source=<GLUSTER-NODE-IP>/32 --permanent
+```firewall-cmd --zone=internal --add-source=<GLUSTER-NODE-IP>/32 --permanent```
 
+##### e. Reload firewalld
 
- e. Reload firewalld
+```firewall-cmd --reload```
 
-# firewall-cmd --reload
-
-5. Start Heketi server
-
+### 5. Start Heketi server
+```
 systemctl enable heketi
 systemctl start heketi
 systemctl status heketi
+```
 
-
-6. Setup Passwordless ssh from Master to Gluster Servers
-
-
+### 6. Setup Passwordless ssh from Master to Gluster Servers
+```
 [root@ocpmaster1]# ssh-keygen -f /root/.ssh/id_rsa -N ''
 [root@ocpdns openshift-origin-aws]# scp ocpmaster1://root/.ssh/id_rsa.pub .
 [root@ocpdns openshift-origin-aws]# scp id_rsa.pub ocpgluster1:/root/.ssh/id_rsa.pub_test
@@ -111,8 +115,9 @@ total 16
 -rw-r--r--. 1 root root  398 Jan 14 16:25 id_rsa.pub
 -rw-r--r--. 1 root root  397 Jan 14 18:32 id_rsa.pub_test
 [root@ocpgluster1 .ssh]# cat id_rsa.pub_test >> authorized_keys
+```
 
-7. Create the GlusterFS Cluster topology in file /root/topology-ocp.json
+### 7. Create the GlusterFS Cluster topology in file /root/topology-ocp.json
 
 TOPOLOGY : /root/topology-ocp.json
 
@@ -145,16 +150,16 @@ TOPOLOGY : /root/topology-ocp.json
 
 -----
 
-8. Now load topology json file
-   [ Before execute command make sure "glusterd" daemon started in GLUSTER HOST (ocpgluster1)]
-   ][Else start "glusterd" daemon in GLUSTER HOST (ocpgluster1)] 
+### 8. Now load topology json file
 
+##### NOTE: Before execute command make sure "glusterd" daemon started in GLUSTER HOST (ocpgluster1), else start "glusterd" daemon in GLUSTER HOST (ocpgluster1)
+
+```
 [root@ocpgluster1 ~]# systemctl enable glusterd
 [root@ocpgluster1 ~]# systemctl start glusterd
 [root@ocpgluster1 ~]# systemctl status glusterd
-
-
-HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/topology-ocp.json --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY
+```
+```HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/topology-ocp.json --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY```
 
 Output will come as follows ...
 
@@ -165,10 +170,9 @@ Creating cluster ... ID: 73965a6e9cf0d85dde108b199d6bf511
                 Adding device /dev/sdc ... OK
 
 
-#### Now Glusterfs ready for provide gluster vloume for Openshift enviroment.
+### Now Glusterfs ready for provide gluster vloume for Openshift enviroment.
 
-
-1. Create a StorageClass 
+##### 1. Create a StorageClass 
 
 Vi storage-class-gluster.yml
 
@@ -189,7 +193,7 @@ parameters:
 
 ---
 
-2. Create a PVC using the StorageCLass
+##### 2. Create a PVC using the StorageCLass
 
 
 vi testing-pvc.yml
@@ -210,22 +214,23 @@ spec:
 ---
 Notice: This is by the annotation that you tell the PVC which storageclass to use
 
-3. Create objects in openshift 
+##### 3. Create objects in openshift 
 
-# oc create -f storage-class-gluster.yml -n default
-# oc create -f testing-pvc.yml
+```
+oc create -f storage-class-gluster.yml -n default
+oc create -f testing-pvc.yml
+```
 
-4. Check if PVC is created running 
+##### 4. Check if PVC is created running 
 
-# oc get pvc
+```oc get pvc```
 
-TESTING :
-
+### TESTING :
 
 heketi-cli volume create --durability=none --size=1
 
 
-Error :
+#### ISSUE :
 
 Warning  ProvisioningFailed  2s (x6 over 1m)  persistentvolume-controller  Failed to provision volume with StorageClass "heketi": failed to create volume: failed to create volume: Failed to allocate new volume: No space
 
