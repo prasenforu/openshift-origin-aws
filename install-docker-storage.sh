@@ -40,8 +40,8 @@ for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Installing Docker on $node" && \
 ssh $node "sudo yum -y install docker"
 ssh $node "sed -i \"/^OPTIONS=/ s:.*:OPTIONS=\'--selinux-enabled --insecure-registry 172.30.0.0\/16\':\" /etc/sysconfig/docker"
-#scp docker-storage-setup $node:/etc/sysconfig/docker-storage-setup
-#ssh $node "docker-storage-setup"
+scp docker-storage-setup $node:/etc/sysconfig/docker-storage-setup
+ssh $node "docker-storage-setup"
 ssh $node "systemctl enable docker"
 ssh $node "systemctl start docker"
 ssh $node "systemctl enable NetworkManager.service"
