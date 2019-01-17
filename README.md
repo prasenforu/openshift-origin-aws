@@ -179,6 +179,7 @@ chmod 755 *.sh
 ```
 #### 7.	Starting OCP 3.9 Installation using ansible
 ```
+	ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/prerequisites.yml
 	ansible-playbook -i myconfighost /root/openshift-ansible/playbooks/deploy_cluster.yml
 ```
 #### 8.	After OSE 3.9 Installation, there few setup need to make environment ready
