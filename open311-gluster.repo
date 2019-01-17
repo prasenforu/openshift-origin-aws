@@ -1,9 +1,3 @@
-[centos-openshift-origin]
-name=CentOS OpenShift Origin
-baseurl=http://mirror.centos.org/centos/7/paas/x86_64/openshift-origin311/
-enabled=1
-gpgcheck=0
-
 [centos-openshift-origin-gluster]
 name=CentOS OpenShift Origin Gluster
 baseurl=https://buildlogs.centos.org/centos/7/storage/x86_64/gluster-3.12/
