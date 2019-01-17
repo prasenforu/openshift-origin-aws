@@ -2,17 +2,24 @@
 
 Heketi provides a RESTful management interface which can be used to manage the life cycle of GlusterFS volumes. With Heketi, cloud services like OpenStack Manila, Kubernetes, and OpenShift can dynamically provision GlusterFS volumes with any of the supported durability types. Heketi will automatically determine the location for bricks across the cluster, making sure to place bricks and its replicas across different failure domains. Heketi also supports any number of GlusterFS clusters, allowing cloud services to provide network file storage without being limited to a single GlusterFS cluster.
 
-##### Install Heketi on the MASTER_1 server :
+##### Install Heketi on the MASTER_1 server using git clone :
 
-### 1. Add epel release repository and install heketi
+```git clone https://github.com/prasenforu/openshift-origin-aws.git```
+
+### 1. Create gluster repo and add epel release repository and install heketi
 ```
+cd openshift-origin-aws
+cp open311-gluster.repo /etc/yum.repos.d/open-gluster.repo
+yum clean all
+yum repolist
 yum install -y epel-release
-yum -y --enablerepo=epel install heketi heketi-client
+yum -y --enablerepo=centos-openshift-origin-gluster install heketi heketi-client
 ```
 
 ### 2. Copy the ssh key created for ansible install to /etc/heketi/heket_key
 
 ```
+[root@ocpmaster1]# ssh-keygen -f /root/.ssh/id_rsa -N ''
 cp /root/.ssh/id_rsa /etc/heketi/heketi_key
 chown heketi: /etc/heketi/heketi_key
 ```
@@ -20,15 +27,21 @@ chown heketi: /etc/heketi/heketi_key
 ### 3. Backup original configuration & edit /etc/heketi/heketi.json config file
 
 ```
+cd /root/openshift-origin-aws/storage
 cp /etc/heketi/heketi.json /etc/heketi/heketi.json_ori
-vi /etc/heketi/heketi.json
+ls -ltr /etc/heketi/heketi.json_ori
+rm /etc/heketi/heketi.json
+cp heketi.json /etc/heketi/heketi.json
+more /etc/heketi/heketi.json
 ```
 
 ### 4. Configure Firewall access
 
  ##### a. Create /etc/firewalld/services/heketi.xml file for firewalld heketi service
 
-```vi /etc/firewalld/services/heketi.xml```
+```
+cp heketi.xml /etc/firewalld/services/heketi.xml
+```
 
  ##### b. Set proper right on the file
 
@@ -41,7 +54,7 @@ chmod 640 /etc/firewalld/services/heketi.xml
 
 ```firewall-cmd --zone=internal --add-service=heketi --permanent```
 
-##### d. Add an access to that zone for every node in the cluster
+##### d. Add an access to that zone for every node in the Gluster server
 
 ```firewall-cmd --zone=internal --add-source=<GLUSTER-NODE-IP>/32 --permanent```
 
@@ -58,9 +71,8 @@ systemctl status heketi
 
 ### 6. Setup Passwordless ssh from Master to Gluster Servers
 ```
-[root@ocpmaster1]# ssh-keygen -f /root/.ssh/id_rsa -N ''
 [root@ocpdns openshift-origin-aws]# scp ocpmaster1://root/.ssh/id_rsa.pub .
-[root@ocpdns openshift-origin-aws]# scp id_rsa.pub ocpgluster1:/root/.ssh/id_rsa.pub_test
+[root@ocpdns openshift-origin-aws]# scp id_rsa.pub ocpgluster1:/root/.ssh/id_rsa.pub_root_master
 [root@ocpdns openshift-origin-aws]# ssh ocpgluster1
 [root@ocpgluster1 ~]# cd /root/.ssh
 [root@ocpgluster1 .ssh]# ll
@@ -68,13 +80,13 @@ total 16
 -rw-------. 1 root root  393 Jan 10 11:42 authorized_keys
 -rw-------. 1 root root 1679 Jan 14 16:26 id_rsa
 -rw-r--r--. 1 root root  398 Jan 14 16:25 id_rsa.pub
--rw-r--r--. 1 root root  397 Jan 14 18:32 id_rsa.pub_test
-[root@ocpgluster1 .ssh]# cat id_rsa.pub_test >> authorized_keys
+-rw-r--r--. 1 root root  397 Jan 14 18:32 id_rsa.pub_root_master
+[root@ocpgluster1 .ssh]# cat id_rsa.pub_root_master >> authorized_keys
 ```
 
 ### 7. Create the GlusterFS Cluster topology in file /root/topology-ocp.json
 
-```vi /root/topology-ocp.json```
+```more /root/openshift-origin-aws/storage/topology-ocp.json```
 
 ### 8. Now load topology json file
 
@@ -85,7 +97,7 @@ total 16
 [root@ocpgluster1 ~]# systemctl start glusterd
 [root@ocpgluster1 ~]# systemctl status glusterd
 ```
-```HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/topology-ocp.json --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY```
+```HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/openshift-origin-aws/storage --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY```
 
 Output will come as follows ...
 
@@ -100,12 +112,12 @@ Creating cluster ... ID: 73965a6e9cf0d85dde108b199d6bf511
 
 ##### 1. Create a StorageClass 
 
-```vi storage-class-gluster.yml```
+```more storage-class-gluster.yml```
 
 
 ##### 2. Create a PVC using the StorageCLass
 
-```vi testing-pvc.yml```
+```more testing-pvc.yml```
 
 Notice: This is by the annotation that you tell the PVC which storageclass to use
 
