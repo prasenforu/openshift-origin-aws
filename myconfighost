@@ -13,6 +13,7 @@ deployment_type=origin
 openshift_disable_check=disk_availability,memory_availability,docker_storage
 openshift_release=v3.9
 openshift_image_tag=v3.9.0
+#openshift_enable_docker_excluder=false
 
 
 # Comment the following to disable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
