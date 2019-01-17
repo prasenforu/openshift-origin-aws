@@ -5,9 +5,6 @@
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Deploy SSH Key on $node" && \
 scp -i prasen.pem /root/.ssh/id_rsa.pub centos@$node:/home/centos/.ssh/id_rsa.pub_root
-ssh centos@$node -i prasen.pem "sudo mkdir /root/.ssh"
-ssh centos@$node -i prasen.pem "sudo chmod 700 /root/.ssh"
-ssh centos@$node -i prasen.pem "sudo touch /root/.ssh/authorized_keys"
 ssh centos@$node -i prasen.pem "sudo mv /home/centos/.ssh/id_rsa.pub_root /root/.ssh/authorized_keys"
 ssh centos@$node -i prasen.pem "sudo chown root:root /root/.ssh/authorized_keys"
 ssh centos@$node -i prasen.pem "sudo chmod 600 /root/.ssh/authorized_keys"
