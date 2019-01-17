@@ -32,8 +32,8 @@ sleep 90
 
 for node in {ose-master,ose-hub,ose-node1,ose-node2}; do
 echo "Deploy Openshift Repo on $node" && \
-#scp /root/openshift-origin-aws/open.repo $node:/etc/yum.repos.d/open.repo
-scp /root/openshift-origin-aws/open311-gluster.repo $node:/etc/yum.repos.d/ocp311gluster.repo
+scp /root/openshift-origin-aws/open.repo $node:/etc/yum.repos.d/open.repo
+#scp /root/openshift-origin-aws/open311-gluster.repo $node:/etc/yum.repos.d/ocp311gluster.repo
 ssh $node "echo 'nameserver 8.8.8.8' | sudo tee --append /etc/resolv.conf"
 ssh $node "echo 'preserve_hostname: true' | sudo tee --append /etc/cloud/cloud.cfg"
 ssh $node "rm /etc/hostname"
