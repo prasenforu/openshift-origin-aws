@@ -171,6 +171,11 @@ From this error response, it should be “obvious” because we have configured 
 
 Also in storage-class-gluster.yml file need to add ``` volumetype: "none" ```
 
+#### Heketi Backup & Restore
+
+Normally hekei store information in ```Heketi Database (/var/lib/heketi/heketi.db)``` configuration file /etc/heketi/heketi.json
+Need to take a backup database file (/var/lib/heketi/heketi.db).
+For restoration in a new host step 1-6 need to follow then restore database file (/var/lib/heketi/heketi.db) in new host.
 
 #### HEKETI Commands: 
 
