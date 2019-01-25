@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webhook
+  name: webhook-service
+spec:
+  clusterIP: 172.30.200.104
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: webhook
+    deploymentconfig: webhook-dc
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: webhook
+  name: webhook-dc
+spec:
+  replicas: 1
+  selector:
+    app: webhook
+    deploymentconfig: webhook-dc
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: webhook
+        deploymentconfig: webhook-dc
+    spec:
+      nodeSelector:
+        region: infra
+      containers:
+      - image: IIIIIIIIIIIIIIIIII
+        name: webhook-image
+        ports:
+        - name: webhook
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/hooks.json
+          subPath: hooks.json
+          name: webhook-hooks-volume-config
+        - mountPath: /etc/webhook/ocp-node-restart.sh
+          subPath: ocp-node-restart.sh
+          name: webhook-ocp-node-restart-volume-config
+        - mountPath: /etc/webhook/ocp-sn.sh
+          subPath: ocp-sn.sh
+          name: webhook-ocp-sn-volume-config
+        - mountPath: /etc/webhook/prasen.pem
+          subPath: prasen.pem
+          name: webhook-keypem-volume-config
+        env:
+        - name: KUBEHOST
+          value: "ocpmaster1"
+        - name: KUBEPORT
+          value: "8443"
+        - name: KUBEUSER
+          value: "admin"
+        - name: KUBEPASS
+          value: "YYYYYY"
+        - name: KUBETOKEN
+          value: "T O K E N"
+        - name: SNURL
+          value: "dev57981.service-now.com"
+        - name: SNUSER
+          value: "admin"
+        - name: SNPASS
+          value: "XXXXXX"
+        - name: SNCALLID
+          value: "containeradmin"
+        - name: SNPRIORITY
+          value: "1"
+        - name: SNCATAGORY
+          value: "Software"
+        - name: SNASSINGRP
+          value: "Container"
+        - name: SNASSINTO
+          value: ""
+        - name: SNINCID
+          value: "ServiceNow Incident ID"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: webhook-hooks-configmap
+        name: webhook-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-ocp-node-restart-configmap
+        name: webhook-ocp-node-restart-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-ocp-sn-configmap
+        name: webhook-ocp-sn-volume-config
+      - configMap:
+          defaultMode: 256
+          name: webhook-keypem-configmap
+        name: webhook-keypem-volume-config
