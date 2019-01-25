@@ -1,0 +1,39 @@
+global:
+  # The smarthost and SMTP sender used for mail notifications.
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'ttttttttt@gmail.com'
+  smtp_auth_username: 'ttttttttt@gmail.com'
+  smtp_auth_password: 'XXXXXXXX'
+  resolve_timeout: 5m
+route:
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: email-team
+  routes:
+  - match:
+      alertname: DeadMansSwitch
+    repeat_interval: 5m
+    receiver: deadmansswitch
+  - match:
+      severity: page
+    receiver: email-team
+  - match:
+      severity: criticalNode
+    receiver: email-n-webhook-node
+receivers:
+- name: deadmansswitch
+- name: 'email-team'
+  email_configs:
+  - to: 'mymailid@test.com'
+    send_resolved: true
+  webhook_configs:
+  - url: http://172.30.200.104:9000/hooks/ocp-node-sn-hook
+
+- name: 'email-n-webhook-node'
+  email_configs:
+  - to: 'mymailid@test.com'
+    send_resolved: true
+  webhook_configs:
+  - url: http://172.30.200.104:9000/hooks/ocp-node-restart-hook
+  - url: http://172.30.200.104:9000/hooks/ocp-node-sn-hook
