@@ -1,0 +1,177 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: webhook
+  name: webhook-hooks-configmap
+data:
+  hooks.json: |-
+    [
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          }
+        ],
+        "id": "ocp-node-restart-hook",
+        "execute-command": "/etc/webhook/ocp-node-restart.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.severity"
+          }
+        ],
+        "id": "ocp-node-sn-hook",
+        "execute-command": "/etc/webhook/ocp-sn.sh",
+        "command-working-directory": "/etc/webhook"
+      }
+    ]
+
+
+
+[root@ocpmaster1 webhook]# more webhook-scripts-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: webhook
+  name: webhook-ocp-node-restart-configmap
+data:
+  ocp-node-restart.sh: |-
+    #!/bin/sh
+    #### Automation for node,docker,api,controller & host
+
+    hst=$1
+    alrn=$2
+    stat=$3
+
+    hstip=`echo $hst | cut -d ":" -f1`
+
+    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active docker"`
+    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active origin-node"`
+
+    if [ $stat == "firing" ]; then
+
+    ### Checking OCP Node client
+
+     if [ $nodstat == "inactive" ]; then
+        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl start origin-node"
+        sleep 7
+     fi
+
+    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active origin-node"`
+
+     if [ $nodstat == "active" ]; then
+        echo "OCP Node Client is Running in Host : $1 "
+     fi
+
+    ### Checking OCP Docker client
+
+     if [ $docstat == "inactive" ]; then
+        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl start docker"
+        sleep 7
+     fi
+
+    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active docker"`
+
+     if [ $docstat == "active" ]; then
+        echo "Docker is Running in Host : $1 "
+     fi
+
+    fi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: webhook
+  name: webhook-ocp-sn-configmap
+data:
+  ocp-sn.sh: |-
+    #!/bin/sh
+    # ServiceNow Integration, Incident create/Close/Resolve
+
+    hst=$1
+    summ=$2
+    stat=$3
+    sev=$4
+
+    if [ $sev == "CRITICAL" ]; then
+      pri=1
+    elif [ $sev == "critical" ]; then
+      pri=1
+    elif [ $sev == "criticalNode" ]; then
+      pri=1
+    elif [ $sev == "MEDIUM" ]; then
+      pri=2
+    elif [ $sev == "medium" ]; then
+      pri=2
+    elif [ $sev == "WARNING" ]; then
+      pri=3
+    elif [ $sev == "warning" ]; then
+      pri=3
+    else
+      pri=4
+    fi
+
+    # Creating incident
+
+    if [ $stat == "firing" ]; then
+
+    curl --user $SNUSER:$SNPASS \
+     --header "Content-Type:application/json" \
+     --header "Accept: application/json" \
+     --request POST \
+     --data '{"short_description":"In OCP '"$hst"' '"$summ"'","caller_id":"'"$SNCALLID"'","urgency":"'"$pri"'","category":"'"$SNCATAGORY"'","assignment_group":"'"$SNASS
+INGRP"'","assigned_to":"'"$SNASSINTO"'","sys_created_by":"'"$SNCALLID"'"}' \
+     https://$SNURL/api/now/table/incident > /etc/webhook/op.txt
+
+    INCID=`jq '.result.sys_id' /etc/webhook/op.txt | tr -d '"'`
+    echo "$INCID:$hst:$summ:$pri" >> /etc/webhook/incident.txt
+
+    fi
+
+    ###########
+
+    # Closing incident
+
+    if [ $stat == "resolved" ]; then
+
+    SNINCID=`grep $hst:"$summ":"$pri" /etc/webhook/incident.txt | cut -d ":" -f1`
+
+    curl --user $SNUSER:$SNPASS \
+     --header "Content-Type:application/json" \
+     --header "Accept: application/json" \
+     --request PUT \
+     --data '{"close_code":"Closed/Resolved By User ('"$SNCALLID"')","state":"'"7"'","caller_id":"'"$SNCALLID"'","close_notes":"Closed from webhook by API"}' \
+     https://$SNURL/api/now/table/incident/$SNINCID
+
+    sed -i "/$SNINCID/d" /etc/webhook/incident.txt
+
+    fi
