@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: webhook
+  name: webhook-hooks-configmap
+data:
+  hooks.json: |-
+    [
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          }
+        ],
+        "id": "ocp-node-restart-hook",
+        "execute-command": "/etc/webhook/ocp-node-restart.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.severity"
+          }
+        ],
+        "id": "ocp-node-sn-hook",
+        "execute-command": "/etc/webhook/ocp-sn.sh",
+        "command-working-directory": "/etc/webhook"
+      }
+    ]
