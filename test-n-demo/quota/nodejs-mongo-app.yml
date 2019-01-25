@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongo
+  labels:
+    name: mongo
+    context: docker-pkar
+spec:
+  containers:
+    -
+      name: mongo
+      image: mongo:3.4.0
+      ports:
+        -
+          containerPort: 27017
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "300m"
+        limits:
+          memory: "1Gi"
+          cpu: "300m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    name: mongo
+    context: docker-pkar
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    name: mongo
+    context: docker-pkar
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myemp
+  labels:
+    name: myemp
+    context: docker-pkar
+spec:
+  containers:
+    -
+      name: myemp
+      image: prasenforu/employee
+      ports:
+        -
+          containerPort: 8888
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "200m"
+        limits:
+          memory: "1Gi"
+          cpu: "200m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myemp
+  labels:
+    name: myemp
+    context: docker-pkar
+spec:
+  clusterIP: 172.30.200.91
+  ports:
+  - name: 80-tcp
+    port: 80
+    protocol: TCP
+    targetPort: 8888
+  selector:
+    name: myemp
+    context: docker-pkar
+    deploymentconfig: myemp
+---
