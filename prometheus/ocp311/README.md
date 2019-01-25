@@ -5,7 +5,7 @@ oc create -f prom-custom-rule.yaml
 ```
 
 ### Adding or editing Alertmanager config file.
-### NOTE: Make sure you download jq tool. ()
+#### NOTE: Make sure you download jq tool (```yum -y --enablerepo=epel install jq```)
 
 #### 1. Download existing alertmanager config file
 
