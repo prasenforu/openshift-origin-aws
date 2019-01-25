@@ -90,6 +90,8 @@ spec:
         app: webhook
         deploymentconfig: webhook-dc
     spec:
+      serviceAccount: webhook
+      serviceAccountName: webhook    
       nodeSelector:
         region: infra
       containers:
