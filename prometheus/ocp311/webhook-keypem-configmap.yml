@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webhook-keypem-configmap
+  namespace: openshift-monitoring
+data:
+  prasen.pem: |+
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEoAIBAAKCAQEAhYCsIqPLnj90eJE5vDdrFfTvlAABxNaOL6zpUBcVLGwtnS46
+    /sTMbKdsRcFKf8p8SH6uW64KAwxCZ82gp2bv6Akr8Qp+4CqKmajYwK0qZWRvR2At
+    hpq+ulY6rW3poVp50JhQCvsyfe1UwCAp71SNwDPlAa0NUPJFxy5/PBuUe82UpMhD
+    HFYK5/NfTK99OF6sI7spG22XE4pl4vDaHFYmt8a9qLlCD69aIQnlHwoD1toZhQFH
+    +WDF0dKjGJXTOme/3rR3/uJL7krzlbOQ/z47hqm7C/uhgv5WCbeh9dcWHaR9Z/Nf
+    xZpLKJAy/2s+T9W1vSD2PgyXC6XJ2u5EA+rZe9JhYv9Lws6uALqpOYKsUd6S+cYx
+    Hq19AoGBANNMYrpKbL5MsL8KKB6GfSlCONcbbsv82E/wLwQkroK3Luai029ssjkz
+    7Ut/bGGKFLLOk3mk2Ttx9dm0beVrvz7oVMDpSYWhlVzQA5seupQojabQw8pg0MQ4
+    jcsLDIbT1cdcjV9iSzNc+rMIXXTsoDuq40qV1oPkMFp+DbcQLs6fAoGBAKG++zgc
+    IS6iqV33HPIg6pgxsxYTJYbXbtIX2Czw8CVERps4philPBwSVxIayzDBgbntnXDx
+    LLB89b6FWt4glQGdTvL+IHQy9HhYgXidjkFlj5WzgQsvTbTT/Z8L5HplxBSP9FRZ
+    0+MnbFjPrFWdwFEmWNSPaQ93LZBqZAmNiTrtAoGAT/NjoG8wEKdleLe8JznOflBo
+    iL5FmUrqEGi32A3hKoqAcvGAb1mPi0QUmRt1HfzlPLzd2wAa2Dj1PZ43a5CNjWyq
+    coHIyseEn6inayBiReXUu6jwIw/gSj7pixjv+6oZibRRKwKY/q2PSqk4HmdfOSvn
+    TKdl7Lc04/hYN23oMoECgYA9M4Gmhy8mZw+nA45pdD0W/gxpN61VnZ+Nw9VBb+wp
+    xs6bmOTmuw/TRTWz0slsZOT6PjuShMTNKFz7+xt2pItoZQkdrEOhlr1d9/mjQoja
+    eXSZgjDTzLWeXgzwElZzgHO0wNj9UmvZaNzjVX96V12GfTZeRBnqLRgozk9dj4AI
+    dQKBgCRsLXvD8Ab/vwO6tZc5vPMXFt+9G3bvJMwZNN5RJi7KGAJ36LbI0lHN4gNn
+    pMo/ZHGTGRBz1niVuDNfCdpxUloxy2tWmrlml5xilfEtaXKkpcdbZXDwaNVBvs5n
+    /aekIamp+mPmkdt0FKPaWoRQQ4Ct0a+6isuCz4mhufEisi3R
+    -----END RSA PRIVATE KEY-----
+
