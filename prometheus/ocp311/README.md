@@ -1,6 +1,7 @@
 ### Adding new custom rule in Prometheus
 
 ```
+oc project openshift-monitoring
 oc create -f prom-custom-rule.yaml
 ```
 
