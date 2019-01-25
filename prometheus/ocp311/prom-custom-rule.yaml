@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: prometheus-custom-rule
+  namespace: openshift-monitoring
+spec:
+  groups:
+  - name: custom.rules
+    rules:
+    - alert: DockerDown
+      expr: up{job="node-exporter"} == 0
+      for: 30s
+      labels:
+        severity: criticalNode
+      annotations:
+        message: "Docker Service is down on {{ $labels.instance }}"
+        summary: "Docker Down"
+    - alert: OCP-Node-Down
+      expr: up {job="kubelet"} == 0
+      for: 30s
+      labels:
+        severity: criticalNode
+      annotations:
+        message: "Kubelet Service is down on {{ $labels.instance }}"
+        summary: "OCP Node Down"
