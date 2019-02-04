@@ -16,7 +16,7 @@ route:
     repeat_interval: 5m
     receiver: deadmansswitch
   - match:
-      severity: page
+      severity: criticalStorage
     receiver: email-team
   - match:
       severity: criticalNode
