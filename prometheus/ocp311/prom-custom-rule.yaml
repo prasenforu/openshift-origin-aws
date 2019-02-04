@@ -26,3 +26,12 @@ spec:
       annotations:
         message: "Kubelet Service is down on {{ $labels.instance }}"
         summary: "OCP Node Down"
+    - alert: OCP-Storage
+      expr: sum (round (heketi_device_size{job="gluster-server"} / 1.047e+6)) < (sum (round (kube_resourcequota {resource="requests.storage",type="hard"}  / 1.047e+9 )))
+      for: 30s
+      labels:
+        severity: criticalStorage
+      annotations:
+        message: "More Storage allocated in Quota than Storage"
+        summary: "Persistant Storage less space"
+        
