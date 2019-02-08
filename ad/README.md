@@ -42,7 +42,62 @@ Modify the OpenShift master configuration file (/etc/origin/master/master-config
       file: /etc/origin/master/htpasswd
       kind: HTPasswdPasswordIdentityProvider
 ```
+
+####### bindDN: "cn=admin,ou=OpenShift,dc=tcs-ally,dc=tk"
+
+The common name of the openshift user account followed by the OU of the account and the domain name.
+
+####### bindPassword: '<P A S S W O R D>'
+
+The password of the openshift user account.
+
+####### insecure: true
+The setting for whether an insecure or secure communication should be used between the OpenShift master and the Domain Controller. 
+The secure method requires the Domain Controller to utilize a SSL certificate for LDAPS.
+
+####### url: "ldap://10.138.0.7:389/dc=tcs-ally,dc=tk?sAMAccountName"
+The base search path for user accounts.
+
 #### Step #3
 
+Restart openshift master API & Controller
+
+```
+master-restart api
+
+master-restart controllers
+```
+
+#### Step #4
+
+Try to login from console with new user.
+
+#### Step #5
+
+After login, try get user from oc CLI.
+
+```oc get users```
 
 #### Troubleshooting
+
+As part of the configuring OpenShift to make use of an LDAP server, it may be helpful to manually connect and perform queries against the server in order to validate the configurations.
+
+There are several tools available that allow for browsing an LDAP server:
+
+ldapsearch - Linux based command line query tool
+
+###### a. Install ldapsearch
+
+```yum install -y openldap-clients -y```
+
+###### b. Put AD password in a variable
+
+```PASS='P A S S W O R D'```
+
+###### c. Search for a user
+
+```ldapsearch -h 10.138.0.7 -p 389 -x -s base -b cn=admin,ou=Openshift,dc=tcs-ally,dc=tk```
+
+
+
+
