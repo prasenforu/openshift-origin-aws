@@ -88,7 +88,7 @@ ldapsearch - Linux based command line query tool
 
 ###### a. Install ldapsearch
 
-```yum install -y openldap-clients -y```
+```yum install -y openldap-clients```
 
 ###### b. Put AD password in a variable
 
