@@ -43,19 +43,19 @@ Modify the OpenShift master configuration file (/etc/origin/master/master-config
       kind: HTPasswdPasswordIdentityProvider
 ```
 
-####### bindDN: "cn=admin,ou=OpenShift,dc=tcs-ally,dc=tk"
+###### bindDN: "cn=admin,ou=OpenShift,dc=tcs-ally,dc=tk"
 
 The common name of the openshift user account followed by the OU of the account and the domain name.
 
-####### bindPassword: '<P A S S W O R D>'
+###### bindPassword: '<P A S S W O R D>'
 
 The password of the openshift user account.
 
-####### insecure: true
+###### insecure: true
 The setting for whether an insecure or secure communication should be used between the OpenShift master and the Domain Controller. 
 The secure method requires the Domain Controller to utilize a SSL certificate for LDAPS.
 
-####### url: "ldap://10.138.0.7:389/dc=tcs-ally,dc=tk?sAMAccountName"
+###### url: "ldap://10.138.0.7:389/dc=tcs-ally,dc=tk?sAMAccountName"
 The base search path for user accounts.
 
 #### Step #3
@@ -96,8 +96,4 @@ ldapsearch - Linux based command line query tool
 
 ###### c. Search for a user
 
-```ldapsearch -h 10.138.0.7 -p 389 -x -s base -b cn=admin,ou=Openshift,dc=tcs-ally,dc=tk```
-
-
-
-
+```ldapsearch -h 10.138.0.7 -p 389 -D admin -W $PASS -x -s base -b cn=admin,ou=Openshift,dc=tcs-ally,dc=tk```
