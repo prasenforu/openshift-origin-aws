@@ -107,5 +107,19 @@ In security project we have to give sufficient priviledge to run containers (as 
 
 ```
 
-```
-```
+#### Step #3 Create a serviceaccount, role & clusterrole
+
+```oc create -f falco-service.yaml```
+
+#### Step #4 Create a configmap which consist of falco rules, kubernetes audit rule & falco config file.
+
+```oc create configmap falco-config --from-file=./falco-config```
+
+#### Step #5 Deploy DaemonSet 
+
+```oc create -f falco-daemonset-configmap.yaml```
+
+#### Step #5 Verifying the installation
+
+In order to test that Falco is working correctly, you can launch a shell in a Pod. You should see a message in your webhook or in the logs of the Falco pod.
+
