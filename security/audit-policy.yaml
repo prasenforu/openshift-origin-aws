@@ -1,0 +1,11 @@
+apiVersion: audit.k8s.io/v1beta1
+kind: Policy
+rules:
+  - level: Metadata
+    userGroups: ["system:authenticated:oauth"]
+    verbs: ["create", "delete"]
+    resources:
+      - group: "project.openshift.io"
+        resources: ["projectrequests", "projects"]
+    omitStages:
+      - RequestReceived
