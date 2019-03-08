@@ -6,7 +6,7 @@ Audit is a feature that logs requests at the API server level, these logs are ou
 
 Enable audit create lots of log based on audit policy so prepare the policy as much as less.
 
-#### Step #1
+#### Step #1 Create a policy file
 
 Write the policy file below to /etc/origin/master/audit-policy.yaml.
 
@@ -24,15 +24,15 @@ rules:
       - RequestReceived
 ```
 
-#### Step #2
+#### Step #2 Create audit log folder.
 
 Create a directory called /etc/origin/master/audit on the master. This directory will contain audit logs produced by advanced audit.
 
 ```mkdir /etc/origin/master/audit```
 
-#### Step #3
+#### Step #3 Setting up webhook
 
-Setting up webhook, which is a kubeconfig-like file can be created to forward the logs to send logs to an aggregator external to OpenShift.
+Is a kubeconfig like file can be created to forward the logs to send logs to an aggregator external to OpenShift.
 
 ```vi /etc/origin/master/audit-webhook.yaml```
 
@@ -53,7 +53,7 @@ preferences: {}
 users: []
 ```
 
-#### Step #4
+#### Step #4 Edit master config file.
 
 Modify or add below content in  /etc/origin/master/master-config.yaml to enable the auditing feature.
 
@@ -73,7 +73,7 @@ auditConfig:
 
 ```
 
-#### Step #5
+#### Step #5 Restart Api & controller service.
 
 Restart the api server & check api and controllers are running.
 
@@ -83,9 +83,7 @@ master-restart api;master-restart controllers
 oc get pod -n kube-system
 ```
 
-#### Step #6
-
-Testing
+#### Step #6 Testing
 
 Let’s see what this looks like once everything is configured properly. Use the oc binary to create a new project.
 
