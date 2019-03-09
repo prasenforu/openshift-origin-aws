@@ -9,3 +9,23 @@ rules:
         resources: ["projectrequests", "projects"]
     omitStages:
       - RequestReceived
+  - level: Metadata
+    userGroups: [""]
+    resources:
+      - group: "rbac.authorization.k8s.io"
+        resources: ["clusterroles", "clusterrolebindings"]
+    omitStages:
+      - RequestReceived
+  - level: Metadata
+    userGroups: [""]
+    resources:
+      - group: ""
+        resources: ["secrets", "configmaps"]
+    omitStages:
+      - RequestReceived
+  - level: Metadata
+    nonResourceURLs:
+      - /login* 
+      - /oauth* 
+    omitStages:
+      - RequestReceived
