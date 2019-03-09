@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nmap
+  labels:
+    name: mongo
+    context: nmap-tool
+spec:
+  containers:
+    -
+      name: nmap
+      image: raesene/alpine-containertools
