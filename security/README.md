@@ -95,17 +95,24 @@ You can see logs geneted in audit logs file ```/var/log/audit-ocp.log```.
 
 ## Falco in Openshift
 
-#### Step #1 Create a project
+#### Step #1 Create a project & patch that project with node selector
 
-```oc new-project security```
+```
+oc new-project security
+
+oc patch namespace security -p '{"metadata":{"annotations":{"openshift.io/node-selector":"security=falco"}}}'
+
+oc label node ocphub1 security="falco" --overwrite
+oc label node ocpmaster1 security="falco" --overwrite
+oc label node ocpnode1 security="falco" --overwrite
+
+```
 
 #### Step #2 Setting sufficiaent priviledge to that project
 
 In security project we have to give sufficient priviledge to run containers (as a DaemonSet in all nodes)
 
-```
-
-```
+```oc adm policy add-scc-to-user privileged system:serviceaccount:security:falco-account```
 
 #### Step #3 Create a serviceaccount, role & clusterrole
 
