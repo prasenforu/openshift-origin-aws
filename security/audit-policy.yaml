@@ -1,31 +1,96 @@
 apiVersion: audit.k8s.io/v1beta1
 kind: Policy
+omitStages:
+  - "RequestReceived"
 rules:
+  - level: None
+    userGroups:
+    - system:serviceaccounts:kube-system
+    - system:serviceaccounts:openshift-monitoring
+    - system:serviceaccounts:openshift-infra
+
+  - level: None
+    users:
+    - system:apiserver
+    - system:admin
+    - system:kube-scheduler
+    - system:volume-scheduler
+    - system:kube-controller-manager
+    - system:node
+    - system:openshift-master
+    - system:kube-proxy
+
+  - level: None
+    users:
+    - system:serviceaccount:collectorforkubernetes:collectorforkubernetes
+    - system:serviceaccount:openshift-infra:service-serving-cert-controller
+    - system:serviceaccount:openshift-ansible-service-broker:asb
+    - system:serviceaccount:openshift-monitoring:cluster-monitoring-operator
+    - system:serviceaccount:kube-service-catalog:service-catalog-controller
+    - system:serviceaccount:kube-service-catalog:service-catalog-apiserver
+    - system:serviceaccount:openshift-template-service-broker:apiserver
+    - system:serviceaccount:openshift-infra:unidling-controller
+    - system:serviceaccount:openshift-sdn:sdn
+    - system:serviceaccount:openshift-node:sync
+    - system:serviceaccount:default:router
+    - system:serviceaccount:openshift-infra:resourcequota-controller
+    - system:serviceaccount:openshift-infra:namespace-security-allocation-controller
+    - system:serviceaccount:openshift-infra:sdn-controller
+    - system:serviceaccount:security:falco-account
+    - system:serviceaccount:openshift-monitoring:prometheus-k8s
+
+  - level: None
+    userGroups:
+    - system:nodes
+    - system:authenticated
+    - system:unauthenticated
+
+  - level: None
+    nonResourceURLs:
+    - /healthz*
+    - /version
+    - /swagger*
+
+  - level: None
+    resources:
+    - group: ""
+      resources: ["configmaps"]
+      resourceNames: ["controller-leader"]
+
+  - level: Metadata
+    nonResourceURLs:
+      - /login*
+      - /oauth*
+    omitStages:
+      - RequestReceived
+
   - level: Metadata
     userGroups: ["system:authenticated:oauth"]
-    verbs: ["create", "delete"]
+    verbs: ["create", "delete", "update"]
     resources:
       - group: "project.openshift.io"
         resources: ["projectrequests", "projects"]
     omitStages:
       - RequestReceived
+
   - level: Metadata
     userGroups: [""]
+    verbs: ["create", "delete", "list", "update"]
     resources:
       - group: "rbac.authorization.k8s.io"
         resources: ["clusterroles", "clusterrolebindings"]
     omitStages:
       - RequestReceived
+
   - level: Metadata
     userGroups: [""]
+    verbs: ["create", "delete", "list", "update"]
     resources:
-      - group: ""
-        resources: ["secrets", "configmaps"]
+      - resources: ["serviceaccount", "secrets", "configmaps", "service"]
     omitStages:
       - RequestReceived
+
   - level: Metadata
-    nonResourceURLs:
-      - /login* 
-      - /oauth* 
     omitStages:
       - RequestReceived
+      
