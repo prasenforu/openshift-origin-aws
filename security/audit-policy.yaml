@@ -42,8 +42,8 @@ rules:
   - level: None
     userGroups:
     - system:nodes
-    - system:authenticated
-    - system:unauthenticated
+    #- system:authenticated
+    #- system:unauthenticated
 
   - level: None
     nonResourceURLs:
