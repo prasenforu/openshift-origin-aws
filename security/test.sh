@@ -1,5 +1,8 @@
 #!/bin/sh
 
+LOGPATH=/etc/webhook/output.log
+DT=`date '+%d/%m/%Y %H:%M:%S'`
+
 EXTIME=`echo "$1" | jq  '.items [] .requestReceivedTimestamp'`
 OCUSER=`echo "$1" |  jq  '.items [] .user.username' | sed 's/"//g'`
 ACTION=`echo "$1" | jq  '.items [] .verb' | sed 's/"//g'`
@@ -16,13 +19,15 @@ REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
 
 if [[ "$ACTION" == "post" && "$CODE" == "200" && "$OCUSER" == "null" ]]; then
 
-   echo "Someone tried to login from this IP ($SOURCEIP) - Success"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - Success"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - Success" >> $LOGPATH
    exit
 fi
 
 if [[ "$ACTION" == "get" && "$CODE" == "401" && "$OCUSER" == "null" ]]; then
 
-   echo "Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE" >> $LOGPATH
    exit
 fi
 
@@ -37,16 +42,19 @@ OURCE" == "clusterrolebindings" || "$RESOURCE" == "projectrequests" || "$RESOURC
 
         if [[ "$CODE" == "409" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
             exit
         elif [[ "$CODE" == "404" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
             exit
 
         elif [[ "$CODE" == "200" || "$CODE" == "201" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
             exit
 
         fi
@@ -55,16 +63,20 @@ OURCE" == "clusterrolebindings" || "$RESOURCE" == "projectrequests" || "$RESOURC
 
         if [[ "$CODE" == "409" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
             exit
+
         elif [[ "$CODE" == "404" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
             exit
 
         elif [[ "$CODE" == "200" || "$CODE" == "201" ]]; then
 
-            echo "User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
             exit
 
         fi
