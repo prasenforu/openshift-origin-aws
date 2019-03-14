@@ -19,6 +19,7 @@ rules:
     - system:node
     - system:openshift-master
     - system:kube-proxy
+    - system:anonymous 
 
   - level: None
     users:
