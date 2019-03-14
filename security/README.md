@@ -140,4 +140,8 @@ In order to test that Falco is working correctly, you can launch a shell in a Po
 
 ```oc create -f nmap.yaml```
 
+#### Log output to browser
+
+```docker run -d -p 9001:9001 -P --restart=always -v /root/webhook:/log prasenforu/log2browser /log/output.log```
+
 
