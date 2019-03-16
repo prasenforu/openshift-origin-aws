@@ -14,6 +14,17 @@ STATUS=`echo "$1" | jq  '.items [] .responseStatus.status' | sed 's/"//g'`
 SOURCEIP=`echo "$1" | jq  '.items [] .sourceIPs []' | sed 's/"//g'`
 NS=`echo "$1" | jq  '.items [] .objectRef.namespace' | sed 's/"//g'`
 REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
+STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
+SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
+
+#### For POD/container login ########
+
+if [[ "$ACTION" == "create" && "$CODE" == "101" && "$STAGE" == "ResponseStarted" && "$SUBRESOURCE" == "exec" ]]; then
+
+     echo "[ $DT ]  User ($OCUSER) tried to login $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP)"
+     echo "[ $DT ]  User ($OCUSER) tried to login $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP)" >> $LOGPATH
+     exit
+fi
 
 ##### for authentication #######
 
@@ -24,19 +35,18 @@ if [[ "$ACTION" == "post" && "$CODE" == "200" && "$OCUSER" == "null" ]]; then
    exit
 fi
 
-if [[ "$ACTION" == "get" && "$CODE" == "401" && "$OCUSER" == "null" ]]; then
+if [[ "$ACTION" == "get" && "$CODE" == "401" && "$OCUSER" == "null" && "REASON" != "Unauthorized" ]]; then
 
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE" >> $LOGPATH
    exit
 fi
 
-##### for Resouces with create and delete verb #######
+##### for Resouces with create, delete, patch & bind  verb #######
 
-if [[ "$ACTION" == "create" || "$ACTION" == "delete" ]]; then
+if [[ "$ACTION" == "create" || "$ACTION" == "delete" || "$ACTION" == "patch" || "$ACTION" == "bind" || "$ACTION" == "update" ]]; then
 
- if [[ "$RESOURCE" == "serviceaccount" || "$RESOURCE" == "secrets" || "$RESOURCE" == "configmaps" || "$RESOURCE" == "services" || "$RESOURCE" == "clusterroles" || "$RES
-OURCE" == "clusterrolebindings" || "$RESOURCE" == "projectrequests" || "$RESOURCE" ==  "projects" ]]; then
+ if [[ "$RESOURCE" == "serviceaccounts" || "$RESOURCE" == "configmaps" || "$RESOURCE" == "services" || "$RESOURCE" == "clusterroles" || "$RESOURCE" == "clusterrolebindings" || "$RESOURCE" == "projectrequests" || "$RESOURCE" ==  "projects" || "$RESOURCE" ==  "rolebindings" || "$RESOURCE" == "securitycontextconstraints" ]]; then
 
    if [[ "$STATUS" == "Failure" ]]; then
 
@@ -83,6 +93,58 @@ OURCE" == "clusterrolebindings" || "$RESOURCE" == "projectrequests" || "$RESOURC
     fi
  fi
 
+fi
+
+##### For Resouces (secrets) with create, delete, patch, list & get  verb #######
+
+if [[ "$ACTION" == "create" || "$ACTION" == "delete" || "$ACTION" == "patch" || "$ACTION" == "get" || "$ACTION" == "list" ]]; then
+
+  if [[ "$RESOURCE" == "secrets" ]]; then
+
+     if [[ "$STATUS" == "Failure" ]]; then
+
+        if [[ "$CODE" == "409" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
+            exit
+        elif [[ "$CODE" == "404" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
+            exit
+
+        elif [[ "$CODE" == "200" || "$CODE" == "201" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
+            exit
+
+        fi
+
+     elif [[ "$STATUS" != "Failure" ]]; then
+
+        if [[ "$CODE" == "409" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
+            exit
+
+        elif [[ "$CODE" == "404" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - $REASON" >> $LOGPATH
+            exit
+
+        elif [[ "$CODE" == "200" || "$CODE" == "201" ]]; then
+
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
+            echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
+            exit
+
+        fi
+     fi
+  fi
 fi
 
 ######################################################
