@@ -51,8 +51,8 @@ fi
 
 if [[ "$ACTION" == "get" && "$CODE" == "200" && "$RESOURCE" == "users" ]]; then
 
-   echo "[ $DT ]  Using ServiceAccount ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
-   echo "[ $DT ]  Using ServiceAccount ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
+   echo "[ $DT ]  User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   echo "[ $DT ]  User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
    exit
 fi
 
