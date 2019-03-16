@@ -28,17 +28,31 @@ fi
 
 ##### for authentication #######
 
-if [[ "$ACTION" == "post" && "$CODE" == "200" && "$OCUSER" == "null" ]]; then
+if [[ "$ACTION" == "post" && "$CODE" == "200" ]]; then
 
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - Success"
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - Success" >> $LOGPATH
    exit
 fi
 
-if [[ "$ACTION" == "get" && "$CODE" == "401" && "$OCUSER" == "null" && "REASON" != "Unauthorized" ]]; then
+if [[ "$ACTION" == "get" && "$CODE" == "401" && "REASON" != "Unauthorized" ]]; then
 
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
    echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $MESSAGE" >> $LOGPATH
+   exit
+fi
+
+if [[ "$ACTION" == "head" && "$CODE" == "302" ]]; then
+
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
+   exit
+fi
+
+if [[ "$ACTION" == "get" && "$CODE" == "200" && "$RESOURCE" == "users" ]]; then
+
+   echo "[ $DT ]  Using ServiceAccount ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   echo "[ $DT ]  Using ServiceAccount ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
    exit
 fi
 
