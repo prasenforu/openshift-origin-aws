@@ -16,6 +16,7 @@ NS=`echo "$1" | jq  '.items [] .objectRef.namespace' | sed 's/"//g'`
 REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
 STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
 SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
+REQUESTURI=`more /etc/webhook/sample.json | jq  '.items [] .requestURI' | sed 's/"//g'`
 
 #### For POD/container login ########
 
