@@ -1,8 +1,6 @@
-## Audit & security in Openshift using ocpscan
+## Audit & security in Openshift using OCPSCAN
 
 Audit is a feature that logs requests at the API server level, these logs are output to a log file on the master node. This auditing called "Advance Audit" in Openshift. Advanced audit is an enhancement over the older basic audit. Whereas the basic audit logged all requests to an audit file, advanced audit allows administrators to write a policy file to specify a subset of requests that get logged. Advanced audit also offers a webhook which can be used to send audit logs to a log aggregator via http or https.
-
-Container native security using ```Falco``` is an open source tool for intrusion and abnormality detection for Cloud Native platforms Kubernetes & Openshift. Detect abnormal application behavior. Alert via Slack, webhook & mail and more. Protect your platform by taking action through using automation.
 
 ### Enable Audit in Openshift
 
