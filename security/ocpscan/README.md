@@ -77,7 +77,7 @@ Let’s see what this looks like once everything is configured properly. Use the
 
 You can see logs geneted in audit logs file ```/var/log/audit-ocp.log```.
 
-## Falco in Openshift
+## OCPSCAN in Openshift
 
 #### Step #1 Create a project & patch that project with node selector
 
