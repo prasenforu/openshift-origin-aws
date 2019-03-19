@@ -1,0 +1,22 @@
+[
+  {
+    "pass-arguments-to-command": [
+      {
+        "source": "entire-payload"
+      }
+    ],
+    "id": "ocpscan-hook",
+    "execute-command": "/etc/webhook/scanner.sh",
+    "command-working-directory": "/etc/webhook"
+  },
+  {
+    "pass-arguments-to-command": [
+      {
+        "source": "entire-payload"
+      }
+    ],
+    "id": "falco-hook",
+    "execute-command": "/etc/webhook/falco-script.sh",
+    "command-working-directory": "/etc/webhook"
+  }
+]
