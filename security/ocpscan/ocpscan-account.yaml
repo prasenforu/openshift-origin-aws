@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ocpscan-sa
+  namespace: security
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: ocpscan-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: ocpscan-sa
+  namespace: security
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: ocpscan-clusterrole
+  apiGroup: ""
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: ocpscan-clusterrole
+rules:
+- apiGroups: ["*"]
+  resources: ["roles", "clusterroles", "rolebindings", "clusterrolebindings", "pods", "secrets"]
+  verbs: ["get", "list"]
+- apiGroups: ["*"]
+  resources: ["pod/exec"]
+  verbs: ["create"]
