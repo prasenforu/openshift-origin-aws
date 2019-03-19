@@ -43,8 +43,8 @@ spec:
           value: "admin"
         - name: KUBEPASS
           value: "redhat"
-        - name: KUBETOKEN
-          value: "T O K E N"
+        - name: SERVICE_TOKEN_FILENAME
+          value: "/run/secrets/kubernetes.io/serviceaccount/token"
         - name: SNURL
           value: ""
         - name: SNUSER
