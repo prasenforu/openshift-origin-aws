@@ -6,30 +6,29 @@ metadata:
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata: 
+metadata:
   name: ocpscan-clusterrolebinding
-subjects: 
-- kind: ServiceAccount 
+subjects:
+- kind: ServiceAccount
   name: ocpscan-sa
   namespace: security
   apiGroup: ""
-roleRef: 
+roleRef:
   kind: ClusterRole
   name: ocpscan-clusterrole
   apiGroup: ""
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
-metadata: 
+metadata:
   name: ocpscan-clusterrole
-rules: 
+rules:
 - apiGroups: ["*"]
   resources: ["roles", "clusterroles", "rolebindings", "clusterrolebindings", "pods", "secrets"]
   verbs: ["get", "list"]
 - apiGroups: ["*"]
   resources: ["pod/exec"]
   verbs: ["create"]
-  
 ---
 apiVersion: v1
 kind: Service
@@ -70,17 +69,16 @@ spec:
         app: ocpscan
         deploymentconfig: ocpscan-dc
     spec:
-      serviceAccount: ocpscan
-      serviceAccountName: ocpscan
+      serviceAccount: ocpscan-sa
+      serviceAccountName: ocpscan-sa
       containers:
       - image: prasenforu/ocpscan:1.0
-        name: ocpscan-image
+        name: ocpscan
         ports:
         - name: ocpscan
           containerPort: 9000
         volumeMounts:
-        - mountPath: /etc/webhook/output.log
-          subPath: output.log
+        - mountPath: /log
           name: ocpscanlog-path-volume-config
         - mountPath: /etc/webhook/hooks.json
           subPath: hooks.json
@@ -118,21 +116,14 @@ spec:
         - name: SNINCID
           value: "ServiceNow Incident ID"
       - image: prasenforu/log2browser
-        name: ocpscanlog-image
+        name: log2browser
         ports:
         - name: ocpscanlog
           containerPort: 9001
-        args:
-          - "/etc/webhook/output.log"
+        args: ["/log/output.log"]
         volumeMounts:
-        - mountPath: /etc/webhook/output.log
-          subPath: output.log
+        - mountPath: /log
           name: ocpscanlog-path-volume-config
-        env:
-        - name: KUBEHOST
-          value: "masterb"
-        - name: KUBEPORT
-          value: "8443"
       volumes:
       - name: ocpscanlog-path-volume-config
         emptyDir: {}
