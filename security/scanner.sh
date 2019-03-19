@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LOGPATH=/etc/webhook/output.log
+LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 
 EXTIME=`echo "$1" | jq  '.items [] .requestReceivedTimestamp'`
@@ -110,7 +110,7 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
 
 fi
 
-##### For Resouces (secrets & sa) with create, delete, patch, list & get  verb #######
+##### For Resouces (secrets) with create, delete, patch, list & get  verb #######
 
 if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch" ] || [ "$ACTION" = "update" ] || [ "$ACTION" = "get" ] || [ "$ACTION" = "list" ]; then
 
