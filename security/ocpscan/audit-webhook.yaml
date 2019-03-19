@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: falco
+  cluster:
+    server: http://ocpscan-service.security.svc.cluster.local:9000/hooks/ocpscan-hook
+contexts:
+- context:
+    cluster: falco
+    user: ""
+  name: default-context
+current-context: default-context
+preferences: {}
+users: []
