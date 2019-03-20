@@ -50,6 +50,13 @@ if [ "$ACTION" = "head" ] && [ "$CODE" = "302" ]; then
    exit
 fi
 
+if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
+
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
+   exit
+fi
+
 if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; then
 
    echo "[ $DT ]  User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
