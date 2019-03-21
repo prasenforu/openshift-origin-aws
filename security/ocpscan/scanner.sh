@@ -3,6 +3,8 @@
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 
+alias scan='sh /usr/bin/scan.sh'
+
 EXTIME=`echo "$1" | jq  '.items [] .requestReceivedTimestamp'`
 OCUSER=`echo "$1" |  jq  '.items [] .user.username' | sed 's/"//g'`
 ACTION=`echo "$1" | jq  '.items [] .verb' | sed 's/"//g'`
@@ -87,7 +89,16 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
 
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
-            exit
+
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
+            if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
+               op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
+               scan -crru $op 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
 
         fi
 
@@ -109,7 +120,16 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
 
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
-            exit
+
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
+            if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
+               op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
+               scan -crru $op 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
 
         fi
     fi
