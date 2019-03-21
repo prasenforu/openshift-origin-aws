@@ -91,12 +91,12 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
 
             if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
-               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
             if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
                op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
-               scan -crru $op 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               scan -crru $op 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
 
@@ -122,12 +122,12 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
 
             if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
-               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
             if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
                op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
-               scan -crru $op 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               scan -crru $op 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
 
