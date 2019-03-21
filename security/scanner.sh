@@ -3,6 +3,8 @@
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 
+alias scan='sh /usr/bin/scan.sh'
+
 EXTIME=`echo "$1" | jq  '.items [] .requestReceivedTimestamp'`
 OCUSER=`echo "$1" |  jq  '.items [] .user.username' | sed 's/"//g'`
 ACTION=`echo "$1" | jq  '.items [] .verb' | sed 's/"//g'`
@@ -50,6 +52,13 @@ if [ "$ACTION" = "head" ] && [ "$CODE" = "302" ]; then
    exit
 fi
 
+if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
+
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   echo "[ $DT ]  Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI" >> $LOGPATH
+   exit
+fi
+
 if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; then
 
    echo "[ $DT ]  User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
@@ -80,7 +89,10 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
 
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
-            exit
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
 
         fi
 
@@ -102,7 +114,10 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
 
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
-            exit
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "create" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 10 >> $LOGPATH
+               exit
+            fi
 
         fi
     fi
