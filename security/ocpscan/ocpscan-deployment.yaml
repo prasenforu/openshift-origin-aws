@@ -36,7 +36,7 @@ spec:
           name: ocpscan-scanscript-volume-config
         env:
         - name: KUBEHOST
-          value: "masterb"
+          value: "master"
         - name: KUBEPORT
           value: "8443"
         - name: KUBEUSER
@@ -44,7 +44,7 @@ spec:
         - name: KUBEPASS
           value: "redhat"
         - name: SERVICE_TOKEN_FILENAME
-          value: "/run/secrets/kubernetes.io/serviceaccount/token"
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         - name: SNURL
           value: ""
         - name: SNUSER
