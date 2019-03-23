@@ -94,12 +94,15 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
                scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "patch" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
+               exit
+            fi
             if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
                op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
                scan -crru $op 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
-
         fi
 
     elif [ "$STATUS" != "Failure" ]; then
@@ -125,12 +128,15 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
                scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
+            if [ "$RESOURCE" = "clusterrolebindings" ] && [ "$ACTION" = "patch" ]; then
+               scan -crru $OBJNAME 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
+               exit
+            fi
             if [ "$RESOURCE" = "clusterroles" ] && [ "$ACTION" = "patch" ]; then
                op=`scan -aarbcr $OBJNAME 2>&1 | grep -v Associated | grep RoleBinding | cut -d "|" -f3`
                scan -crru $op 2>&1 | grep -s "+--------" -A 50 >> $LOGPATH
                exit
             fi
-
         fi
     fi
  fi
@@ -161,7 +167,6 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
             exit
-
         fi
 
      elif [ "$STATUS" != "Failure" ]; then
@@ -183,7 +188,6 @@ if [ "$ACTION" = "create" ] || [ "$ACTION" = "delete" ] || [ "$ACTION" = "patch"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success"
             echo "[ $DT ]  User ($OCUSER) tried to $ACTION $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP) - Success" >> $LOGPATH
             exit
-
         fi
      fi
   fi
