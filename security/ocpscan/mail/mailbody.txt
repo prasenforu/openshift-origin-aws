@@ -1,0 +1,23 @@
+Hello,
+
+There are some security concern.
+
+MSG
+
+Username = UN
+
+Source IP = SIP
+
+Namespace = NS
+
+Resource Type = RT
+
+Resource Name = RN
+
+For more details visit "http://ocpscan-service-security.cloudapps.tcs-ally.tk"
+
+regards,
+Agile Team.
+
+(Please reply to "mail id")
+
