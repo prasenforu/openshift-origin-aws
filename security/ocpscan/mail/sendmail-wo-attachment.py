@@ -16,9 +16,9 @@ filename = "./mailbody.txt"
 
 # Configuration: replace all parts in <brackets> with your actual information
 
-user = 'pkagiletcs@gmail.com'
-password  = 'mdggvrugcsuqaqqg'
-sender   = 'pkagiletcs@gmail.com'
+user = 'username@gmail.com'
+password  = 'password'
+sender   = 'username@gmail.com'
 
 # Create message container - the correct MIME type is multipart/alternative.
 recipient = str(sys.argv[2])
