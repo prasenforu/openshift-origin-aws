@@ -2,7 +2,7 @@
 
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
-MAILID="prasenforu@hotmail.com"
+MAILID="mailid@hotmail.com"
 
 alias scan='sh /usr/bin/scan.sh'
 
