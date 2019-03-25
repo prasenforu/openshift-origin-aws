@@ -92,7 +92,7 @@ oc label node ocphub1 region="infra" --overwrite
 
 #### Step #2 Setting sufficiaent priviledge to that project
 
-In security project we have to give sufficient priviledge to run containers (as a DaemonSet in all nodes)
+In security project we have to give sufficient priviledge to run containers.
 
 ```
 oc adm policy add-scc-to-user privileged system:serviceaccount:security:ocpscan-sa
