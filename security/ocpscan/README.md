@@ -107,9 +107,11 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscan-sa
 #### Step #4 Create a configmap which consist of hooks & scripts files.
 
 ```
+vi mailtemplate.txt
 oc create cm ocpscan-hooks-configmap --from-file=./hooks.json
-
 oc create cm ocpscan-scanscript-configmap --from-file=./scanner.sh
+oc create cm ocpscan-mailbody-configmap --from-file=./mailtemplate.txt
+oc create cm ocpscan-mail-configmap --from-file=./mailsend.py
 ```
 
 #### Step #5 Create Deployment
@@ -136,8 +138,3 @@ oc rsh -c log2browser <POD NAME>
 ```
 
 In order to test that OCPSCAN is working correctly, you can launch a shell in a Pod. You should see a message in log2browser url.
-
-
-
-
-
