@@ -1,0 +1,12 @@
+Hello,
+
+There are some security concern.
+
+MSG
+
+For more details visit "http://ocpscan-service-security.cloudapps.tcs-ally.tk"
+
+regards,
+Agile Team.
+
+(Please reply to "mail id")
