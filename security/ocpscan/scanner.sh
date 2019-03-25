@@ -105,7 +105,7 @@ if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; th
    MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
-   MAIL=y
+   MAIL=n
    mailsendauth
 fi
 
