@@ -53,7 +53,7 @@ fi
 
 #### For POD/container login ########
 
-if [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStarted" ] && [ "$SUBRESOURCE" = "exec" ]; then
+if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStarted" ] && [ "$SUBRESOURCE" = "exec" ]; then
 
      MSG="User ($OCUSER) tried to login $RESOURCE ($OBJNAME) in project ($NS) from this IP ($SOURCEIP)"
      echo "[ $DT ]  $MSG"
@@ -62,7 +62,24 @@ if [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStar
      mailsendrest
 fi
 
-##### for authentication #######
+
+if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] && [ "$STAGE" = "ResponseComplete" ]; then
+    
+     op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep $OBJNAME`
+
+     if [ "$op" != "" ]; then
+        MSG="POD ($OBJNAME) in project ($NS) accessing to secret data through volumes"
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        echo "$op" >> $LOGPATH
+        MAIL=y
+        mailsendrest
+     fi
+else 
+   exit
+fi
+
+##### For authentication #######
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "200" ]; then
 
