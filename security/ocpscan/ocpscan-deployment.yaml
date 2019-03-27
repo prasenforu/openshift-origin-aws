@@ -20,7 +20,7 @@ spec:
       serviceAccount: ocpscan-sa
       serviceAccountName: ocpscan-sa
       containers:
-      - image: prasenforu/ocpscan:4.0
+      - image: xxxxxxxxxxxxxx
         name: ocpscan
         ports:
         - name: ocpscan
@@ -69,7 +69,7 @@ spec:
           value: ""
         - name: SNINCID
           value: "ServiceNow Incident ID"
-      - image: prasenforu/log2browser
+      - image: yyyyyyyyyyyyyyyyyy
         name: log2browser
         ports:
         - name: ocpscanlog
