@@ -104,7 +104,7 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscan-sa
 
 ```oc create -f ocpscan-account.yaml```
 
-#### Step #4 Create a configmap which consist of hooks & scripts files.
+#### Step #4 Create a configmap and secret which consist of hooks & scripts files.
 
 ```
 vi mailtemplate.txt
