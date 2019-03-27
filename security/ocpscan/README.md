@@ -83,9 +83,9 @@ Its a ```runtime alert``` mechanism based on advanced audit for Openshift Contai
   - Alert on anytype of authentication.
   - Alert on POD/container login.
   - Alert on any type of activity for secret, configmap objects.
-  - Alert on any critical activity for RBAC, SCC & service objects.
+  - Alert on any critical activity for RBAC, SCC (Security Context Constraints) & service objects.
   - Alert on project create and delete.
-  - Alert on POD/container service account volumen mount.
+  - Alert on POD/container service account volume mount.
 
 and so on ....
 
