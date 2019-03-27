@@ -65,7 +65,7 @@ fi
 
 if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] && [ "$STAGE" = "ResponseComplete" ]; then
     
-     op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep $OBJNAME`
+     op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
 
      if [ "$op" != "" ]; then
         MSG="POD ($OBJNAME) in project ($NS) accessing to secret data through volumes"
