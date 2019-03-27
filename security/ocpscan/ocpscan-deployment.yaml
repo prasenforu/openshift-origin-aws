@@ -20,7 +20,7 @@ spec:
       serviceAccount: ocpscan-sa
       serviceAccountName: ocpscan-sa
       containers:
-      - image: xxxxxxxxxx
+      - image: prasenforu/ocpscan:4.0
         name: ocpscan
         ports:
         - name: ocpscan
@@ -34,12 +34,12 @@ spec:
         - mountPath: /etc/webhook/scanner.sh
           subPath: scanner.sh
           name: ocpscan-scanscript-volume-config
-        - mountPath: /etc/webhook/mailsend.py
-          subPath: mailsend.py
-          name: ocpscan-mail-volume-config
         - mountPath: /etc/webhook/mailtemplate.txt
           subPath: mailtemplate.txt
           name: ocpscan-mailbody-volume-config
+        - mountPath: /etc/webhook/mailsend.py
+          subPath: mailsend.py
+          name: ocpscan-mail-volume-secret
         env:
         - name: KUBEHOST
           value: "ocpmaster"
@@ -69,7 +69,7 @@ spec:
           value: ""
         - name: SNINCID
           value: "ServiceNow Incident ID"
-      - image: yyyyyyyyyyyyyyyyyy
+      - image: prasenforu/log2browser
         name: log2browser
         ports:
         - name: ocpscanlog
@@ -90,11 +90,13 @@ spec:
           name: ocpscan-scanscript-configmap
         name: ocpscan-scanscript-volume-config
       - configMap:
-          defaultMode: 493
-          name: ocpscan-mail-configmap
-        name: ocpscan-mail-volume-config
-      - configMap:
           defaultMode: 420
           name: ocpscan-mailbody-configmap
         name: ocpscan-mailbody-volume-config
-        
+      - secret:
+          defaultMode: 493
+          secretName: ocpscan-mail-secret
+          items:
+          - key: mailsend
+            path: mailsend.py
+        name: ocpscan-mail-volume-secret
