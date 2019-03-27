@@ -1,4 +1,4 @@
-## Audit & security in Openshift using OCPSCAN
+## Audit O Alert in Openshift
 
 Audit is a feature that logs requests at the API server level, these logs are output to a log file on the master node. This auditing called "Advance Audit" in Openshift. Advanced audit is an enhancement over the older basic audit. Whereas the basic audit logged all requests to an audit file, advanced audit allows administrators to write a policy file to specify a subset of requests that get logged. Advanced audit also offers a webhook which can be used to send audit logs to a log aggregator via http or https.
 
@@ -77,7 +77,17 @@ Let’s see what this looks like once everything is configured properly. Use the
 
 You can see logs geneted in audit logs file ```/var/log/audit-ocp.log```.
 
-## OCPSCAN in Openshift
+## OCPSCAN
+Its a ```runtime alert``` mechanism based on advanced audit for Openshift Container Platform. 
+
+  - Alert on anytype of authentication.
+  - Alert on POD/container login.
+  - Alert on any type of activity for secret, configmap objects.
+  - Alert on any critical activity for RBAC, SCC & service objects.
+  - Alert on project create and delete.
+  - Alert on POD/container service account volumen mount.
+
+and so on ....
 
 #### Step #1 Create a project & patch that project with node selector
 
