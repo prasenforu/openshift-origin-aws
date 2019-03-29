@@ -21,9 +21,7 @@ STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
 SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
 REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
 
-### Function ####
-
-## MAIL FOR AUTHENTICATION ###
+####### MAIL FOR AUTHENTICATION #######
 
 mailsendauth () {
 
@@ -36,7 +34,7 @@ else
 fi
 }
 
-### MAIL FOR RESOURCE ####
+####### MAIL FOR RESOURCE #######
 
 mailsendrest () {
 
@@ -49,9 +47,7 @@ else
 fi
 }
 
-### Function ####
-
-#### For POD/container login ########
+#### For POD/container ########
 
 if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStarted" ] && [ "$SUBRESOURCE" = "exec" ]; then
 
@@ -62,24 +58,30 @@ if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] &
      mailsendrest
 fi
 
-
 if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] && [ "$STAGE" = "ResponseComplete" ]; then
-    
+
      op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
+     op1=`scan -rp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
+
+     if [ "$op1" != "" ]; then
+        MSG1="Its a risky POD"
+     fi
 
      if [ "$op" != "" ]; then
-        MSG="POD ($OBJNAME) in project ($NS) accessing to secret data through volumes"
+        MSG="POD ($OBJNAME) in project ($NS) service account (token) mounted. $MSG1."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
         echo "$op" >> $LOGPATH
+        echo "$op1" >> $LOGPATH
         MAIL=y
         mailsendrest
+     else
+        exit
      fi
-else 
-   exit
 fi
 
-##### For authentication #######
+
+##### for authentication #######
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "200" ]; then
 
@@ -113,7 +115,7 @@ if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
    MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
-   MAIL=y
+   MAIL=n
    mailsendauth
 fi
 
