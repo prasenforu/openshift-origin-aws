@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: nmap
   labels:
-    name: mongo
+    name: nmap
     context: nmap-tool
 spec:
   containers:
