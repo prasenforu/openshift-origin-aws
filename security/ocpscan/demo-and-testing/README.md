@@ -5,7 +5,7 @@
 ```
 TOKEN=`more /var/run/secrets/kubernetes.io/serviceaccount/token`
 
-oc login https://ocpmaster:8443 --token=$TOKEN
+oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=false
 
 ```
 
