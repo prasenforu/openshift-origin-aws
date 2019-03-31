@@ -115,7 +115,7 @@ if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
    MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
-   MAIL=n
+   MAIL=y
    mailsendauth
 fi
 
