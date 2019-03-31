@@ -5,7 +5,7 @@
 ```
 TOKEN=`more /var/run/secrets/kubernetes.io/serviceaccount/token`
 
-oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=false
+oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=true
 
 ```
 
@@ -17,7 +17,7 @@ TOKEN=`oc describe secret $tn | grep token: | cut -d ":" -f2 | awk '{$1=$1};1'`
 
 TOKEN=`more /var/run/secrets/kubernetes.io/serviceaccount/token`
 
-oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=false
+oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=true
 ```
            
 ### Authentiction using curl
