@@ -4,20 +4,15 @@
 
 ```
 TOKEN=`more /var/run/secrets/kubernetes.io/serviceaccount/token`
-
 oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=true
-
 ```
 
 ### Getting Token from Service account & login.
 
 ```
-tn=`oc describe sa nmap-sa | grep Tokens | awk '{print $2}'`;
-TOKEN=`oc describe secret $tn | grep token: | cut -d ":" -f2 | awk '{$1=$1};1'`
-
-TOKEN=`more /var/run/secrets/kubernetes.io/serviceaccount/token`
-
-oc login https://ocpmaster:8443 --token=$TOKEN --insecure-skip-tls-verify=true
+tn=`oc describe sa nmap-sa -n test-project | grep Tokens | awk '{print $2}'`
+TOKEN=`oc describe secret $tn -n test-project | grep token: | cut -d ":" -f2 | awk '{$1=$1};1'`
+oc login https://ocpmaster1:8443 --token=$TOKEN --insecure-skip-tls-verify=true
 ```
            
 ### Authentiction using curl
