@@ -20,6 +20,8 @@ REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
 STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
 SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
 REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
+ANNOTRESON=`echo "$1" | jq  '.items [] .annotations."authorization.k8s.io/reason"' | sed 's/"//g'`
+OCGROUP=`echo "$1" |  jq  '.items [] .user.groups []' | sed 's/"//g'`
 
 ####### MAIL FOR AUTHENTICATION #######
 
@@ -119,25 +121,29 @@ if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
    mailsendauth
 fi
 
-
 if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; then
 
-   MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   ANNOT=`echo $ANNOTRESON | grep "basic-users" | cut -d ":" -f1`
+   OAUTH=`echo $OCGROUP | grep oauth | cut -d ":" -f2`
    SA=`echo $OCUSER | cut -d ":" -f4`
    NS=`echo $OCUSER | cut -d ":" -f3`
    OP=`scan -rs 2>&1 | grep $SA | cut -d "|" -f2`
-     if [ "$OCUSER" = "system:serviceaccount:$NS:$SA" ] ; then
-        echo "[ $DT ]  $MSG, $OP Service Account."
-        echo "[ $DT ]  $MSG, $OP Service Account." >> $LOGPATH
-        MAIL=n
+
+     if [ "$ANNOT" != "RBAC" ]; then
+        exit
+     elif [ "$OCUSER" = "system:serviceaccount:$NS:$SA" ]; then
+        MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI, $OP Service Account."
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        MAIL=y
         mailsendauth
-     else
+     elif [ "$OAUTH" = "authenticated" ]; then
+        MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
         MAIL=n
         mailsendauth
      fi
-
 fi
 
 ##### for Resouces with create, delete, patch & bind  verb #######
