@@ -20,9 +20,12 @@ REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
 STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
 SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
 REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
+REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
 ANNOTRESON=`echo "$1" | jq  '.items [] .annotations."authorization.k8s.io/reason"' | sed 's/"//g'`
 OCGROUP=`echo "$1" |  jq  '.items [] .user.groups []' | sed 's/"//g'`
 
+
+#######################################
 ####### MAIL FOR AUTHENTICATION #######
 
 mailsendauth () {
@@ -87,7 +90,12 @@ fi
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "200" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - Success"
+   CITY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.city' | sed 's/"//g'`
+   RIGION=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.region' | sed 's/"//g'`
+   COUNTRY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.country_name' | sed 's/"//g'`
+   ORG=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.org'| sed 's/"//g'`
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - Success"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - Success"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -96,7 +104,12 @@ fi
 
 if [ "$ACTION" = "get" ] && [ "$CODE" = "401" ] && [ "REASON" != "Unauthorized" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
+   CITY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.city' | sed 's/"//g'`
+   RIGION=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.region' | sed 's/"//g'`
+   COUNTRY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.country_name' | sed 's/"//g'`
+   ORG=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.org'| sed 's/"//g'`
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $MESSAGE"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -105,7 +118,12 @@ fi
 
 if [ "$ACTION" = "head" ] && [ "$CODE" = "302" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   CITY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.city' | sed 's/"//g'`
+   RIGION=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.region' | sed 's/"//g'`
+   COUNTRY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.country_name' | sed 's/"//g'`
+   ORG=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.org'| sed 's/"//g'`
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $REQUESTURI"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -114,7 +132,12 @@ fi
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   CITY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.city' | sed 's/"//g'`
+   RIGION=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.region' | sed 's/"//g'`
+   COUNTRY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.country_name' | sed 's/"//g'`
+   ORG=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.org'| sed 's/"//g'`
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $REQUESTURI"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -135,7 +158,7 @@ if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; th
         MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI, $OP Service Account."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
-        MAIL=y
+        MAIL=n
         mailsendauth
      elif [ "$OAUTH" = "authenticated" ]; then
         MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
