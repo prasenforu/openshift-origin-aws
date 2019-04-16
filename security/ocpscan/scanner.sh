@@ -47,7 +47,7 @@ else
 fi
 }
 
-#### For POD/container ########
+#### For POD/container login and risk (mount service a/c,priviledge & risky rule) ########
 
 if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStarted" ] && [ "$SUBRESOURCE" = "exec" ]; then
 
@@ -76,8 +76,7 @@ if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] &
      fi
 fi
 
-
-##### for authentication #######
+##### For authentication #######
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "200" ]; then
 
