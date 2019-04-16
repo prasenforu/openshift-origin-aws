@@ -62,17 +62,23 @@ if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] &
 
      op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
      op1=`scan -rp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
+     op2=`scan -pp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
 
-     if [ "$op1" != "" ]; then
-        MSG1="Its a risky POD"
+     if [ "$op1" != "" ] || [ "$op2" != "" ]; then
+        MSG="POD ($OBJNAME) in project ($NS) has receurity risk."
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        echo "$op1" >> $LOGPATH
+        echo "$op2" >> $LOGPATH
+        MAIL=y
+        mailsendrest
      fi
 
      if [ "$op" != "" ]; then
-        MSG="POD ($OBJNAME) in project ($NS) service account (token) mounted. $MSG1."
+        MSG="POD ($OBJNAME) in project ($NS) service account (token) mounted."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
         echo "$op" >> $LOGPATH
-        echo "$op1" >> $LOGPATH
         MAIL=y
         mailsendrest
      else
