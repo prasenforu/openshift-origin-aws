@@ -107,6 +107,12 @@ Creating cluster ... ID: 73965a6e9cf0d85dde108b199d6bf511
         Creating node ocpgluster1 ... ID: 9a43ddccacd4029405cfa5b8f861fd5a
                 Adding device /dev/sdc ... OK
 
+### 9. Disable iptable in Gluster server (ocpgluster1)
+
+```
+[root@ocpgluster1 ~]# systemctl stop iptables
+[root@ocpgluster1 ~]# systemctl disable iptables
+```
 
 ### Now Glusterfs ready for provide gluster vloume for Openshift enviroment.
 
