@@ -117,6 +117,8 @@ curl -u testuser:password123 -k "https://<URL>/api/v1/reports/get?name=test-repo
 curl -u testuser:password123 -k "https://<URL>/api/v1/reports/get?name=test-report-namespace&namespace=ocp-metering&format=csv"
 ```
 
+For more details on reporting visit https://github.com/operator-framework/operator-metering/blob/master/Documentation/report.md
+
 ## Uninstall
 
 Uninstall also done through scripts and additionaly you need to delete pvc also.
