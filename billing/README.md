@@ -3,6 +3,10 @@
 Metering records historical cluster usage, and can generate usage reports showing usage breakdowns by pod or namespace over arbitrary time periods.
 Data gathered from a perspective of operations is usually focused on a current window of time; the last hour, the last 24 hours, and/or the last 7 days. This is based on opensource tool ```operator-metering```
 
+<p align="center">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/billing/sample-report/metering.png">
+</p>
+
 ## Installation
 
 This installatation based on Openshit 3.11.
@@ -74,7 +78,7 @@ Start deployment ..
 In general it takes atleast 5 minutes to make ready all pods.
 
 ```
-oc get pods
+oc get pod
 
 NAME                                  READY     STATUS    RESTARTS   AGE
 hdfs-datanode-0                       1/1       Running   0          1m
