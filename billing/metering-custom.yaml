@@ -1,0 +1,36 @@
+apiVersion: metering.openshift.io/v1alpha1
+kind: Metering
+metadata:
+  name: "operator-metering"
+spec:
+  reporting-operator:
+    spec:
+      image:
+        repository: quay.io/openshift/origin-metering-reporting-operator
+        tag: latest
+      route:
+        enabled: true
+      authProxy:
+        enabled: true
+        htpasswdData: |
+          testuser:{SHA}y/2sYAj5yrQIN4TL0YdPdmGNKpc=
+        cookieSeed: "t6JA9vA0cv4up/BGyI47+L7yLKTpX1s7"
+        subjectAccessReviewEnabled: true
+        delegateURLsEnabled: true
+  presto:
+    spec:
+      hive:
+        metastore:
+          storage:
+            class: "heketi"
+            size: "5Gi"
+  hdfs:
+    spec:
+      datanode:
+        storage:
+          class: "heketi"
+          size: "5Gi"
+      namenode:
+        storage:
+          class: "heketi"
+          size: "5Gi"
