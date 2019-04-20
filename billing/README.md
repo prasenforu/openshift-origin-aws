@@ -41,6 +41,8 @@ git checkout 0.14.0
 
 This installation based on scripts are written in bash, and utilize a few non-standard tools ```faq``` to interact with yaml and json files. Please ensure you have the following tools installed before running the install scripts:
 
+#### NOTE: As we are going to install infra host, make sure Infra host should have more CPU and MEM (Presto Pod takes 2 GB memory and 2 core CPU as minimium). Otherwise Pod will not start.
+
 ```
 LATEST_RELEASE=$(curl -s https://api.github.com/repos/jzelinskie/faq/releases | cat | head -n 10 | grep "tag_name" | cut -d\" -f4)
 curl -Lo /usr/local/bin/faq https://github.com/jzelinskie/faq/releases/download/$LATEST_RELEASE/faq-linux-amd64
@@ -72,7 +74,14 @@ In general it takes atleast 5 minutes to make ready all pods.
 ```
 oc get pods
 
-
+NAME                                  READY     STATUS    RESTARTS   AGE
+hdfs-datanode-0                       1/1       Running   0          1m
+hdfs-namenode-0                       1/1       Running   0          1m
+hive-metastore-0                      1/1       Running   0          1m
+hive-server-0                         1/1       Running   0          1m
+metering-operator-5846ffb499-56x6v    2/2       Running   0          2m
+presto-coordinator-7dbb8d7bc8-rg96v   1/1       Running   0          1m
+reporting-operator-7d7b5dd77b-tr7tb   1/1       Running   0          1m
 ```
 
 ## Report creating
