@@ -16,14 +16,14 @@ Create ```metering-custom.yaml``` file and edit following value based on output 
           testuser:{SHA}y/2sYAj5yrQIN4TL0YdPdmGNKpc=
         cookieSeed: "t6JA9vA0cv4up/BGyI47+L7yLKTpX1s7"
 ```
-##### A)
+###### Step -A)
 
 htpasswdData can contain htpasswd file contents for allowing auth using a static list of usernames and their password hashes.
 Generate htpasswdData using: 
 
 ```htpasswd -nb -s testuser password123```
 
-##### B)
+###### Step -B)
 
 cookieSeed is used to protect the cookie created if accessing the API using browser.
 Generate a 32 character random string using a command of your choice
