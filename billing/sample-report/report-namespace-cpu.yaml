@@ -1,0 +1,9 @@
+apiVersion: metering.openshift.io/v1alpha1
+kind: Report
+metadata:
+  name: report-namespace-cpu
+spec:
+  reportingStart: '2019-04-19T00:05:00Z'
+  reportingEnd: '2019-04-20T1:20:00Z'
+  generationQuery: 'namespace-cpu-usage'
+  runImmediately: true
