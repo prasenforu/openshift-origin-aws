@@ -1,6 +1,7 @@
-# graphs-from-csv
+# Graph from CSV
 
 An example repository for creating website graphs from CSV files. This repository uses c3.js and PapaParse.
+To create a graph from report csv file.
 
 ### Graph/Chart Library
 c3.js: http://c3js.org/
