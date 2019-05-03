@@ -6,6 +6,10 @@ Centralized logging in Kubernetes consists in having a daemon set for a logging 
 
 Graylog is a Java server that uses Elastic Search to store log entries. It also relies on MongoDB, to store metadata (Graylog users, permissions, dashboards, etc). Interesting part is that only Graylog interacts with the logging agents. Graylog manages the storage in Elastic Search, the dashboards and user permissions. Elastic Search should not be accessed directly. Graylog provides a web console and a REST API. So, everything feasible in the console can be done with a REST client.
 
+<p align="center">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/logging/graylog/graylog-arch.png">
+</p>
+
 #### Graylog concepts
 
 - input
