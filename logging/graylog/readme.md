@@ -43,12 +43,45 @@ Any user must have one of these two roles. He (or she) may have other ones as we
 
 ### Installation
 
+Kubernetes configuration to install and configure Fluent Bit as a daemon set. Fluent Bit collects only Docker logs, gets K8s metadata, builds a GEF message and sends it to a Graylog server. 
 
-A K8s configuration to install and configure Fluent Bit as a daemon set.  
-Fluent Bit collects only Docker logs, gets K8s metadata, builds a GEF message
-and sends it to a Graylog server.
+Production-grade deployment would require a highly-available cluster, for both ES, MongoDB and Graylog. But for this article, a local installation is enough. A docker-compose file was written to start everything. As ES requires specific configuration of the host, here is the sequence to start it:
 
-* Update the **fluent-bit-configmap.yaml** file.
-  Replace **192.168.1.18** with the IP address of your Graylog server.
-* Then execute the **deploy.sh** script.
+#### Step #1
 
+Install as a standalone setup a saperate host and remember the host IP.
+
+```docker-compose -f compose-graylog.yml up```
+
+#### Step #2
+
+Create the namespace
+
+```kubectl create namespace logging```
+
+#### Step #3
+
+Setting up service account.
+
+```kubectl create -f fluent-bit-rbac.yaml```
+
+#### Step #4
+
+Create the config map.
+Update the fluent-bit-configmap.yaml file. Replace ```<GRAYLOG-SERVER>``` with the IP address of your Graylog server.
+
+
+```kubectl create -f fluent-bit-configmap.yaml```
+
+#### Step #5
+
+As a log collector we are using FluentBit. Create the daemon set.
+
+```kubectl create -f fluent-bit-daemon-set.yaml```
+
+### Verification
+
+- Check all pods are running.
+- Log into Graylog Server web console at http://<GRAYLOG-SERVER>:9000 with ```admin/admin``` as credentials. 
+  
+Those who interested to create a highly available installation can take a look on Graylog’s web site.
