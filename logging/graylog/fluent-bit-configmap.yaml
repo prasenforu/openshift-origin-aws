@@ -76,7 +76,7 @@ data:
     [OUTPUT]
         Name          gelf
         Match         *
-        Host          192.168.1.18
+        Host          GRAYLOG-SERVER
         Port          12201
         Mode          tcp
         Gelf_Short_Message_Key short_message
