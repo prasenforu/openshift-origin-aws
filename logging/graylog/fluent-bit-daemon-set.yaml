@@ -50,7 +50,7 @@ spec:
       - name: mnt
         hostPath:
           path: /mnt
-      serviceAccountName: fluent-bit
+      serviceAccountName: fluent-bit-sa
       tolerations:
       - key: node-role.kubernetes.io/master
         operator: Exists
