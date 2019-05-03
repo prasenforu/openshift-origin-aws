@@ -9,12 +9,15 @@ Graylog is a Java server that uses Elastic Search to store log entries. It also 
 #### Graylog concepts
 
 - input
+
 An input is a listener to receive GELF messages. You can create one by using the ```System > Inputs``` menu. In this example, we create a global one for GELF HTTP (port 12201). There are many options in the creation dialog, including the use of SSL certificates to secure the connection.
 
 - Indices
+
 Graylog indices are abstractions of Elastic indexes. They designate where log entries will be stored. You can associate sharding properties (logical partition of the data), retention delay, replica number (how many instances for every shard) and other stuff to a given index. Every projet should have its own index: this allows to separate logs from different projects. Use the System > Indices to manage them. A project in production will have its own index, with a bigger retention delay and several replicas, while a developement one will have shorter retention and a single replica (it is not a big issue if these logs are lost).
 
 - Streams
+
 A stream is a routing rule. They can be defined in the Streams menu. When a (GELF) message is received by the input, it tries to match it against a stream. If a match is found, the message is redirected into a given index. When you create a stream for a project, make sure to check the Remove matches from ‘All messages’ stream option. This way, the log entry will only be present in a single stream. Otherwise, it will be present in both the specific stream and the default (global) one.
 
 The stream needs a single rule, with an exact match on the K8s namespace (in our example).
