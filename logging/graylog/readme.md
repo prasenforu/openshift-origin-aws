@@ -85,3 +85,7 @@ As a log collector we are using FluentBit. Create the daemon set.
 - Log into Graylog Server web console at http://<GRAYLOG-SERVER>:9000 with ```admin/admin``` as credentials. 
   
 Those who interested to create a highly available installation can take a look on Graylog’s web site.
+
+##### Reference
+
+> See [this blog post](https://vzurczak.wordpress.com/?p=781) for more details.
