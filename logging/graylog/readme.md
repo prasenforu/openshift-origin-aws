@@ -64,23 +64,39 @@ docker-compose -f compose-graylog.yml up -d
 
 #### Step #2
 
-Create the namespace
+Create the namespace in Kubernetes
 
 ```kubectl create namespace logging```
 
+Create the namespace in Openshift
+
+```
+oc new-project logging
+oc patch namespace logging -p '{"metadata": {"annotations": {"openshift.io/node-selector": ""}}}'
+```
+
 #### Step #3
 
-Setting up service account.
+Setting up service account in Kubernetes
 
 ```kubectl create -f fluent-bit-rbac.yaml```
 
+Setting up service account in Openshift
+
+```
+oc create -f fluent-bit-rbac.yaml
+oc adm policy add-scc-to-user privileged system:serviceaccount:logging:fluent-bit-sa
+```
+
 #### Step #4
 
-Create the config map.
+Create the config map
 Update the fluent-bit-configmap.yaml file. Replace ```<GRAYLOG-SERVER>``` with the IP address of your Graylog server.
 
-
-```kubectl create -f fluent-bit-configmap.yaml```
+```
+sed -i 's/GRAYLOG-SERVER/10.138.0.2/g' fluent-bit-configmap.yaml
+kubectl create -f fluent-bit-configmap.yaml
+```
 
 #### Step #5
 
