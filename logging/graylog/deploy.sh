@@ -5,9 +5,7 @@
 kubectl create namespace logging
 
 # Create the base resources
-kubectl create -f fluent-bit-service-account.yaml
-kubectl create -f fluent-bit-role.yaml
-kubectl create -f fluent-bit-role-binding.yaml
+kubectl create -f fluent-bit-rbac.yaml
 
 # Create the config map
 # See https://github.com/fluent/fluent-bit/issues/851 for the GELF parameters.
