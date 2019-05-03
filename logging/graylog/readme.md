@@ -53,9 +53,14 @@ Production-grade deployment would require a highly-available cluster, for both E
 
 #### Step #1
 
-Install as a standalone setup a saperate host and remember the host IP.
+Install Docker-compose as a standalone setup a saperate host and remember the host IP.
 
-```docker-compose -f compose-graylog.yml up -d```
+```
+curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+docker-compose -f compose-graylog.yml up -d
+```
 
 #### Step #2
 
