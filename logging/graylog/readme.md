@@ -139,3 +139,13 @@ Then reload configuration with new value.
 ##### Reference
 
 > See [this blog post](https://vzurczak.wordpress.com/?p=781) for more details.
+
+##### Graylog vs ELK
+
+Graylog server (the entire application and web interface), combined with MongoDB and Elasticsearch, is often compared to the ELK stack (Elasticsearch, Logstash, and Kibana). Though both solutions are pretty similar in terms of features set, there are a few differences to consider.
+
+The most important distinction between the two lies in the fact that, from the very beginning, Graylog is positioned as a powerful logging solution, while ELK is a Big Data solution. Graylog can receive structured logs and standard syslog directly from an application through the network protocol. On the contrary, ELK is the solution that analyzes already collected plain text logs using Logstash and then parses and passes them to ElasticSearch.
+
+In ELK, Kibana plays the role of a dashboard and displays the data received from Logstash. Graylog in this sense is more convenient as it offers a single-application solution (excluding ElasticSearch as a flexible data storage) with almost the same functionality. So the time needed to deploy a usable solution is smaller. Moreover, Graylog has a friendlier GUI right out of the box and superior permissions system compared to ELK. As Elasticsearch fans, we prefer Graylog over ELK as it perfectly meets our needs in terms of log managing.
+
+Things become less convenient when it comes to partition data and dashboards. Elastic Search has the notion of index, and indexes can be associated with permissions. So, there is no trouble here. But Kibana, in its current version, does not support anything equivalent. All the dashboards can be accessed by anyone. Even though you manage to define permissions in Elastic Search, a user would see all the dashboards in Kibana, even though many could be empty (due to invalid permissions on the ES indexes). 
