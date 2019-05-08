@@ -76,7 +76,7 @@ data:
     [OUTPUT]
         Name          gelf
         Match         *
-        Host          10.138.0.2
+        Host          GRAYLOG-SERVER
         Port          12201
         Mode          udp
         #Mode          tcp
