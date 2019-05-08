@@ -122,6 +122,14 @@ Delete docker volume
 
 ```docker system prune -f```
 
+To make ```vm.max_map_count``` permanently, add following line in ```/etc/sysctl.conf``` file.
+
+```vm.max_map_count=262144```
+
+Then reload configuration with new value.
+
+```sudo sysctl -p``` 
+
 ##### Reference
 
 > See [this blog post](https://vzurczak.wordpress.com/?p=781) for more details.
