@@ -62,7 +62,7 @@ chmod +x /usr/local/bin/docker-compose
 
 Before running compose run some system configuration.
 
-````
+```
 sysctl -w vm.max_map_count=262144
 docker-compose -f compose-graylog.yml up -d
 ```
