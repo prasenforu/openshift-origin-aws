@@ -47,7 +47,7 @@ Any user must have one of these two roles. He (or she) may have other ones as we
 
 ### Installation
 
-Kubernetes configuration to install and configure Fluent Bit as a daemon set. Fluent Bit collects only Docker logs, gets K8s metadata, builds a GEF message and sends it to a Graylog server. 
+Kubernetes configuration to install and configure Fluent Bit as a daemon set. Fluent Bit collects only Docker logs, gets K8s metadata, builds a GELF message and sends it to a Graylog server. 
 
 Production-grade deployment would require a highly-available cluster, for both ES, MongoDB and Graylog. But for this article, a local installation is enough. A docker-compose file was written to start everything. As ES requires specific configuration of the host, here is the sequence to start it:
 
