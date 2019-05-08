@@ -118,7 +118,7 @@ Install Daemonset in Openshift
 ### Verification
 
 - Check all pods are running.
-- Log into Graylog Server web console at http://<GRAYLOG-SERVER>:9000 with ```admin/admin``` as credentials. 
+- Log into Graylog Server web console at ```http://GRAYLOG-SERVER-IP:9000``` with ```admin/admin``` as credentials. 
   
 Those who interested to create a highly available installation can take a look on Graylog’s web site.
 
