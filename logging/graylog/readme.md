@@ -136,6 +136,12 @@ Then reload configuration with new value.
 
 ```sudo sysctl -p``` 
 
+##### Experience
+
+I got error ```An HTTP line is larger than 4096 bytes``` in graylog container when I create ```Input``` as a ```GELF HTTP```.
+
+To fix this I create ```Input``` as a ```GELF UDP``` also need to edit file ```fluent-bit-configmap.yaml``` with ```Mode udp``` instead of tcp.
+
 ##### Reference
 
 > See [this blog post](https://vzurczak.wordpress.com/?p=781) for more details.
