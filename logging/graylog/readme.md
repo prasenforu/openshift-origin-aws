@@ -58,7 +58,12 @@ Install Docker-compose as a standalone setup a saperate host and remember the ho
 ```
 curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
+```
 
+Before running compose run some system configuration.
+
+````
+sysctl -w vm.max_map_count=262144
 docker-compose -f compose-graylog.yml up -d
 ```
 
@@ -110,6 +115,12 @@ As a log collector we are using FluentBit. Create the daemon set.
 - Log into Graylog Server web console at http://<GRAYLOG-SERVER>:9000 with ```admin/admin``` as credentials. 
   
 Those who interested to create a highly available installation can take a look on Graylog’s web site.
+
+##### TIPS
+
+Delete docker volume
+
+```docker system prune -f```
 
 ##### Reference
 
