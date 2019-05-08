@@ -118,11 +118,11 @@ Those who interested to create a highly available installation can take a look o
 
 ##### TIPS
 
-Delete docker volume
+1. Delete docker volume
 
 ```docker system prune -f```
 
-To make ```vm.max_map_count``` permanently, add following line in ```/etc/sysctl.conf``` file.
+2. To make ```vm.max_map_count``` permanently, add following line in ```/etc/sysctl.conf``` file.
 
 ```vm.max_map_count=262144```
 
