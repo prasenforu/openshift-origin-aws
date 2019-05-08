@@ -84,7 +84,7 @@ oc patch namespace logging -p '{"metadata": {"annotations": {"openshift.io/node-
 
 Setting up service account in Kubernetes
 
-```kubectl create -f fluent-bit-rbac.yaml```
+```kubectl create -f fluent-bit-rbac.yaml -n logging```
 
 Setting up service account in Openshift
 
@@ -100,7 +100,7 @@ Update the fluent-bit-configmap.yaml file. Replace ```<GRAYLOG-SERVER>``` with t
 
 ```
 sed -i 's/GRAYLOG-SERVER/10.138.0.2/g' fluent-bit-configmap.yaml
-kubectl create -f fluent-bit-configmap.yaml
+kubectl create -f fluent-bit-configmap.yaml -n logging
 ```
 
 #### Step #5
@@ -109,7 +109,7 @@ As a log collector we are using FluentBit. Create the daemon set.
 
 Install Daemonset in Kubernetes
 
-```kubectl create -f fluent-bit-daemon-set.yaml```
+```kubectl create -f fluent-bit-daemon-set.yaml -n logging```
 
 Install Daemonset in Openshift
 
