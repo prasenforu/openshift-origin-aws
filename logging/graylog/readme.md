@@ -14,7 +14,7 @@ Graylog is a Java server that uses Elastic Search to store log entries. It also 
 
 - input
 
-An input is a listener to receive GELF messages. You can create one by using the ```System > Inputs``` menu. In this example, we create a global one for ```GELF UDP``` (port 12201). There are many options in the creation dialog, including the use of SSL certificates to secure the connection.
+An input is a listener to receive GELF (Graylog Extended Log Format) messages. You can create one by using the ```System > Inputs``` menu. In this example, we create a global one for ```GELF UDP``` (port 12201). There are many options in the creation dialog, including the use of SSL certificates to secure the connection.
 
 - Indices
 
