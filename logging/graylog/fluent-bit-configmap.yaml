@@ -76,9 +76,10 @@ data:
     [OUTPUT]
         Name          gelf
         Match         *
-        Host          GRAYLOG-SERVER
+        Host          10.138.0.2
         Port          12201
-        Mode          tcp
+        Mode          udp
+        #Mode          tcp
         Gelf_Short_Message_Key short_message
   parsers.conf: |
     [PARSER]
