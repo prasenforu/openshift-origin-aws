@@ -5,9 +5,11 @@ services:
   # MongoDB: https://hub.docker.com/_/mongo/
   mongo:
     image: mongo:3
+    restart: always
   # Elasticsearch: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/docker.html
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.1
+    restart: always
     environment:
       - http.host=0.0.0.0
       # Disable X-Pack security: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/security-settings.html#general-security-settings
@@ -21,12 +23,15 @@ services:
   # Graylog: https://hub.docker.com/r/graylog/graylog/
   graylog:
     image: graylog/graylog:2.5.0-1
+    restart: always
     environment:
       # CHANGE ME!
       - GRAYLOG_PASSWORD_SECRET=0123456789_10_11_12
       # Password: admin
       - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
+      #- GRAYLOG_HTTP_EXTERNAL_URI=http://0.0.0.0:9000/api
+      - GRAYLOG_WEB_ENDPOINT_URI=http://35.247.68.185:9000/api
     links:
       - mongo
       - elasticsearch
