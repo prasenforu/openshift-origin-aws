@@ -107,7 +107,13 @@ kubectl create -f fluent-bit-configmap.yaml
 
 As a log collector we are using FluentBit. Create the daemon set.
 
+Install Daemonset in Kubernetes
+
 ```kubectl create -f fluent-bit-daemon-set.yaml```
+
+Install Daemonset in Openshift
+
+```oc create -f fluent-bit-daemon-set-ocp.yaml```
 
 ### Verification
 
