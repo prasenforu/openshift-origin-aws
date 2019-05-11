@@ -1,0 +1,15 @@
+Namespace,CPU,RAM,PV Storage,Total
+default,$4.85 ,$1.71 ,-,-
+openshift-web-console,$1.62 ,$0.22 ,-,-
+openshift-monitoring,$3.47 ,$2.22 ,-,-
+openshift-console,$1.62 ,$0.22 ,-,-
+ocp-metering,$53.31 ,$8.99 ,$0.60 ,$62.90 
+openshift-sdn,$9.69 ,$3.33 ,-,-
+openshift-ansible-service-broker,$0 ,$0 ,-,-
+logging,$0 ,$0 ,-,-
+openshift-node,$0 ,$0 ,-,-
+openshift-template-service-broker,$0 ,$0 ,-,-
+test-project,$0 ,$0 ,$0.08 ,$0.08 
+security,$0 ,$0 ,-,-
+kube-service-catalog,$0 ,$0 ,-,-
+sample-test,-,-,$0.04 ,-
