@@ -90,13 +90,23 @@ total 16
 
 ### 8. Now load topology json file
 
-##### NOTE: Before execute command make sure "glusterd" daemon started in GLUSTER HOST (ocpgluster1), else start "glusterd" daemon in GLUSTER HOST (ocpgluster1)
+##### NOTE: Before execute command make sure GlusterFS install & "glusterd" daemon started in GLUSTER HOST (ocpgluster1), else install and then start "glusterd" daemon in GLUSTER HOST (ocpgluster1)
+
+##### Install GlusterFS
+
+```
+[root@ocpgluster1 ~]# yum install -y centos-release-gluster
+[root@ocpgluster1 ~]# yum install -y glusterfs-server
+```
+
+##### Start GlusterFS Daemon
 
 ```
 [root@ocpgluster1 ~]# systemctl enable glusterd
 [root@ocpgluster1 ~]# systemctl start glusterd
 [root@ocpgluster1 ~]# systemctl status glusterd
 ```
+
 ```HEKETI_CLI_KEY="/etc/heketi/heketi_key";heketi-cli topology load --json=/root/openshift-origin-aws/storage --server http://ocpmaster1:8080 --user admin --secret $HEKETI_CLI_KEY```
 
 Output will come as follows ...
