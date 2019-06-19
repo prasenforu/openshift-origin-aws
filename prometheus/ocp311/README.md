@@ -25,3 +25,13 @@ vi alertmanager.yaml
 ```
 oc create secret generic alertmanager-main --from-literal=alertmanager.yaml="$(< alertmanager.yaml)" --dry-run -oyaml | oc replace secret --filename=-
 ```
+
+#### To create standalone Grafana 
+
+If you want to add k8s-prometheus as a datasource in this standalone Grafana, you need to run gfollowing command to get credentials.
+
+```oc get secret grafana-datasources -n openshift-monitoring -o yaml | grep prometheus.yaml | cut -d':' -f2 | cut -d' ' -f2 | base64 -d```
+
+if you to save in file run as follows ...
+
+```oc get secret grafana-datasources -n openshift-monitoring -o yaml | grep prometheus.yaml | cut -d':' -f2 | cut -d' ' -f2 | base64 -d > datasource.yaml```
