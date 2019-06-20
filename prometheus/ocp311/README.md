@@ -26,6 +26,18 @@ vi alertmanager.yaml
 oc create secret generic alertmanager-main --from-literal=alertmanager.yaml="$(< alertmanager.yaml)" --dry-run -oyaml | oc replace secret --filename=-
 ```
 
+#### 4. Setup Webhook configmap for PEM file
+
+```oc create configmap webhook-keypem-configmap --from-file=./prasen.pem```
+
+#### 5. Create Service Account and set root priviledge to webhook container
+
+```
+oc create sa webhook
+oc adm policy add-scc-to-user anyuid system:serviceaccount:openshift-monitoring:webhook
+```
+
+
 #### To create standalone Grafana 
 
 If you want to add k8s-prometheus as a datasource in this standalone Grafana, you need to run gfollowing command to get credentials.
