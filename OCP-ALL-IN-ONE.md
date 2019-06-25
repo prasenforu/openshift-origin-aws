@@ -1,4 +1,4 @@
-# Install Openshift3.11 in single host
+# Install Openshift 3.11 in single host
 
 
 ### Install packages
