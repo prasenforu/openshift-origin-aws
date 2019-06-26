@@ -243,6 +243,17 @@ chcon -Rt svirt_sandbox_file_t /path/to/volume
 rm ~/.aws/config install-aws-cli.sh prasen.pem
 
 ```
+#### Grafana Setup
+
+```
+ID=$(id -u)
+
+mkdir -p /root/grafana/data
+
+chcon -Rt svirt_sandbox_file_t /root/grafana/data
+
+docker run -d --user $ID -p 3000:3000 --restart=always --name=grafana -e "GF_SECURITY_ADMIN_PASSWORD=admin2675" -v /root/grafana/data:/var/lib/grafana grafana/grafana
+```
 
 # Feedback
 
