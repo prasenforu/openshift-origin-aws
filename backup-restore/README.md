@@ -6,7 +6,7 @@ Velero (Heptio Ark) is a convenient backup tool for Openshift/Kubernetes cluster
 
 The Heptio Ark backup tool consists of a client installed on your local computer and a server that runs in your Kubernetes cluster. To begin, we'll install the local Ark client.
 
-#### Step #1
+#### Step #1 Create backup location
 
 First you need to create backup location, it could be any cloud provider object storage location. But here I am going to use on-prem storage location. ```MinIO``` is one of opensource tool which hep you to create object storage like AWS S3. To setup ```MinIO``` use following steps.
 
@@ -30,7 +30,7 @@ Now you can access MinIO http://<serverIP>:9000. You can login using ```MINIO_AC
  
 Please create ```arkbucket-one``` bucket inside minio & and change policy with read & write also please do remember bucket name.
 
-#### Step #2
+#### Step #2 Download packege
 
 Download packege with wget
 
@@ -44,7 +44,7 @@ tar zxvf ark-v0.10.0-linux-amd64.tar.gz
 cp ark /usr/local/bin/ark
 ```
 
-#### Step #3
+#### Step #3 Edit BackupStorageLocation object
 
 Now we are ready to configure the Ark server and deploy it in our Openshift/Kubernetes cluster.
 
@@ -105,57 +105,24 @@ oc create -f minio/30-restic-daemonset.yaml
 
 #### Step #5 Verification
 
+```
+oc get pod
+oc logs -f <POD NAME>
 
+ark backup-location
+```
 
 
 ## BACKUP:
 
-#### OpenShift Cluster
+- OpenShift object
 
 ```
-   oc export of ALL objects  >*.yaml
-   (for easy restore of individual objects)
-````
 
-#### OpenShift Masters
+```
 
-- ETCD
-- /etc/origin
-
-#### OpenShift containers
-Detect “mysql” container and starts mysqldump inside,
-output saved to .sql file.
-Detect “postgresql” container and starts pgdump inside.
-And saves the backup:
-
-If run inside a container (CronJob), then attach a PV to /backup.
-If /backup is a git repo it will do a git commit for version controlled backups.
 
 ## RESTORE:
 
-- Individual objects that where exported with oc export can be re-imported with 
-```
-oc create -f *.yaml
-or 
-oc replace -f *.yaml
-```
 
--  ETCD dumps can be restored by putting files back into 
-```
-/var/lib/etcd
-and 
-restart etcd
-```
-
--  OpenShift config files can be restored by putting them back into 
-```
-/etc/origin/master
-and
- systemctl restart atomic-openshift-master-*
-```
-
--  Mysqldumps can be restored by running 
-
-```oc -n $PROJECT exec $POD — /usr/bin/sh -c ‘PATH=$PATH:/opt/rh/mysql55/root/usr/bin:/opt/rh/rh-mysql56/root/usr/bin/ mysql -h 127.0.0.1 -u $MYSQL_USER –password=$MYSQL_PASSWORD $MYSQL_DATABASE’ </backup/mysql/$PROJECT/$DC.sql
-```
 
