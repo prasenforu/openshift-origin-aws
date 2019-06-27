@@ -1,14 +1,14 @@
-# Openshift Container Platform backup & Restore using Velero (heptio ark)
+# Openshift Container Platform backup & restore using Velero (heptio ark)
 
 Velero (Heptio Ark) is a convenient backup tool for Openshift/Kubernetes clusters that compresses and backs up Kubernetes objects to object storage. It also takes snapshots of your cluster's Persistent Volumes using your cloud provider's block storage snapshot features, and can then restore your cluster's objects and Persistent Volumes to a previous state.
  
 ## Installation
 
-The Heptio Ark backup tool consists of a client installed on your local computer and a server that runs in your Kubernetes cluster. To begin, we'll install the local Ark client.
+The Heptio Ark backup tool consists of a client installed on your local computer and a server that runs in your Openshift/Kubernetes cluster. To begin, we'll install the local Ark client.
 
 #### Step #1 Create backup location
 
-First you need to create backup location, it could be any cloud provider object storage location. But here I am going to use on-prem storage location. ```MinIO``` is one of opensource tool which hep you to create object storage like AWS S3. To setup ```MinIO``` use following steps.
+First you need to create backup location, it could be any cloud provider object storage location. But here I am going to use on-prem storage location. ```MinIO``` is one of opensource tool which help us to create object storage like AWS S3. To setup ```MinIO``` use following steps. Before execute below command make sure docker is installed in host.
 
 ```
 mkdir -p /root/minio/data
