@@ -50,10 +50,10 @@ Now we are ready to configure the Ark server and deploy it in our Openshift/Kube
 
 Before we deploy Ark into our Openshift/Kubernetes cluster, we'll first create Ark's prerequisite objects. 
 
--A heptio-ark Namespace
--The ark Service Account
--Role-based access control (RBAC) rules to grant permissions to the ark Service Account
--Custom Resources (CRDs) for the Ark-specific resources: Backup, Schedule, Restore, Config
+--A heptio-ark Namespace
+--The ark Service Account
+--Role-based access control (RBAC) rules to grant permissions to the ark Service Account
+--Custom Resources (CRDs) for the Ark-specific resources: Backup, Schedule, Restore, Config
 
 Now we need to modify some configuration as per our requirement.
 
