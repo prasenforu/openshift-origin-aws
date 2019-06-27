@@ -109,7 +109,7 @@ oc create -f minio/30-restic-daemonset.yaml
 oc get pod
 oc logs -f <POD NAME>
 
-ark backup-location
+ark backup-location get
 ```
 
 
@@ -118,9 +118,12 @@ ark backup-location
 - OpenShift object
 
 ```
+ark backup create velero-bkp --include-namespaces default
 
+ark backup describe velero-bkp
+
+ark backup logs velero-bkp
 ```
-
 
 ### RESTORE:
 
