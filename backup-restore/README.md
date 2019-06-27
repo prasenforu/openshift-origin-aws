@@ -2,7 +2,7 @@
 
 Velero (Heptio Ark) is a convenient backup tool for Openshift/Kubernetes clusters that compresses and backs up Kubernetes objects to object storage. It also takes snapshots of your cluster's Persistent Volumes using your cloud provider's block storage snapshot features, and can then restore your cluster's objects and Persistent Volumes to a previous state.
  
-### Installation
+## Installation
 
 The Heptio Ark backup tool consists of a client installed on your local computer and a server that runs in your Kubernetes cluster. To begin, we'll install the local Ark client.
 
@@ -64,6 +64,9 @@ Now we need to modify some configuration as per our requirement.
  cp minio/05-ark-backupstoragelocation.yaml 05-ark-backupstoragelocation.yaml_bkp
  vi minio/05-ark-backupstoragelocation.yaml
 ```
+
+Edit as follows ..
+
 ```
 apiVersion: v1
 kind: Secret
@@ -90,6 +93,18 @@ spec:
     s3ForcePathStyle: "true"
     s3Url: http://10.138.0.2:9000
 ```
+
+#### Step #4 Start deployment
+
+```
+oc create -f common/00-prereqs.yaml
+oc create -f minio/05-ark-backupstoragelocation.yaml
+oc create -f minio/20-ark-deployment.yaml
+oc create -f minio/30-restic-daemonset.yaml
+```
+
+#### Step #5 Verification
+
 
 
 
