@@ -254,6 +254,22 @@ chcon -Rt svirt_sandbox_file_t /root/grafana/data
 
 docker run -d --user $ID -p 3000:3000 --restart=always --name=grafana -e "GF_SECURITY_ADMIN_PASSWORD=admin2675" -v /root/grafana/data:/var/lib/grafana grafana/grafana
 ```
+#### MinIO Setup
+
+```
+mkdir -p /root/minio/data
+mkdir -p /root/minio/config
+
+chcon -Rt svirt_sandbox_file_t /root/minio/data
+chcon -Rt svirt_sandbox_file_t /root/minio/config
+
+docker run -d -p 9000:9000 --restart=always --name minio1 \
+  -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" \
+  -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
+  -v /root/minio/data:/data \
+  -v /root/minio/config:/root/.minio \
+  minio/minio server /data
+```
 
 # Feedback
 
