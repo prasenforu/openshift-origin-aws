@@ -50,12 +50,47 @@ Now we are ready to configure the Ark server and deploy it in our Openshift/Kube
 
 Before we deploy Ark into our Openshift/Kubernetes cluster, we'll first create Ark's prerequisite objects. 
 
---A heptio-ark Namespace
---The ark Service Account
---Role-based access control (RBAC) rules to grant permissions to the ark Service Account
---Custom Resources (CRDs) for the Ark-specific resources: Backup, Schedule, Restore, Config
+- A heptio-ark Namespace
+- The ark Service Account
+- Role-based access control (RBAC) rules to grant permissions to the ark Service Account
+- Custom Resources (CRDs) for the Ark-specific resources: Backup, Schedule, Restore, Config
 
 Now we need to modify some configuration as per our requirement.
+
+ - Edit BackupStorageLocation object
+ 
+ ```
+ cd config
+ cp minio/05-ark-backupstoragelocation.yaml 05-ark-backupstoragelocation.yaml_bkp
+ vi minio/05-ark-backupstoragelocation.yaml
+```
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  namespace: heptio-ark
+  name: cloud-credentials
+stringData:
+  cloud: |
+    [default]
+    aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+    aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+---
+apiVersion: ark.heptio.com/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: heptio-ark
+spec:
+  provider: aws
+  objectStorage:
+    bucket: arkbucket-one
+  config:
+    region: minio
+    s3ForcePathStyle: "true"
+    s3Url: http://10.138.0.2:9000
+```
+
 
 
 ## BACKUP:
