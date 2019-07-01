@@ -254,6 +254,19 @@ chcon -Rt svirt_sandbox_file_t /root/grafana/data
 
 docker run -d --user $ID -p 3000:3000 --restart=always --name=grafana -e "GF_SECURITY_ADMIN_PASSWORD=admin2675" -v /root/grafana/data:/var/lib/grafana grafana/grafana
 ```
+
+#### Prometheus Setup
+
+```
+mkdir /root/prom
+
+chcon -Rt svirt_sandbox_file_t /root/prom
+
+vi /root/prom/prometheus.yml
+
+docker run -d -p 9090:9090 --restart=always --name prometheus -v /root/prom:/data -v /root/prom/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
+```
+
 #### MinIO Setup
 
 ```
