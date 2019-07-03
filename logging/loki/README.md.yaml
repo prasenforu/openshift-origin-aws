@@ -1,8 +1,0 @@
-# docker run -d --name loki -p 3100:3100 --restart=always --volume " /root/loki:/etc/loki" grafana/loki:master -config.file=/etc/loki/loki-local-config.yaml
-# oc new-project loki
-# oc adm policy add-scc-to-user privileged system:serviceaccount:loki:promtail
-# oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:promtail
-# oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:loki
-# oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selector":""}}}'
-
-
