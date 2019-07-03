@@ -54,5 +54,16 @@ oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selec
 oc create -f promtail.yaml
 ```
 
+## Add Loki datasource in Grafana (Supported Grafana version 6.0 & onwards)
 
+- Log into your Grafana.
+- Go to Configuration > Data Sources via the cog icon in the left sidebar.
+- Click the big + Add data source button.
+- Choose Loki from the list.
+- The http URL field should be the address of your Loki server: http://<loki-host>:3100 
+
+## See your logs in the “Explore” view
+- Select the “Explore” view on the sidebar.
+- Select the Loki data source.
+- Choose a log stream using the “Log labels” button.
 
