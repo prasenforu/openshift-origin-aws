@@ -60,7 +60,7 @@ oc create -f promtail.yaml
 - Go to Configuration > Data Sources via the cog icon in the left sidebar.
 - Click the big + Add data source button.
 - Choose Loki from the list.
-- The http URL field should be the address of your Loki server: http://<loki-host>:3100 
+- The http URL field should be the address of your Loki server: http://loki-host:3100 
 
 ## See your logs in the “Explore” view
 - Select the “Explore” view on the sidebar.
