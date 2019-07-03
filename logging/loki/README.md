@@ -14,10 +14,9 @@ The logs are ingested via the API and an agent, called Promtail (Tailing logs in
 
 This metadata addition is exactly the same as Prometheus, so you will end up with the exact same labels for your resources.
 
-## Logging architecture with Loki
+## Logging architecture within container platform
 
-
-
+![](image/lokiarkincon.PNG)
 
 ### Install Loki in Openshift
 
@@ -30,6 +29,10 @@ oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selec
 oc create -f loki.yaml
 oc create -f promtail.yaml
 ```
+
+## Logging architecture outside of container platform
+
+![](image/lokiout.PNG)
 
 ### Install Loki outside of Openshift
 
