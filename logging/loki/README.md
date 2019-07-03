@@ -37,8 +37,15 @@ oc create -f promtail.yaml
 ### Install Loki outside of Openshift
 
 ```
-docker run -d --name loki -p 3100:3100 --restart=always --volume " /root/loki:/etc/loki" grafana/loki -config.file=/etc/loki/loki-local-config.yaml
+mkdir /root/loki
 
+chcon -Rt svirt_sandbox_file_t /root/loki
+cp loki-config.yaml /root/loki/
+docker run -d --name loki -p 3100:3100 --restart=always -v /root/loki:/etc/loki grafana/loki -config.file=/etc/loki/loki-config.yaml
+```
+
+### Install Promtail in Openshift
+```
 oc new-project loki
 oc adm policy add-scc-to-user privileged system:serviceaccount:loki:promtail
 oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:promtail
