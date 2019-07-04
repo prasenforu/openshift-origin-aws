@@ -28,7 +28,6 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:loki
 oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selector":""}}}'
 oc create -f loki.yaml
 oc create -f promtail.yaml
-oc expose svc/loki
 ```
 
 ## Logging architecture outside of container platform
