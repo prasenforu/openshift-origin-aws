@@ -18,7 +18,7 @@ This metadata addition is exactly the same as Prometheus, so you will end up wit
 
 ![](image/lokiarkincon.PNG)
 
-### Install Loki & Promtailin Openshift
+### Install Loki & Promtail in Openshift
 
 ```
 oc new-project loki
