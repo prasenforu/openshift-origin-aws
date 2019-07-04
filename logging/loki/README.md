@@ -39,10 +39,13 @@ oc expose svc/loki
 
 ```
 mkdir /root/loki
+mkdir /root/loki-data
+
 
 chcon -Rt svirt_sandbox_file_t /root/loki
+chcon -Rt svirt_sandbox_file_t /root/loki-data
 cp loki-config.yaml /root/loki/
-docker run -d --name loki -p 3100:3100 --restart=always -v /root/loki:/etc/loki grafana/loki -config.file=/etc/loki/loki-config.yaml
+docker run -d --name loki -p 3100:3100 --restart=always -v /root/loki:/etc/loki -v /root/loki-data:/data grafana/loki -config.file=/etc/loki/loki-config.yaml
 ```
 
 ### Install Promtail in Openshift
