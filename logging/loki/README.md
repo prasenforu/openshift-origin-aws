@@ -18,7 +18,7 @@ This metadata addition is exactly the same as Prometheus, so you will end up wit
 
 ![](image/lokiarkincon.PNG)
 
-### Install Loki in Openshift
+### Install Loki & Promtailin Openshift
 
 ```
 oc new-project loki
@@ -26,8 +26,14 @@ oc adm policy add-scc-to-user privileged system:serviceaccount:loki:promtail
 oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:promtail
 oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:loki
 oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selector":""}}}'
-oc create -f loki.yaml
 oc create -f promtail.yaml
+
+oc create -f loki-account.yaml
+oc create -f loki-pvc.yaml
+oc create secret generic loki-secret --from-file=loki-config.yaml=loki-config.yaml
+oc create -f loki-stateful.yaml
+oc create -f loki-service.yaml
+oc expose service/loki
 ```
 
 ## Logging architecture outside of container platform
