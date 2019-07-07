@@ -95,8 +95,14 @@ total 16
 ##### Install GlusterFS
 
 ```
-[root@ocpgluster1 ~]# yum install -y centos-release-gluster
-[root@ocpgluster1 ~]# yum install -y glusterfs-server
+cd openshift-origin-aws
+cp open311-gluster.repo /etc/yum.repos.d/open-gluster.repo
+sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/open-gluster.repo
+yum clean all
+yum repolist
+yum -y update
+yum repolist
+yum install -y glusterfs glusterfs-server
 ```
 
 ##### Start GlusterFS Daemon
