@@ -26,7 +26,9 @@ oc adm policy add-scc-to-user privileged system:serviceaccount:loki:promtail
 oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:promtail
 oc adm policy add-scc-to-user anyuid system:serviceaccount:loki:loki
 oc patch namespace loki -p '{"metadata":{"annotations":{"openshift.io/node-selector":""}}}'
-oc create -f promtail.yaml
+oc create -f promtail-account.yaml
+oc create -f promtail-configmap.yaml
+oc create -f promtail-daemonset.yaml
 
 oc create -f loki-account.yaml
 oc create -f loki-pvc.yaml
