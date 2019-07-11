@@ -45,7 +45,7 @@ metadata:
 data:
   promtail.yml: |
     scrape_configs:
-    - job_name: ocp-pods-name
+    - job_name: kubernetes-pods-name
       kubernetes_sd_configs:
       - role: pod
       relabel_configs:
@@ -87,7 +87,7 @@ data:
         - __meta_kubernetes_pod_container_name
         target_label: __path__
 
-    - job_name: ocp-pods-app
+    - job_name: kubernetes-pods-app
       kubernetes_sd_configs:
       - role: pod
       relabel_configs:
@@ -185,7 +185,7 @@ data:
         - __meta_kubernetes_pod_container_name
         target_label: __path__
 
-    - job_name: ocp-pods-indirect-controller
+    - job_name: kubernetes-pods-indirect-controller
       kubernetes_sd_configs:
       - role: pod
       relabel_configs:
@@ -239,7 +239,7 @@ data:
         - __meta_kubernetes_pod_container_name
         target_label: __path__
 
-    - job_name: ocp-pods-static
+    - job_name: kubernetes-pods-static
       kubernetes_sd_configs:
       - role: pod
       relabel_configs:
