@@ -62,7 +62,7 @@ Modify or add below content in  /etc/origin/master/master-config.yaml to enable 
 ```
 ...
 auditConfig:
-  auditFilePath: /var/log/audit-ocp.log
+  auditFilePath: /etc/origin/master/audit/audit-ocp.log
   enabled: true
   maximumFileRetentionDays: 10
   maximumFileSizeMegabytes: 10
