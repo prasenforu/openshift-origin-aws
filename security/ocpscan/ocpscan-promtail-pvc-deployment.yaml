@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: ocpscan
+  name: ocpscan-dc
+spec:
+  replicas: 1
+  selector:
+    app: ocpscan
+    deploymentconfig: ocpscan-dc
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: ocpscan
+        deploymentconfig: ocpscan-dc
+    spec:
+      serviceAccount: ocpscan-sa
+      serviceAccountName: ocpscan-sa
+      containers:
+      - image: prasenforu/ocpscan:6.0
+        name: ocpscan
+        ports:
+        - name: ocpscan
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+        - mountPath: /etc/webhook/hooks.json
+          subPath: hooks.json
+          name: ocpscan-hooks-volume-config
+        - mountPath: /etc/webhook/scanner.sh
+          subPath: scanner.sh
+          name: ocpscan-scanscript-volume-config
+        - mountPath: /etc/webhook/mailtemplate.txt
+          subPath: mailtemplate.txt
+          name: ocpscan-mailbody-volume-config
+        - mountPath: /etc/webhook/mailsend.py
+          subPath: mailsend.py
+          name: ocpscan-mail-volume-secret
+        env:
+        - name: KUBEHOST
+          value: "ocpmaster1.c.agilecoe-182110.internal"
+        - name: KUBEPORT
+          value: "8443"
+        - name: KUBEUSER
+          value: "admin"
+        - name: KUBEPASS
+          value: "redhat"
+        - name: SERVICE_TOKEN_FILENAME
+          value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        - name: SNURL
+          value: ""
+        - name: SNUSER
+          value: ""
+        - name: SNPASS
+          value: ""
+        - name: SNCALLID
+          value: "containeradmin"
+        - name: SNPRIORITY
+          value: "1"
+        - name: SNCATAGORY
+          value: "Software"
+        - name: SNASSINGRP
+          value: "Container"
+        - name: SNASSINTO
+          value: ""
+        - name: SNINCID
+          value: "ServiceNow Incident ID"
+
+      - image: prasenforu/log2browser
+        name: log2browser
+        ports:
+        - name: ocpscanlog
+          containerPort: 9001
+        args: ["/log/output.log"]
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+
+      - image: grafana/promtail:latest
+        name: promtail
+        args:
+        - "-config.file=/etc/promtail/ocpscan-promtail-config.yaml"
+        - "-client.url=http://loki.loki.svc.cluster.local:3100/api/prom/push"
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+        - mountPath: /etc/promtail/ocpscan-promtail-config.yaml
+          subPath: ocpscan-promtail-config.yaml
+          name: ocpscan-promtail-volume-config
+
+      volumes:
+      - persistentVolumeClaim:
+          claimName: ocpscan-storage
+        name: ocpscanlog-path-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-hooks-configmap
+        name: ocpscan-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: ocpscan-scanscript-configmap
+        name: ocpscan-scanscript-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-mailbody-configmap
+        name: ocpscan-mailbody-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-promtail-configmap
+        name: ocpscan-promtail-volume-config
+      - secret:
+          defaultMode: 493
+          secretName: ocpscan-mail-secret
+          items:
+          - key: mailsend
+            path: mailsend.py
+        name: ocpscan-mail-volume-secret
