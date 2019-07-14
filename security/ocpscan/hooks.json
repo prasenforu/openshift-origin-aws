@@ -5,7 +5,7 @@
         "source": "entire-payload"
       }
     ],
-    "id": "ocpscan-hook",
+    "id": "scanner-hook",
     "execute-command": "/etc/webhook/scanner.sh",
     "command-working-directory": "/etc/webhook"
   },
