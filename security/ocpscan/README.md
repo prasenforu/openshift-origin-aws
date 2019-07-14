@@ -133,6 +133,10 @@ oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.ya
 
 ```oc create -f ocpscan-deployment.yaml```
 
+###### With PVC & PROMTAIL
+
+```oc create -f ocpscan-promtail-pvc-deployment.yaml```
+
 #### Step #7 Create a service & route
 
 ```
