@@ -122,22 +122,25 @@ oc create cm ocpscan-hooks-configmap --from-file=./hooks.json
 oc create cm ocpscan-scanscript-configmap --from-file=./scanner.sh
 oc create cm ocpscan-mailbody-configmap --from-file=./mailtemplate.txt
 oc create secret generic ocpscan-mail-secret --from-file=mailsend=mailsend.py
+oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.yaml
 ```
 
-#### Step #5 Create Deployment
+#### Step #5 Create PVC
+
+```oc create -f ocpscan-pvc.yaml```
+
+#### Step #6 Create Deployment
 
 ```oc create -f ocpscan-deployment.yaml```
 
-
-#### Step #6 Create a service & route
+#### Step #7 Create a service & route
 
 ```
 oc create -f ocpscan-service.yaml
 oc expose svc ocpscan-service --port=9001
 
 ```
-
-#### Step #7 Verifying the installation
+#### Step #8 Verifying the installation
 
 ```
 oc get all
