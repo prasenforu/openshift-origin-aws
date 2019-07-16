@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubewatch
+data:
+  .kubewatch.yaml: |
+    namespace: ""
+    handler:
+      webhook:
+        url: "https://www.webhook.site/8ce3260e-ffb0-4a80-aed0-bf8ec30fed33"
+    resource:
+      deployment: false
+      replicationcontroller: false
+      replicaset: false
+      daemonset: false
+      services: true
+      pod: true
+      job: false
+      persistentvolume: false
+      namespace: true
+      secret: false
+      ingress: false
+      secret: false
+      configmap: false
