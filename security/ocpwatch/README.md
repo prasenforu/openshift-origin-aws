@@ -6,20 +6,20 @@ ocpwatch is a Kubernetes/Openshift watcher that currently publishes notification
 #### Step #1 Create a project & patch that project with node selector
 
 ```
-oc new-project kubewatch
+oc new-project ocpwatch
 
-oc patch namespace kubewatch -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
+oc patch namespace ocpwatch -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
 ```
 
 #### Step #2 Create a serviceaccount, role & clusterrole
 
-```oc create -f kubewatch-service-account.yaml```
+```oc create -f ocpwatch-account.yaml```
 
 #### Step #3 Create a configmap.
 
 ```
-oc create -f kubewatch-configmap.yaml
+oc create -f ocpwatch-configmap.yaml
 ```
 #### Step #4 Create Deployment
 
-```oc create -f kubewatch-deployment.yaml```
+```oc create -f ocpwatch-deployment.yaml```
