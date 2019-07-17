@@ -9,6 +9,8 @@ ocpwatch is a Kubernetes/Openshift watcher that currently publishes notification
 oc new-project ocpwatch
 
 oc patch namespace ocpwatch -p '{"metadata":{"annotations":{"openshift.io/node-selector":"region=infra"}}}'
+
+oc adm policy add-scc-to-user anyuid system:serviceaccount:ocpwatch:ocpwatch
 ```
 
 #### Step #2 Create a serviceaccount, role & clusterrole
