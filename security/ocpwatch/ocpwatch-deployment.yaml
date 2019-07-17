@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: ocpwatch
+  labels:
+    run: ocpwatch
+spec:
+  replicas: 1
+  selector:
+    app: ocpwatch
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: ocpwatch
+    spec:
+      serviceAccount: ocpwatch
+      serviceAccountName: ocpwatch
+      containers:
+      - image: coder95/kubewatch
+        imagePullPolicy: Always
+        name: kubewatch
+        volumeMounts:
+        - name: config-volume
+          mountPath: /root
+      restartPolicy: Always
+      volumes:
+      - name: config-volume
+        configMap:
+          name: ocpwatch
