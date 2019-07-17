@@ -23,3 +23,8 @@ oc create -f ocpwatch-configmap.yaml
 #### Step #4 Create Deployment
 
 ```oc create -f ocpwatch-deployment.yaml```
+
+### Reference
+
+- https://github.com/aananthraj/kubewatch 
+- https://github.com/bitnami-labs/kubewatch 
