@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kubewatch
+  name: ocpwatch
 data:
   .kubewatch.yaml: |
     namespace: ""
@@ -19,6 +19,8 @@ data:
       persistentvolume: false
       namespace: true
       secret: false
+      clusterroles: false
+      nodes: false
+      serviceaccounts: false
       ingress: false
-      secret: false
       configmap: false
