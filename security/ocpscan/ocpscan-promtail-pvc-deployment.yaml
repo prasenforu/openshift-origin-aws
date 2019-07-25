@@ -69,6 +69,8 @@ spec:
           value: ""
         - name: SNINCID
           value: "ServiceNow Incident ID"
+        - name: CLAIR_ADDR
+          value: "http://clairsvc.security.svc.cluster.local:6060"          
 
       - image: yyyyyyyyyyyy
         name: log2browser
