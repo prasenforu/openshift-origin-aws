@@ -120,6 +120,7 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscan-sa
 vi mailtemplate.txt
 oc create cm ocpscan-hooks-configmap --from-file=./hooks.json
 oc create cm ocpscan-scanscript-configmap --from-file=./scanner.sh
+oc create cm ocpscan-vcanscript-configmap --from-file=./vscan.sh
 oc create cm ocpscan-mailbody-configmap --from-file=./mailtemplate.txt
 oc create secret generic ocpscan-mail-secret --from-file=mailsend=mailsend.py
 oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.yaml
