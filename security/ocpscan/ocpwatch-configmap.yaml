@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ocpwatch
+data:
+  .kubewatch.yaml: |
+    namespace: ""
+    handler:
+      webhook:
+        url: "http://ocpscan-service.security.svc.cluster.local:9000/hooks/ocpwatch-hook"
+    resource:
+      deployment: false
+      replicationcontroller: false
+      replicaset: false
+      daemonset: false
+      services: false
+      pod: true
+      job: false
+      persistentvolume: false
+      namespace: false
+      secret: false
+      clusterroles: false
+      nodes: false
+      serviceaccounts: false
+      ingress: false
+      configmap: false
