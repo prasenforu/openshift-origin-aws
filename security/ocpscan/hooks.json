@@ -15,8 +15,8 @@
         "source": "entire-payload"
       }
     ],
-    "id": "falco-hook",
-    "execute-command": "/etc/webhook/falco-script.sh",
+    "id": "ocpwatch-hook",
+    "execute-command": "/etc/webhook/vscan.sh",
     "command-working-directory": "/etc/webhook"
   }
 ]
