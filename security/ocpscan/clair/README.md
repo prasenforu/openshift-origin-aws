@@ -13,6 +13,8 @@ Here are the Kubernetes resources we are going to deploy to scan our images:
 #### Deployment in OCP
 
 ```
+oc create sa clair
+oc adm policy add-scc-to-user anyuid system:serviceaccount:security:clair
 oc create secret generic clairsecret --from-file=./config.yaml
 oc get secret
 oc create -f clair-kubernetes.yaml
