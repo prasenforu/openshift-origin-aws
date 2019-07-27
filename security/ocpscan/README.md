@@ -1,6 +1,7 @@
 ## Audit O Alert in Openshift
 
 Audit is a feature that logs requests at the API server level, these logs are output to a log file on the master node. This auditing called "Advance Audit" in Openshift. Advanced audit is an enhancement over the older basic audit. Whereas the basic audit logged all requests to an audit file, advanced audit allows administrators to write a policy file to specify a subset of requests that get logged. Advanced audit also offers a webhook which can be used to send audit logs to a log aggregator via http or https.
+AOA was design based on couple of tools, OCPSCAN, OCPWATCH & CLAIR.
 
 ### Enable Audit in Openshift
 
@@ -86,6 +87,7 @@ Its a ```runtime alert``` mechanism based on advanced audit for Openshift Contai
   - Alert on any critical activity for RBAC, SCC (Security Context Constraints) & service objects.
   - Alert on project create and delete.
   - Alert on POD/container service account volume mount.
+  - Alert on POD/container Image vulnerability
 
 and so on ....
 
@@ -145,7 +147,43 @@ oc create -f ocpscan-service.yaml
 oc expose svc ocpscan-service --port=9001
 
 ```
-#### Step #8 Verifying the installation
+## OCPWATCH
+
+ocpwatch is a Kubernetes/Openshift watcher that currently publishes notification to webhooks. Rightnow it capture ONLY POD event (Created).
+
+#### Step #1 Create a serviceaccount, role & clusterrole
+
+```oc create -f ocpwatch-account.yaml```
+
+#### Step #2 Create a configmap and secret which consist of hooks & scripts files.
+
+```oc create -f ocpwatch-configmap.yaml```
+
+#### Step #3 Create a Deployment
+
+```oc create -f ocpwatch-deployment.yaml```
+
+## CLAIR
+
+Clair is an open source project for the static analysis of vulnerabilities for docker containers. Vulnerability data is continuously imported from a known set of sources and correlated with the indexed contents of container images in order to produce lists of vulnerabilities that threaten a container. When vulnerability data changes upstream, the previous state and new state of the vulnerability along with the images they affect can be sent via webhook to a configured endpoint.
+
+#### Step #1 Create a serviceaccount
+
+```oc create sa clair```
+
+#### Step #2 Setting sufficiaent priviledge
+
+```oc adm policy add-scc-to-user anyuid system:serviceaccount:security:clair```
+
+#### Step #3 Create a secret for DB Creation
+
+```oc create secret generic clairsecret --from-file=./config.yaml```
+
+#### Step #4 Create a Deployment
+
+```oc create -f clair-deployment.yaml```
+
+## Verifying the installation
 
 ```
 oc get all
