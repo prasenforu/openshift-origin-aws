@@ -34,6 +34,9 @@ spec:
         - mountPath: /etc/webhook/scanner.sh
           subPath: scanner.sh
           name: ocpscan-scanscript-volume-config
+        - mountPath: /etc/webhook/vscan.sh
+          subPath: vscan.sh
+          name: ocpscan-vcanscript-volume-config          
         - mountPath: /etc/webhook/mailtemplate.txt
           subPath: mailtemplate.txt
           name: ocpscan-mailbody-volume-config
@@ -106,6 +109,10 @@ spec:
           defaultMode: 493
           name: ocpscan-scanscript-configmap
         name: ocpscan-scanscript-volume-config
+      - configMap:
+          defaultMode: 493
+          name: ocpscan-vcanscript-configmap
+        name: ocpscan-vcanscript-volume-config        
       - configMap:
           defaultMode: 420
           name: ocpscan-mailbody-configmap
