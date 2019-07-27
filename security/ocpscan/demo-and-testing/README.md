@@ -44,7 +44,7 @@ EOF
 
 ##### Create a Sample-app project
 
-```oc new-project security```
+```oc new-project sample-app```
 
 ##### Deployment without vulnarable
 
