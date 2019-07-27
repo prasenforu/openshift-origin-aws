@@ -40,5 +40,25 @@ EOF
 
 ```curl -k -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' https://ocpmaster:8443/api/v1/namespaces/test-project/secrets```
 
+### Vulnarable Image deployment
 
+##### Create a Sample-app project
+
+```oc new-project security```
+
+##### Deployment without vulnarable
+
+```
+oc create deployment juice-shop --image=bkimminich/juice-shop
+oc expose deployment juice-shop --port=3000
+oc expose service/juice-shop
+```
+
+##### Deployment with vulnarable
+
+```
+oc create deployment webgoat --image=danmx/docker-owasp-webgoat
+oc expose deployment webgoat --port=8080
+oc expose service/webgoat
+```
 
