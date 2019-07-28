@@ -23,9 +23,40 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: ocpscan-clusterrole
 rules:
-- apiGroups: ["*"]
-  resources: ["roles", "clusterroles", "rolebindings", "clusterrolebindings", "pods", "secrets"]
-  verbs: ["get", "list"]
-- apiGroups: ["*"]
-  resources: ["pods/exec"]
-  verbs: ["create", "get"]
+  - apiGroups:
+    - "*"
+    resources:
+    - pods
+    - namespaces
+    - roles
+    - clusterroles
+    - rolebindings
+    - clusterrolebindings
+    - secrets
+    verbs:
+    - list
+    - get
+  - apiGroups:
+    - "*"
+    resources:
+    - pods/exec
+    verbs:
+    - get
+    - create
+  - apiGroups:
+    - "*"
+    resources:
+    - pods/exec
+    verbs:
+    - "*"
+  - apiGroups:
+    - extensions
+    resources:
+    - daemonsets
+    - deployments
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+    - replicationcontrollers/scale
+    verbs:
+    - '*'
