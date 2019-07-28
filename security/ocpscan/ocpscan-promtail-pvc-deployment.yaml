@@ -36,7 +36,10 @@ spec:
           name: ocpscan-scanscript-volume-config
         - mountPath: /etc/webhook/vscan.sh
           subPath: vscan.sh
-          name: ocpscan-vcanscript-volume-config          
+          name: ocpscan-vcanscript-volume-config
+        - mountPath: /etc/webhook/nswhitelist.txt
+          subPath: nswhitelist.txt
+          name: ocpscan-nswhitelist-volume-config          
         - mountPath: /etc/webhook/mailtemplate.txt
           subPath: mailtemplate.txt
           name: ocpscan-mailbody-volume-config
@@ -117,6 +120,10 @@ spec:
           defaultMode: 420
           name: ocpscan-mailbody-configmap
         name: ocpscan-mailbody-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-nswhitelist-configmap
+        name: ocpscan-nswhitelist-volume-config        
       - configMap:
           defaultMode: 420
           name: ocpscan-promtail-configmap
