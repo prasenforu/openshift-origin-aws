@@ -5,7 +5,7 @@
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 NSWL="/etc/webhook/nswhitelist.txt"
-MAILID="prasenforu@hotmail.com"
+MAILID="RECEIVER MAIL ID"
 
 RESOURCE=`echo "$1" | jq  '.eventmeta .kind'  | sed 's/"//g'`
 POD=`echo "$1" | jq  '.eventmeta .name'  | sed 's/"//g'`
