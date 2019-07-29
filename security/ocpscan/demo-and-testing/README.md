@@ -58,7 +58,7 @@ oc expose service/juice-shop
 
 ```
 oc create deployment webgoat --image=danmx/docker-owasp-webgoat
-oc expose deployment webgoat --port=8080
-oc expose service/webgoat
+oc create -f vulpod.yaml
+oc create -f vulrep.yaml
 ```
 
