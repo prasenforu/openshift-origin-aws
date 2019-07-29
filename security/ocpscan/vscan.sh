@@ -54,6 +54,23 @@ fi
 
 }
 
+#----- DELETING POD FUNCTION ------#
+
+eliminate () {
+
+if [ "$DEP" != "" ]; then
+  # Deleting Deployment
+  oc delete $DEP -n $NS
+elif [ "$REP" != "" ]; then
+  # Deleting Replicaset/Replicationcontroller/Statefullset
+  oc delete $REP -n $NS
+else
+  # Deleting POD as it has no controller
+  oc delete pod $POD -n $NS
+fi
+
+}
+
 ###### Checking POD images for Vulnerable
 
 if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
@@ -75,6 +92,7 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
         notify
         ignore
         scaledown
+        #eliminate
       fi
    done
 
