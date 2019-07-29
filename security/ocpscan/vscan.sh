@@ -5,7 +5,7 @@
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 NSWL="/etc/webhook/nswhitelist.txt"
-MAILID="Mail-ID"
+MAILID="prasenforu@hotmail.com"
 
 RESOURCE=`echo "$1" | jq  '.eventmeta .kind'  | sed 's/"//g'`
 POD=`echo "$1" | jq  '.eventmeta .name'  | sed 's/"//g'`
@@ -13,12 +13,6 @@ NS=`echo "$1" | jq  '.eventmeta .namespace'  | sed 's/"//g'`
 REASON=`echo "$1" | jq  '.eventmeta .reason'  | sed 's/"//g'`
 
 TOKEN=`more $SERVICE_TOKEN_FILENAME`
-
-### OCP login and getiing Replication & Deployment
-
-oc login https://$KUBEHOST:$KUBEPORT --token=$TOKEN --insecure-skip-tls-verify=true 1>/dev/null
-REP=`oc describe pod $POD -n $NS | grep "Controlled By:" | awk '{print $3}'`
-DEP=`oc describe $REP -n $NS | grep "Controlled By:" | awk '{print $3}'`
 
 ####### OCPSCAN ACTION #######
 
@@ -37,7 +31,6 @@ ignore () {
 while IFS= read -r line
 do
   if [ "$NS" == "$line" ]; then
-    echo $line
     exit
   fi
 done < "$NSWL"
@@ -54,7 +47,7 @@ if [ "$DEP" != "" ]; then
 elif [ "$REP" != "" ]; then
   # Scale Down of POD
   oc scale $REP --replicas=0 -n $NS
-elif [ "$REP" == "" ] && [ "$DEP" == "" ]; then
+else
   # Deleting POD as it has no controller
   oc delete pod $POD -n $NS
 fi
@@ -65,6 +58,11 @@ fi
 
 if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
 
+   ### OCP login and getiing Replication & Deployment
+
+   oc login https://$KUBEHOST:$KUBEPORT --token=$TOKEN --insecure-skip-tls-verify=true 1>/dev/null
+   REP=`oc describe pod $POD -n $NS | grep "Controlled By:" | awk '{print $3}'`
+   DEP=`oc describe $REP -n $NS | grep "Controlled By:" | awk '{print $3}'`
    images_array=( `oc describe pod $POD -n $NS | grep Image: | awk "{print $2}"` )
 
    for image in "${images_array[@]}"
