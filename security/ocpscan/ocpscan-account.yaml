@@ -46,7 +46,7 @@ rules:
   - apiGroups:
     - "*"
     resources:
-    - pods/exec
+    - pods
     verbs:
     - "*"
   - apiGroups:
@@ -57,6 +57,9 @@ rules:
     - deployments/scale
     - replicasets
     - replicasets/scale
+    - replicationcontrollers
     - replicationcontrollers/scale
+    - statefulsets
+    - statefulsets/scale
     verbs:
     - '*'
