@@ -47,6 +47,8 @@ rules:
     - "*"
     resources:
     - pods
+    - replicationcontrollers
+    - replicationcontrollers/scale
     verbs:
     - "*"
   - apiGroups:
