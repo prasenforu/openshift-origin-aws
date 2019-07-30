@@ -51,10 +51,6 @@ spec:
           value: "ocpmaster1.c.agilecoe-182110.internal"
         - name: KUBEPORT
           value: "8443"
-        - name: KUBEUSER
-          value: "admin"
-        - name: KUBEPASS
-          value: "redhat"
         - name: SERVICE_TOKEN_FILENAME
           value: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         - name: SNURL
