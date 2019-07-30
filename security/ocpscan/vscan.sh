@@ -5,7 +5,9 @@
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
 NSWL="/etc/webhook/nswhitelist.txt"
-MAILID="RECEIVER MAIL ID"
+#MAILID="RECEIVER MAIL ID"
+#SCALEDOWN=Y
+#DELETE=N
 
 RESOURCE=`echo "$1" | jq  '.eventmeta .kind'  | sed 's/"//g'`
 POD=`echo "$1" | jq  '.eventmeta .name'  | sed 's/"//g'`
@@ -19,7 +21,7 @@ TOKEN=`more $SERVICE_TOKEN_FILENAME`
 notify () {
 
 MSG="Image in POD ($POD) in Project ($NS) is a Vulnerable image."
-sed "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
+sed -e "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
 /etc/webhook/mailsend.py "ALERT: Security concern" "$MAILID"
 
 }
@@ -41,15 +43,19 @@ done < "$NSWL"
 
 scaledown () {
 
-if [ "$DEP" != "" ]; then
-  # Scale Down of POD using Deployment
-  oc scale $DEP --replicas=0 -n $NS
-elif [ "$REP" != "" ]; then
-  # Scale Down of POD
-  oc scale $REP --replicas=0 -n $NS
-else
-  # Deleting POD as it has no controller
-  oc delete pod $POD -n $NS
+if [ "$SCALEDOWN" = "y" ] || [ "$SCALEDOWN" = "Y" ]; then
+
+   if [ "$DEP" != "" ]; then
+     # Scale Down of POD using Deployment
+     oc scale $DEP --replicas=0 -n $NS
+   elif [ "$REP" != "" ]; then
+     # Scale Down of POD
+     oc scale $REP --replicas=0 -n $NS
+   else
+     # Deleting POD as it has no controller
+     oc delete pod $POD -n $NS
+   fi
+
 fi
 
 }
@@ -58,15 +64,19 @@ fi
 
 eliminate () {
 
-if [ "$DEP" != "" ]; then
-  # Deleting Deployment
-  oc delete $DEP -n $NS
-elif [ "$REP" != "" ]; then
-  # Deleting Replicaset/Replicationcontroller/Statefullset
-  oc delete $REP -n $NS
-else
-  # Deleting POD as it has no controller
-  oc delete pod $POD -n $NS
+if [ "$DELETE" = "y" ] || [ "$DELETE" = "Y" ]; then
+
+   if [ "$DEP" != "" ]; then
+     # Deleting Deployment
+     oc delete $DEP -n $NS
+   elif [ "$REP" != "" ]; then
+     # Deleting Replicaset/Replicationcontroller/Statefullset
+     oc delete $REP -n $NS
+   else
+     # Deleting POD as it has no controller
+     oc delete pod $POD -n $NS
+   fi
+
 fi
 
 }
@@ -92,7 +102,7 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
         notify
         ignore
         scaledown
-        #eliminate
+        eliminate
       fi
    done
 
