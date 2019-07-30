@@ -76,7 +76,13 @@ spec:
         - name: SNINCID
           value: "ServiceNow Incident ID"
         - name: CLAIR_ADDR
-          value: "http://clairsvc.security.svc.cluster.local:6060"          
+          value: "http://clairsvc.security.svc.cluster.local:6060"     
+        - name: SCALEDOWN
+          value: "Y"
+        - name: DELETE
+          value: "N"
+        - name: MAILID
+          value: "RECEIVER MAIL ID"          
 
       - image: yyyyyyyyyyyy
         name: log2browser
