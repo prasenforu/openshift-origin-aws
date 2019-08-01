@@ -1,6 +1,7 @@
-#!/bin/bash
-# This script will check Vulnerability of pod
-# and take action
+#!/bin/sh
+# This script will check Vulnerability and 
+# risks of pod and take action (Ignore, scaldown & delete)
+# Use MAILID, SCALEDOWN & DELETE as an Env in deployment.
 
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
@@ -8,6 +9,8 @@ NSWL="/etc/webhook/nswhitelist.txt"
 #MAILID="RECEIVER MAIL ID"
 #SCALEDOWN=Y
 #DELETE=N
+
+alias scan='sh /usr/bin/scan.sh'
 
 RESOURCE=`echo "$1" | jq  '.eventmeta .kind'  | sed 's/"//g'`
 POD=`echo "$1" | jq  '.eventmeta .name'  | sed 's/"//g'`
@@ -18,9 +21,17 @@ TOKEN=`more $SERVICE_TOKEN_FILENAME`
 
 ####### OCPSCAN ACTION #######
 
-notify () {
+notify_img () {
 
 MSG="Image in POD ($POD) in Project ($NS) is a Vulnerable image."
+sed -e "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
+/etc/webhook/mailsend.py "ALERT: Security concern" "$MAILID"
+
+}
+
+notify_risk () {
+
+MSG="POD ($POD) in project ($NS) has security risk."
 sed -e "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
 /etc/webhook/mailsend.py "ALERT: Security concern" "$MAILID"
 
@@ -81,30 +92,51 @@ fi
 
 }
 
-###### Checking POD images for Vulnerable
+###### Checking POD images for Vulnerable and risky POD
 
 if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
 
-   ### OCP login and getiing Replication & Deployment
+   ### OCP login and getTing Replication & Deployment
 
    oc login https://$KUBEHOST:$KUBEPORT --token=$TOKEN --insecure-skip-tls-verify=true 1>/dev/null
    REP=`oc describe pod $POD -n $NS | grep "Controlled By:" | awk '{print $3}'`
    DEP=`oc describe $REP -n $NS | grep "Controlled By:" | awk '{print $3}'`
-   images_array=( `oc describe pod $POD -n $NS | grep Image: | awk "{print $2}"` )
+   images_array=`oc describe pod $POD -n $NS | grep Image: | awk '{print $2}'`
 
-   for image in "${images_array[@]}"
+   ## Checking POD images for Vulnerable
+
+   for image in $images_array
    do
       HIGH=`klar "$image" 2>/dev/null | grep  High: | cut -f2 -d " "`
       if [ $image != "" ] && [ $HIGH > 0 ]; then
         MSG="Image ($image) in POD ($POD) in Project ($NS) is a Vulnerable (High=$HIGH) image."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
-        notify
+        notify_img
         ignore
         scaledown
         eliminate
       fi
    done
+
+   ## Checking POD for Risky (mount service a/c,priviledge & risky rule)
+
+   MOUNTPOD=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
+   RISKPOD=`scan -rp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
+   PRIVPOD=`scan -pp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
+
+   if [ "$MOUNTPOD" != "" ] || [ "$RISKPOD" != "" ] || [ "$PRIVPOD" != "" ]; then
+        MSG="POD ($POD) in project ($NS) has security risk."
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        echo "$PRIVPOD" >> $LOGPATH
+        echo "$RISKPOD" >> $LOGPATH
+        echo "$MOUNTPOD" >> $LOGPATH
+        notify_risk
+        ignore
+        scaledown
+        eliminate
+   fi
 
 else
   exit
