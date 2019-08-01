@@ -60,5 +60,7 @@ oc expose service/juice-shop
 oc create deployment webgoat --image=danmx/docker-owasp-webgoat
 oc create -f vulpod.yaml
 oc create -f vulrep.yaml
+oc create -f vuldep.yaml
+oc create -f vulriskdep.yaml
 ```
 
