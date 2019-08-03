@@ -9,6 +9,8 @@ AOA was design based on couple of tools, OCPSCAN, OCPWATCH & CLAIR.
   <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/security/ocpscan/aoa.PNG">
 </p>
 
+## Setup
+
 ### Enable Audit in Openshift
 
 Enable audit create lots of log based on audit policy so prepare the policy as much as less.
