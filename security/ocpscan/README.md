@@ -3,6 +3,12 @@
 Audit is a feature that logs requests at the API server level, these logs are output to a log file on the master node. This auditing called "Advance Audit" in Openshift. Advanced audit is an enhancement over the older basic audit. Whereas the basic audit logged all requests to an audit file, advanced audit allows administrators to write a policy file to specify a subset of requests that get logged. Advanced audit also offers a webhook which can be used to send audit logs to a log aggregator via http or https.
 AOA was design based on couple of tools, OCPSCAN, OCPWATCH & CLAIR.
 
+## Audit O Alert Architecture
+
+<p align="center">
+  <img src="https://github.com/prasenforu/openshift-origin-aws/blob/master/security/ocpscan/aoa.PNG">
+</p>
+
 ### Enable Audit in Openshift
 
 Enable audit create lots of log based on audit policy so prepare the policy as much as less.
