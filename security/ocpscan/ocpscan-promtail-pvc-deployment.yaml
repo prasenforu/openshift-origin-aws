@@ -20,7 +20,7 @@ spec:
       serviceAccount: ocpscan-sa
       serviceAccountName: ocpscan-sa
       containers:
-      - image: xxxxxxxxxxxx
+      - image: xxxxxxxxxxxxxxxx
         name: ocpscan
         ports:
         - name: ocpscan
@@ -31,15 +31,15 @@ spec:
         - mountPath: /etc/webhook/hooks.json
           subPath: hooks.json
           name: ocpscan-hooks-volume-config
-        - mountPath: /etc/webhook/scanner.sh
-          subPath: scanner.sh
-          name: ocpscan-scanscript-volume-config
         - mountPath: /etc/webhook/vscan.sh
           subPath: vscan.sh
           name: ocpscan-vcanscript-volume-config
+        - mountPath: /etc/webhook/scanner.sh
+          subPath: scanner.sh
+          name: ocpscan-scanscript-volume-config
         - mountPath: /etc/webhook/nswhitelist.txt
           subPath: nswhitelist.txt
-          name: ocpscan-nswhitelist-volume-config          
+          name: ocpscan-nswhitelist-volume-config
         - mountPath: /etc/webhook/mailtemplate.txt
           subPath: mailtemplate.txt
           name: ocpscan-mailbody-volume-config
@@ -48,7 +48,7 @@ spec:
           name: ocpscan-mail-volume-secret
         env:
         - name: KUBEHOST
-          value: "ocpmaster1.c.agilecoe-182110.internal"
+          value: "10.138.0.16"
         - name: KUBEPORT
           value: "8443"
         - name: SERVICE_TOKEN_FILENAME
@@ -72,15 +72,70 @@ spec:
         - name: SNINCID
           value: "ServiceNow Incident ID"
         - name: CLAIR_ADDR
-          value: "http://clairsvc.security.svc.cluster.local:6060"     
+          value: "http://clairsvc.security.svc.cluster.local:6060"
         - name: SCALEDOWN
           value: "Y"
         - name: DELETE
           value: "N"
         - name: MAILID
-          value: "RECEIVER MAIL ID"          
+          value: "prasenforu@hotmail.com"
 
-      - image: yyyyyyyyyyyy
+      volumes:
+      - persistentVolumeClaim:
+          claimName: ocpscan-storage
+        name: ocpscanlog-path-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-hooks-configmap
+        name: ocpscan-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: ocpscan-scanscript-configmap
+        name: ocpscan-scanscript-volume-config
+      - configMap:
+          defaultMode: 493
+          name: ocpscan-vcanscript-configmap
+        name: ocpscan-vcanscript-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-mailbody-configmap
+        name: ocpscan-mailbody-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-nswhitelist-configmap
+        name: ocpscan-nswhitelist-volume-config
+      - secret:
+          defaultMode: 493
+          secretName: ocpscan-mail-secret
+          items:
+          - key: mailsend
+            path: mailsend.py
+        name: ocpscan-mail-volume-secret
+
+---
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: ocpscan-log
+  name: ocpscan-log-dc
+spec:
+  replicas: 1
+  selector:
+    app: ocpscan-log
+    deploymentconfig: ocpscan-log-dc
+  strategy:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        app: ocpscan-log
+        deploymentconfig: ocpscan-log-dc
+    spec:
+      serviceAccount: ocpscan-sa
+
+      containers:
+      - image: kkkkkkkkkkkkkkkk
         name: log2browser
         ports:
         - name: ocpscanlog
@@ -89,6 +144,21 @@ spec:
         volumeMounts:
         - mountPath: /log
           name: ocpscanlog-path-volume-config
+
+      - image: llllllllllllllll
+        name: logrotate
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+        env:
+        - name: CRON_EXPR
+          value: "0 * * * *"
+        - name: LOGROTATE_LOGFILES
+          value: "/log/output.log"
+        - name: LOGROTATE_FILESIZE
+          value: "10M"
+        - name: LOGROTATE_FILENUM
+          value: "5"
 
       - image: grafana/promtail:latest
         name: promtail
@@ -108,32 +178,5 @@ spec:
         name: ocpscanlog-path-volume-config
       - configMap:
           defaultMode: 420
-          name: ocpscan-hooks-configmap
-        name: ocpscan-hooks-volume-config
-      - configMap:
-          defaultMode: 493
-          name: ocpscan-scanscript-configmap
-        name: ocpscan-scanscript-volume-config
-      - configMap:
-          defaultMode: 493
-          name: ocpscan-vcanscript-configmap
-        name: ocpscan-vcanscript-volume-config        
-      - configMap:
-          defaultMode: 420
-          name: ocpscan-mailbody-configmap
-        name: ocpscan-mailbody-volume-config
-      - configMap:
-          defaultMode: 420
-          name: ocpscan-nswhitelist-configmap
-        name: ocpscan-nswhitelist-volume-config        
-      - configMap:
-          defaultMode: 420
           name: ocpscan-promtail-configmap
         name: ocpscan-promtail-volume-config
-      - secret:
-          defaultMode: 493
-          secretName: ocpscan-mail-secret
-          items:
-          - key: mailsend
-            path: mailsend.py
-        name: ocpscan-mail-volume-secret
