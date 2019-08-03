@@ -10,10 +10,23 @@ spec:
     port: 9000
     protocol: TCP
     targetPort: 9000
+  selector:
+    app: ocpscan
+    deploymentconfig: ocpscan-dc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ocpscan-log
+  name: ocpscan-log-service
+spec:
+  ports:
   - name: 9001-tcp
     port: 9001
     protocol: TCP
     targetPort: 9001
   selector:
-    app: ocpscan
-    deploymentconfig: ocpscan-dc
+    app: ocpscan-log
+    deploymentconfig: ocpscan-log-dc
+    
