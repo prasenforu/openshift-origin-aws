@@ -145,7 +145,7 @@ oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.ya
 
 ```
 oc create -f ocpscan-service.yaml
-oc expose svc ocpscan-service --port=9001
+oc expose svc ocpscan-log-service
 
 ```
 ## OCPWATCH
