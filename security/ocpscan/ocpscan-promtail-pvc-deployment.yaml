@@ -78,7 +78,7 @@ spec:
         - name: DELETE
           value: "N"
         - name: MAILID
-          value: "prasenforu@hotmail.com"
+          value: "RECEIVER MAIL ID"
 
       volumes:
       - persistentVolumeClaim:
