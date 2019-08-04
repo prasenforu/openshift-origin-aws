@@ -2,7 +2,7 @@
 
 LOGPATH=/log/output.log
 DT=`date '+%d/%m/%Y %H:%M:%S'`
-MAILID="mailid@hotmail.com"
+#MAILID="RECEIVER MAIL ID"
 
 alias scan='sh /usr/bin/scan.sh'
 
@@ -20,7 +20,12 @@ REASON=`echo "$1" | jq  '.items [] .responseStatus.reason' | sed 's/"//g'`
 STAGE=`echo "$1" | jq  '.items [] .stage' | sed 's/"//g'`
 SUBRESOURCE=`echo "$1" | jq  '.items [] .objectRef.subresource' | sed 's/"//g'`
 REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
+REQUESTURI=`echo "$1" | jq  '.items [] .requestURI' | sed 's/"//g'`
+ANNOTRESON=`echo "$1" | jq  '.items [] .annotations."authorization.k8s.io/reason"' | sed 's/"//g'`
+OCGROUP=`echo "$1" |  jq  '.items [] .user.groups []' | sed 's/"//g'`
 
+
+#######################################
 ####### MAIL FOR AUTHENTICATION #######
 
 mailsendauth () {
@@ -47,7 +52,16 @@ else
 fi
 }
 
-#### For POD/container login and risk (mount service a/c,priviledge & risky rule) ########
+loginaction () {
+
+CITY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.city' | sed 's/"//g'`
+RIGION=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.region' | sed 's/"//g'`
+COUNTRY=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.country_name' | sed 's/"//g'`
+ORG=`curl https://ipapi.co/"$SOURCEIP"/json/ | jq '.org'| sed 's/"//g'`
+}
+
+
+#### For POD/container ########
 
 if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] && [ "$STAGE" = "ResponseStarted" ] && [ "$SUBRESOURCE" = "exec" ]; then
 
@@ -58,29 +72,13 @@ if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "101" ] &
      mailsendrest
 fi
 
-if [ "$RESOURCE" = "pods" ] && [ "$ACTION" = "create" ] && [ "$CODE" = "201" ] && [ "$STAGE" = "ResponseComplete" ]; then
-
-     op=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
-     op1=`scan -rp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
-     op2=`scan -pp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$OBJNAME\s"`
-
-     if [ "$op1" != "" ] || [ "$op2" != "" ] || [ "$op" != "" ]; then
-        MSG="POD ($OBJNAME) in project ($NS) has receurity risk."
-        echo "[ $DT ]  $MSG"
-        echo "[ $DT ]  $MSG" >> $LOGPATH
-        echo "$op1" >> $LOGPATH
-        echo "$op2" >> $LOGPATH
-        echo "$op" >> $LOGPATH
-        MAIL=y
-        mailsendrest
-     fi
-fi
-
-##### For authentication #######
+##### for authentication #######
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "200" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - Success"
+   loginaction
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - Success"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - Success"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -89,7 +87,9 @@ fi
 
 if [ "$ACTION" = "get" ] && [ "$CODE" = "401" ] && [ "REASON" != "Unauthorized" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
+   loginaction
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $MESSAGE"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $MESSAGE"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -98,7 +98,9 @@ fi
 
 if [ "$ACTION" = "head" ] && [ "$CODE" = "302" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   loginaction
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $REQUESTURI"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -107,7 +109,9 @@ fi
 
 if [ "$ACTION" = "post" ] && [ "$CODE" = "302" ]; then
 
-   MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+   loginaction
+   MSG="Someone tried to login from this IP ($SOURCEIP) -$CITY-$RIGION-$COUNTRY-$ORG - $REQUESTURI"
+   #MSG="Someone tried to login from this IP ($SOURCEIP) - $REQUESTURI"
    echo "[ $DT ]  $MSG"
    echo "[ $DT ]  $MSG" >> $LOGPATH
    MAIL=y
@@ -116,11 +120,27 @@ fi
 
 if [ "$ACTION" = "get" ] && [ "$CODE" = "200" ] && [ "$RESOURCE" = "users" ]; then
 
-   MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
-   echo "[ $DT ]  $MSG"
-   echo "[ $DT ]  $MSG" >> $LOGPATH
-   MAIL=n
-   mailsendauth
+   ANNOT=`echo $ANNOTRESON | grep "basic-users" | cut -d ":" -f1`
+   OAUTH=`echo $OCGROUP | grep oauth | cut -d ":" -f2`
+   SA=`echo $OCUSER | cut -d ":" -f4`
+   NS=`echo $OCUSER | cut -d ":" -f3`
+   OP=`scan -rs 2>&1 | grep $SA | cut -d "|" -f2`
+
+     if [ "$ANNOT" != "RBAC" ]; then
+        exit
+     elif [ "$OCUSER" = "system:serviceaccount:$NS:$SA" ]; then
+        MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI, $OP Service Account."
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        MAIL=n
+        mailsendauth
+     elif [ "$OAUTH" = "authenticated" ]; then
+        MSG="User ($OCUSER) tried to login from this IP ($SOURCEIP) - $REQUESTURI"
+        echo "[ $DT ]  $MSG"
+        echo "[ $DT ]  $MSG" >> $LOGPATH
+        MAIL=n
+        mailsendauth
+     fi
 fi
 
 ##### for Resouces with create, delete, patch & bind  verb #######
