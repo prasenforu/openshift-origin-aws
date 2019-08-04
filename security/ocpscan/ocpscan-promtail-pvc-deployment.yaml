@@ -18,7 +18,7 @@ spec:
         deploymentconfig: ocpscan-dc
     spec:
       serviceAccount: ocpscan-sa
-      serviceAccountName: ocpscan-sa
+      
       containers:
       - image: xxxxxxxxxxxxxxxx
         name: ocpscan
