@@ -21,17 +21,9 @@ TOKEN=`more $SERVICE_TOKEN_FILENAME`
 
 ####### OCPSCAN ACTION #######
 
-notify_img () {
+notify () {
 
-MSG="Image in POD ($POD) in Project ($NS) is a Vulnerable image."
-sed -e "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
-/etc/webhook/mailsend.py "ALERT: Security concern" "$MAILID"
-
-}
-
-notify_risk () {
-
-MSG="POD ($POD) in project ($NS) has security risk."
+MSG="POD ($POD) in Project ($NS) has $MSG1."
 sed -e "s/MSG/$MSG/g" /etc/webhook/mailtemplate.txt > /etc/webhook/mailbody.txt
 /etc/webhook/mailsend.py "ALERT: Security concern" "$MAILID"
 
@@ -112,7 +104,8 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
         MSG="Image ($image) in POD ($POD) in Project ($NS) is a Vulnerable (High=$HIGH) image."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
-        notify_img
+        MSG1="Vulnerable image"
+        notify
         ignore
         scaledown
         eliminate
@@ -132,7 +125,8 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
         echo "$PRIVPOD" >> $LOGPATH
         echo "$RISKPOD" >> $LOGPATH
         echo "$MOUNTPOD" >> $LOGPATH
-        notify_risk
+        MSG1="security risk"
+        notify
         ignore
         scaledown
         eliminate
