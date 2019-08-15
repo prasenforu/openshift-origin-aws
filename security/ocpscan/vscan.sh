@@ -1,5 +1,5 @@
 #!/bin/sh
-# This script will check Vulnerability and 
+# This script will check Vulnerability and
 # risks of pod and take action (Ignore, scaldown & delete)
 # Use MAILID, SCALEDOWN & DELETE as an Env in deployment.
 
@@ -93,6 +93,7 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
    oc login https://$KUBEHOST:$KUBEPORT --token=$TOKEN --insecure-skip-tls-verify=true 1>/dev/null
    REP=`oc describe pod $POD -n $NS | grep "Controlled By:" | awk '{print $3}'`
    DEP=`oc describe $REP -n $NS | grep "Controlled By:" | awk '{print $3}'`
+   SA=`oc get pod $POD -n $NS -o yaml | grep serviceAccount: | awk '{print $2}'`
    images_array=`oc describe pod $POD -n $NS | grep Image: | awk '{print $2}'`
 
    ## Checking POD images for Vulnerable
@@ -117,13 +118,16 @@ if [ "$RESOURCE" == "pod" ] && [ "$REASON" == "Created" ]; then
    MOUNTPOD=`scan -psv -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
    RISKPOD=`scan -rp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
    PRIVPOD=`scan -pp -ns $NS 2>&1 | grep -s "+--------" -A 150 | grep "\s$POD\s"`
+   RROLE=`scan -aars "$SA" -k "ServiceAccount" -ns "$NS" 2>&1 | grep -s "+--------" -A 150 | grep $NS | awk '{print $6}'`
+   DANPOD=`scan -rr -ns "$NS" 2>&1 | grep -s "+--------" -A 150 | grep $RROLE | grep $NS | awk '{ if($2 ~ /CRITICAL/ || $2 ~ /HIGH/) { system("echo DANGER-POD") } }'`
 
-   if [ "$MOUNTPOD" != "" ] || [ "$RISKPOD" != "" ] || [ "$PRIVPOD" != "" ]; then
+   if [ "$MOUNTPOD" != "" ] || [ "$RISKPOD" != "" ] || [ "$PRIVPOD" != "" ] || [ "$DANPOD" != "" ]; then
         MSG="POD ($POD) in project ($NS) has security risk."
         echo "[ $DT ]  $MSG"
         echo "[ $DT ]  $MSG" >> $LOGPATH
         echo "$PRIVPOD" >> $LOGPATH
         echo "$RISKPOD" >> $LOGPATH
+        echo "$DANPOD" >> $LOGPATH
         echo "$MOUNTPOD" >> $LOGPATH
         MSG1="security risk"
         notify
