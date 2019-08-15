@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: privileged-pod
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - name: privileged-pod
+    image: bkimminich/juice-shop
+    securityContext:
+      privileged: true
