@@ -58,9 +58,11 @@ oc expose service/juice-shop
 
 ```
 oc create deployment webgoat --image=danmx/docker-owasp-webgoat
-oc create -f vulpod.yaml
-oc create -f vulrep.yaml
-oc create -f vuldep.yaml
-oc create -f vulriskdep.yaml
+oc create -f demo-risky-rbac.yaml
+oc create -f demo-vul-pod-dep.yaml
+oc create -f demo-risky-pod-dep.yaml
+oc create -f demo-privileged-pod.yaml
+oc create -f demo-pod-wo-sa-mount.yaml
+oc create -f demo-pod-wo-sa.yaml
 ```
 
