@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vulpod
+  name: vulpod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vulpod
+  template:
+    metadata:
+      labels:
+        app: vulpod
+    spec:
+      containers:
+      - image: danmx/docker-owasp-webgoat
+        name: vulpod
