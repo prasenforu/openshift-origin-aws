@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-wo-sa-mount
+spec:
+  automountServiceAccountToken: false
+  serviceAccount: listsecrets
+  containers:
+    - name: pod-wo-sa-mount
+      image: bkimminich/juice-shop
+      ports:
+        - containerPort: 3000
