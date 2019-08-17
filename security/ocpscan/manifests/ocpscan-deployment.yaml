@@ -19,7 +19,7 @@ spec:
     spec:
       serviceAccount: ocpscan-sa
       containers:
-      - image: prasenforu/ocpscan:8.0
+      - image: 8888888888888
         name: ocpscan
         ports:
         - name: ocpscan
@@ -77,7 +77,7 @@ spec:
         - name: DELETE
           value: "N"
         - name: MAILID
-          value: "prasenforu@hotmail.com"
+          value: "MAIL RECEIVER ID"
 
       volumes:
       - persistentVolumeClaim:
