@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ocpscanlog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ocpscanlog
+  template:
+    metadata:
+      labels:
+        app: ocpscanlog
+    spec:
+      serviceAccountName: ocpscanlog
+      containers:
+      - name: oauth-proxy
+        image: openshift/oauth-proxy:v1.0.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8443
+          name: public
+        args:
+        - --https-address=:8443
+        - --provider=openshift
+        - --openshift-service-account=ocpscanlog
+        - --upstream=http://localhost:9001
+        - --tls-cert=/etc/tls/private/tls.crt
+        - --tls-key=/etc/tls/private/tls.key
+        - --cookie-secret=SECRET
+        volumeMounts:
+        - mountPath: /etc/tls/private
+          name: ocpscanlog-tls
+
+      - name: ocpscanlog
+        image: prasenforu/log2browser
+        args: ["/log/output.log"]
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+
+      - image: prasenforu/logrotate
+        name: logrotate
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+        env:
+        - name: CRON_EXPR
+          value: "0 * * * *"
+        - name: LOGROTATE_LOGFILES
+          value: "/log/output.log"
+        - name: LOGROTATE_FILESIZE
+          value: "10M"
+        - name: LOGROTATE_FILENUM
+          value: "5"
+
+      - image: grafana/promtail:latest
+        name: promtail
+        args:
+        - "-config.file=/etc/promtail/ocpscan-promtail-config.yaml"
+        - "-client.url=http://loki.loki.svc.cluster.local:3100/api/prom/push"
+        volumeMounts:
+        - mountPath: /log
+          name: ocpscanlog-path-volume-config
+        - mountPath: /etc/promtail/ocpscan-promtail-config.yaml
+          subPath: ocpscan-promtail-config.yaml
+          name: ocpscanlog-promtail-volume-config
+
+      volumes:
+      - secret:
+          secretName: ocpscanlog-tls
+        name: ocpscanlog-tls
+      - persistentVolumeClaim:
+          claimName: ocpscan-storage
+        name: ocpscanlog-path-volume-config
+      - configMap:
+          defaultMode: 420
+          name: ocpscan-promtail-configmap
+        name: ocpscanlog-promtail-volume-config
+

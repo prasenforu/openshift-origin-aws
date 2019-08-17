@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: ocpscanlog
+spec:
+  to:
+    kind: Service
+    name: ocpscanlog
+  tls:
+    termination: Reencrypt
+
