@@ -120,11 +120,7 @@ oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscan-sa
 oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscanlog
 ```
 
-#### Step #3 Create PVC
-
-```oc create -f ocpscan-pvc.yaml```
-
-#### Step #4 Create a configmap and secret which consist of hooks & scripts files.
+#### Step #3 Create a configmap and secret which consist of hooks & scripts files.
 
 ```
 vi mailtemplate.txt
@@ -137,11 +133,11 @@ oc create secret generic ocpscan-mail-secret --from-file=mailsend=mailsend.py
 oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.yaml
 ```
 
-#### Step #5 Create PVC
+#### Step #4 Create PVC
 
 ```oc create -f ocpscan-pvc.yaml```
 
-#### Step #6 Create Deployment
+#### Step #5 Create Deployment
 
 ###### In Openshift
 
@@ -155,7 +151,7 @@ oc create -f ocpscan-promtail-pvc-deployment.yaml
 oc create -f ocpscan-service.yaml
 ```
 
-###### Create Ingress with ```ocpscan-log-service```
+###### In Kubernetes create Ingress with ```ocpscan-log-service```
 
 
 ## OCPWATCH
