@@ -117,12 +117,12 @@ In security project we have to give sufficient priviledge to run containers.
 ```
 oc adm policy add-scc-to-user privileged system:serviceaccount:security:ocpscan-sa
 oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscan-sa
-
+oc adm policy add-scc-to-user anyuid system:serviceaccount:security:ocpscanlog
 ```
 
-#### Step #3 Create a serviceaccount, role & clusterrole
+#### Step #3 Create PVC
 
-```oc create -f ocpscan-account.yaml```
+```oc create -f ocpscan-pvc.yaml```
 
 #### Step #4 Create a configmap and secret which consist of hooks & scripts files.
 
@@ -143,19 +143,21 @@ oc create cm ocpscan-promtail-configmap --from-file=./ocpscan-promtail-config.ya
 
 #### Step #6 Create Deployment
 
-```oc create -f ocpscan-deployment.yaml```
+###### In Openshift
 
-###### With PVC & PROMTAIL
+```oc create -f manifests/```
 
-```oc create -f ocpscan-promtail-pvc-deployment.yaml```
-
-#### Step #7 Create a service & route
+###### In Kubernetes
 
 ```
+oc create -f ocpscan-account.yaml
+oc create -f ocpscan-promtail-pvc-deployment.yaml
 oc create -f ocpscan-service.yaml
-oc expose svc ocpscan-log-service
-
 ```
+
+###### Create Ingress with ```ocpscan-log-service```
+
+
 ## OCPWATCH
 
 ocpwatch is a Kubernetes/Openshift watcher that currently publishes notification to webhooks. Rightnow it capture ONLY POD event (Created).
@@ -197,9 +199,9 @@ Clair is an open source project for the static analysis of vulnerabilities for d
 ```
 oc get all
 oc logs -f <POD NAME> -c ocpscan
-oc logs -f <POD NAME> -c log2browser
+oc logs -f <POD NAME> -c ocpscanlog
 oc rsh -c ocpscan <POD NAME> 
-oc rsh -c log2browser <POD NAME> 
+oc rsh -c ocpscanlog <POD NAME> 
 ```
 
 In order to test that OCPSCAN is working correctly, you can launch a shell in a Pod. You should see a message in log2browser url.
