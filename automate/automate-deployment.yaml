@@ -95,8 +95,6 @@ spec:
         app: automate
         deploymentconfig: automate-dc
     spec:
-      nodeSelector:
-        host: master
       serviceAccount: automate
       containers:
       - image: XXXXXXXXXXXXXX
