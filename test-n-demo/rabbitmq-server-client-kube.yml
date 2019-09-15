@@ -1,0 +1,180 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmqsrv
+  labels:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmqsrv
+      deploymentconfig: rabbitmqsrv
+  template:
+    metadata:
+      labels:
+        name: rabbitmqsrv
+        deploymentconfig: rabbitmqsrv
+        app: rabbitmqsrv
+    spec:
+      containers:
+      - name: rabbitmqsrv-dc-pod
+        image: prasenforu/rabbitmq:2.0
+        ports:
+        - containerPort: 5672
+          name: service
+        - containerPort: 15672
+          name: management
+      - image: prasenforu/rabbitmq-exporter:1.0
+        name: rabbitmq-exporter
+        ports:
+        - containerPort: 9090
+          name: exporter
+        env:
+        - name: RABBIT_USER
+          value: "rabbitmq"
+        - name: RABBIT_PASSWORD
+          value: "znwk2BaTLAqowMrv"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: '9090'
+    prometheus.io/scrape: 'true'
+  name: rabbitmqsrv
+  labels:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+spec:
+  ports:
+  - name: 5672-tcp
+    port: 5672
+    protocol: TCP
+    targetPort: 5672
+  - name: 15672-tcp
+    port: 15672
+    protocol: TCP
+    targetPort: 15672
+  - name: 9090-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+    deploymentconfig: rabbitmqsrv
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: rabbitmqsrv
+  name: rabbitmqsrv
+spec:
+  rules:
+  - host: rabbitmqsrv.test-n-demo.10.131.37.20.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: rabbitmqsrv
+          servicePort: 15672
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.131.37.20
+    - ip: 10.131.37.21
+    - ip: 10.131.37.22
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmqclient
+  labels:
+    name: rabbitmqclient
+    app: rabbitmqclient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmqclient
+      deploymentconfig: rabbitmqclient
+  template:
+    metadata:
+      labels:
+        name: rabbitmqclient
+        deploymentconfig: rabbitmqclient
+        app: rabbitmqclient
+    spec:
+      containers:
+      - name: rabbitmqclient-dc-pod
+        image: prasenforu/mqclient:2.0
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/send.py
+          subPath: send.py
+          name: mq-send-volume-config
+        - mountPath: /etc/webhook/receive.py
+          subPath: receive.py
+          name: mq-receive-volume-config
+        - mountPath: /etc/webhook/receiveall.py
+          subPath: receiveall.py
+          name: mq-receiveall-volume-config
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: mq-send-configmap
+        name: mq-send-volume-config
+      - configMap:
+          defaultMode: 493
+          name: mq-receive-configmap
+        name: mq-receive-volume-config
+      - configMap:
+          defaultMode: 493
+          name: mq-receiveall-configmap
+        name: mq-receiveall-volume-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmqclient
+  labels:
+    name: rabbitmqclient
+    app: rabbitmqclient
+spec:
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    name: rabbitmqclient
+    app: rabbitmqclient
+    deploymentconfig: rabbitmqclient
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: rabbitmqclient
+  name: rabbitmqclient
+spec:
+  rules:
+  - host: rabbitmqclient.test-n-demo.10.131.37.20.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: rabbitmqclient
+          servicePort: 9000
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.131.37.20
+    - ip: 10.131.37.21
+    - ip: 10.131.37.22
+----
