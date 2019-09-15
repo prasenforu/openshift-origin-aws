@@ -109,7 +109,7 @@ spec:
           name: automate-hooks-volume-config
         - mountPath: /etc/webhook/scale.sh
           subPath: scale.sh
-          name: automate-scale-script-volume-config
+          name: automate-scale-volume-config
         - mountPath: /etc/webhook/pod-restart.sh
           subPath: pod-restart.sh
           name: automate-pod-restart-volume-config
@@ -161,8 +161,8 @@ spec:
         name: automate-hooks-volume-config
       - configMap:
           defaultMode: 493
-          name: automate-scale-script-configmap
-        name: automate-scale-script-volume-config
+          name: automate-scale-configmap
+        name: automate-scale-volume-config
       - configMap:
           defaultMode: 493
           name: automate-pod-restart-configmap
