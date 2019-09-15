@@ -1,0 +1,526 @@
+#!/bin/sh
+
+# KUBE Authentication
+
+POD=`oc get pod -n $1 | grep $2 | awk '{print $1}' | head -n 1`
+REP=`oc describe pod $POD -n $1 | grep "Controlled By:" | awk '{print $3}'`
+DEP=`oc describe $REP -n $1 | grep "Controlled By:" | awk '{print $3}'`
+
+echo "Application ($2) status of Project ($1) before scale up/down"
+oc get $REP -n $1
+oc get $DEP -n $1
+
+# DESIRED value of deploy/apps
+
+de=`oc get $REP -n $1 | awk '{print $2}' | grep -v DESIRED`
+
+# CURRENT value of deploy/apps
+
+cu=`oc get $REP -n $1 | awk '{print $3}' | grep -v CURRENT`
+
+# Checking for POD  status addition for firing and substaraction for resolved
+# If CURRENT & DESIRED value same and below one (1) then it will exit
+
+if [ $3 == "firing" ]; then
+   pm='+'
+   dpm=scale-up
+fi
+
+if [ $3 == "resolved" ]; then
+   if [ $de = $cu ] && [ $de -gt 1 ] && [ $cu -gt 1 ]; then
+      pm='-'
+      dpm=scale-down
+   else
+      echo "Looks like CURRENT & DESIRED value NOT same or below one (1)"
+      oc get $REP -n $1
+      oc get $DEP -n $1
+      exit
+   fi
+fi
+
+# IF CURRENT value & DESIRED value same then decrease one pod
+
+if [ $de = $cu ]; then
+   de=$((de $pm 1))
+   oc scale $DEP --replicas=$de -n $1
+else
+   echo "Looks like CURRENT & DESIRED value NOT same."
+   oc get $REP -n $1
+   oc get $DEP -n $1
+   exit
+fi
+
+# Status
+echo "Application ($2) of Project ($1) going to $dpm"
+
+oc get $REP -n $1
+oc get $DEP -n $1
+
+--------
+
+     - match:
+         severity: criticalmq
+       receiver: email-n-mq
+
+    - name: 'email-n-mq'
+      email_configs:
+      - to: 'kar.prasenjit@tcs.com'
+        send_resolved: true
+      webhook_configs:
+      - url: http://webhook-service.kube-system.svc.cluster.local:9000/hooks/scale-hook?in1=test-n-demo&in2=rabbitmqsrv
+-----
+
+    - name: alertrules.apps
+      rules:
+      - alert: MQMessages
+        expr: sum by (queue) (rabbitmq_queue_messages{name="rabbitmqsrv",queue="hello",vhost="/"}) >= 15
+        for: 2m
+        labels:
+          severity: criticalmq
+        annotations:
+          messages: "Total number of messages in queue {{ $labels.queue }}  is  >= 15 (current value: {{ $value }}%)"
+          severity: criticalmq
+-----
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmqsrv
+  labels:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmqsrv
+      deploymentconfig: rabbitmqsrv
+  template:
+    metadata:
+      labels:
+        name: rabbitmqsrv
+        deploymentconfig: rabbitmqsrv
+        app: rabbitmqsrv
+    spec:
+      containers:
+      - name: rabbitmqsrv-dc-pod
+        image: prasenforu/rabbitmq:2.0
+        ports:
+        - containerPort: 5672
+          name: service
+        - containerPort: 15672
+          name: management
+      - image: prasenforu/rabbitmq-exporter:1.0
+        name: rabbitmq-exporter
+        ports:
+        - containerPort: 9090
+          name: exporter
+        env:
+        - name: RABBIT_USER
+          value: "rabbitmq"
+        - name: RABBIT_PASSWORD
+          value: "znwk2BaTLAqowMrv"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: '9090'
+    prometheus.io/scrape: 'true'
+  name: rabbitmqsrv
+  labels:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+spec:
+  ports:
+  - name: 5672-tcp
+    port: 5672
+    protocol: TCP
+    targetPort: 5672
+  - name: 15672-tcp
+    port: 15672
+    protocol: TCP
+    targetPort: 15672
+  - name: 9090-metrics
+    port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    name: rabbitmqsrv
+    app: rabbitmqsrv
+    deploymentconfig: rabbitmqsrv
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: rabbitmqsrv
+  name: rabbitmqsrv
+spec:
+  rules:
+  - host: rabbitmqsrv.test-n-demo.10.131.37.20.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: rabbitmqsrv
+          servicePort: 15672
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.131.37.20
+    - ip: 10.131.37.21
+    - ip: 10.131.37.22
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmqclient
+  labels:
+    name: rabbitmqclient
+    app: rabbitmqclient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmqclient
+      deploymentconfig: rabbitmqclient
+  template:
+    metadata:
+      labels:
+        name: rabbitmqclient
+        deploymentconfig: rabbitmqclient
+        app: rabbitmqclient
+    spec:
+      containers:
+      - name: rabbitmqclient-dc-pod
+        image: prasenforu/mqclient:2.0
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/send.py
+          subPath: send.py
+          name: mq-send-volume-config
+        - mountPath: /etc/webhook/receive.py
+          subPath: receive.py
+          name: mq-receive-volume-config
+        - mountPath: /etc/webhook/receiveall.py
+          subPath: receiveall.py
+          name: mq-receiveall-volume-config
+      volumes:
+      - configMap:
+          defaultMode: 493
+          name: mq-send-configmap
+        name: mq-send-volume-config
+      - configMap:
+          defaultMode: 493
+          name: mq-receive-configmap
+        name: mq-receive-volume-config
+      - configMap:
+          defaultMode: 493
+          name: mq-receiveall-configmap
+        name: mq-receiveall-volume-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmqclient
+  labels:
+    name: rabbitmqclient
+    app: rabbitmqclient
+spec:
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    name: rabbitmqclient
+    app: rabbitmqclient
+    deploymentconfig: rabbitmqclient
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: rabbitmqclient
+  name: rabbitmqclient
+spec:
+  rules:
+  - host: rabbitmqclient.test-n-demo.10.131.37.20.xip.io
+    http:
+      paths:
+      - backend:
+          serviceName: rabbitmqclient
+          servicePort: 9000
+status:
+  loadBalancer:
+    ingress:
+    - ip: 10.131.37.20
+    - ip: 10.131.37.21
+    - ip: 10.131.37.22
+----
+
+[root@r2-demovm1 autoscale]# more send.py
+#!/usr/bin/env python
+import pika
+
+credentials = pika.PlainCredentials('rabbitmq', 'znwk2BaTLAqowMrv')
+parameters = pika.ConnectionParameters('rabbitmqsrv.test-n-demo.svc.cluster.local',
+                                   5672,
+                                   '/',
+                                   credentials)
+
+connection = pika.BlockingConnection(parameters)
+
+channel = connection.channel()
+
+channel.queue_declare(queue='hello')
+
+channel.basic_publish(exchange='',
+                  routing_key='hello',
+                  body='Hello W0rld!')
+print(" [x] Sent 'Hello World!'")
+connection.close()
+
+[root@r2-demovm1 autoscale]# more receive.py
+#!/usr/bin/env python
+
+import pika
+
+credentials = pika.PlainCredentials('rabbitmq', 'znwk2BaTLAqowMrv')
+parameters = pika.ConnectionParameters('rabbitmqsrv.test-n-demo.svc.cluster.local',
+                                   5672,
+                                   '/',
+                                   credentials)
+
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+method_frame, header_frame, body = channel.basic_get('hello')
+if method_frame:
+    print('Received message', body)
+    channel.basic_ack(method_frame.delivery_tag)
+else:
+    print('No message available')
+
+connection.close()
+[root@r2-demovm1 autoscale]# more receiveall.py
+#!/usr/bin/env python
+
+import pika
+
+credentials = pika.PlainCredentials('rabbitmq', 'znwk2BaTLAqowMrv')
+parameters = pika.ConnectionParameters('rabbitmqsrv.test-n-demo.svc.cluster.local',
+                                   5672,
+                                   '/',
+                                   credentials)
+
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+channel.queue_declare(queue='hello')
+
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+
+channel.basic_consume(callback,
+                      queue='hello',
+                      no_ack=True)
+
+connection.close()
+
+-----
+
+[root@r2-demovm1 old-disk-webhook]# more webhook-deplyment.yml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: webhook
+  name: webhook-service
+spec:
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: webhook
+    deploymentconfig: webhook-dc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webhook
+  name: webhook-dc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook
+      deploymentconfig: webhook-dc
+  template:
+    metadata:
+      labels:
+        app: webhook
+        deploymentconfig: webhook-dc
+    spec:
+      nodeSelector:
+        host: master
+      serviceAccount: webhook
+      serviceAccountName: webhook
+      containers:
+      - image: prasenforu/ocpscan:8.0
+      #- image: prasenforu/kubewebhook:7.5
+        name: webhook-image
+        ports:
+        - name: webhook
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/hooks.json
+          subPath: hooks.json
+          name: webhook-hooks-volume-config
+        - mountPath: /etc/webhook/scale.sh
+          subPath: scale.sh
+          name: webhook-scale-script-volume-config
+        - mountPath: /etc/webhook/ocp-node-restart.sh
+          subPath: ocp-node-restart.sh
+          name: webhook-ocp-node-restart-volume-config
+        - mountPath: /etc/webhook/ocp-sn.sh
+          subPath: ocp-sn.sh
+          name: webhook-ocp-sn-volume-config
+        - mountPath: /root/admin.conf
+          subPath: admin.conf
+          name: webhook-kubeconfig-volume-config
+        - mountPath: /etc/webhook/prasen.pem
+          subPath: prasen.pem
+          name: webhook-keypem-volume-config
+        env:
+        - name: KUBEHOST
+          value: "10.131.37.20"
+        - name: KUBEPORT
+          value: "6443"
+        - name: KUBEUSER
+          value: "admin"
+        - name: KUBEPASS
+          value: "admin2675"
+        - name: KUBETOKEN
+          value: "T O K E N"
+        - name: SNURL
+          value: "dev32029.service-now.com"
+        - name: SNUSER
+          value: "admin"
+        - name: SNPASS
+          value: "Bappa2675"
+        - name: SNCALLID
+          value: "containeradmin"
+        - name: SNPRIORITY
+          value: "1"
+        - name: SNCATAGORY
+          value: "Software"
+        - name: SNASSINGRP
+          value: "Container"
+        - name: SNASSINTO
+          value: ""
+        - name: SNINCID
+          value: "ServiceNow Incident ID"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: webhook-hooks-configmap
+        name: webhook-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-scale-script-configmap
+        name: webhook-scale-script-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-ocp-node-restart-configmap
+        name: webhook-ocp-node-restart-volume-config
+      - configMap:
+          defaultMode: 493
+          name: webhook-ocp-sn-configmap
+        name: webhook-ocp-sn-volume-config
+      - configMap:
+          defaultMode: 256
+          name: webhook-keypem-configmap
+        name: webhook-keypem-volume-config
+      - configMap:
+          defaultMode: 256
+          name: webhook-kubeconfig-configmap
+        name: webhook-kubeconfig-volume-config
+
+------
+
+[root@r2-demovm1 old-disk-webhook]# more webhook-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: webhook
+  namespace: kube-system
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: webhook-clusterrolebinding
+subjects:
+- kind: ServiceAccount
+  name: webhook
+  namespace: kube-system
+  apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: webhook-clusterrole
+  apiGroup: ""
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: webhook-clusterrole
+rules:
+  - apiGroups:
+    - "*"
+    resources:
+    - pods
+    - namespaces
+    - roles
+    - clusterroles
+    - rolebindings
+    - clusterrolebindings
+    - secrets
+    verbs:
+    - list
+    - get
+  - apiGroups:
+    - "*"
+    resources:
+    - pods/exec
+    verbs:
+    - get
+    - create
+  - apiGroups:
+    - "*"
+    resources:
+    - pods
+    - replicationcontrollers
+    - replicationcontrollers/scale
+    verbs:
+    - "*"
+  - apiGroups:
+    - "*"
+    resources:
+    - daemonsets
+    - deployments
+    - deployments/scale
+    - replicasets
+    - replicasets/scale
+    - replicationcontrollers
+    - replicationcontrollers/scale
+    - statefulsets
+    - statefulsets/scale
+    verbs:
+    - '*'
+-----
