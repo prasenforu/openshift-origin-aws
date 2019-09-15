@@ -2,7 +2,19 @@
 
 ## Scripts for autoscale
 
-# KUBE Authentication
+# Authentication
+  
+    KUBETOKEN=`more /run/secrets/kubernetes.io/serviceaccount/token`
+    
+    if [ $KUBEPASS != "" ]; then
+       oc login https://$KUBEHOST:$KUBEPORT --username=$KUBEUSER --password=$KUBEPASS --insecure-skip-tls-verify=true
+    fi
+    
+    if [ $KUBETOKEN != "" ]; then
+       oc login https://$KUBEHOST:$KUBEPORT --token=$KUBETOKEN
+    fi
+
+# Getting POD details
 
 POD=`oc get pod -n $1 | grep $2 | awk '{print $1}' | head -n 1`
 REP=`oc describe pod $POD -n $1 | grep "Controlled By:" | awk '{print $3}'`
