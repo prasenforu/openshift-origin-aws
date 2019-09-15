@@ -58,7 +58,8 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: automate 
+  name: automate
+  namespace: openshift-monitoring
 ---
 apiVersion: v1
 kind: Service
