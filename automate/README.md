@@ -1,6 +1,12 @@
 1. Deploy configmap yaml
 
-        oc create -f webhook-configmap.yaml
+        oc create cm automate-hooks-configmap --from-file=./hooks.json
+        oc create cm automate-scale-configmap --from-file=./scale.sh
+        oc create cm automate-pod-restart-configmap --from-file=./pod-restart.sh
+        oc create cm automate-node-restart-configmap --from-file=./node-restart.sh
+        oc create cm automate-sn-configmap --from-file=./sn.sh
+        oc create cm automate-keypem-configmap --from-file=./prasen.pem
+        oc create cm automate-kubeconfig-configmap --from-file=./admin.conf
 
 2. Deploy POD
 
