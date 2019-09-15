@@ -119,7 +119,7 @@ spec:
           name: automate-node-restart-volume-config
         - mountPath: /etc/webhook/sn.sh
           subPath: sn.sh
-          name: automate-ocp-sn-volume-config
+          name: automate-sn-volume-config
         - mountPath: /root/admin.conf
           subPath: admin.conf
           name: automate-kubeconfig-volume-config
