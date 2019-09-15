@@ -17,6 +17,7 @@
 
    a) Add in routes section
 
+     ```
       routes:
 
       - match:
@@ -24,10 +25,12 @@
         receiver: restart-pod-prom
       - match:
           severity: criticalmq
-        receiver: email-n-mq        
+        receiver: email-n-mq   
+     ```        
 
    b) Add in receivers section
 
+     ```   
     receivers:
 
     - name: 'restart-pod-prom'
@@ -39,9 +42,10 @@
         send_resolved: true
       webhook_configs:
       - url: http://automate-service.openshift-monitoring.svc.cluster.local:9000/hooks/scale-hook?in1=test-n-demo&in2=rabbitmqsrv      
-
+     ```
 4. Add entry in promethus rule file
-
+     
+     ```
     - name: alertrules.apps
       rules:
       - alert: MQMessages
@@ -52,7 +56,7 @@
         annotations:
           messages: "Total number of messages in queue {{ $labels.queue }}  is  >= 15 (current value: {{ $value }}%)"
           severity: criticalmq
-
+     ```
 5. Restart alertmanager container
 
         oc exec prometheus-0 -c alertmanager -- curl -X POST http://localhost:9093/-/reload
