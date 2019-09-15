@@ -63,7 +63,7 @@
 
 6. Testing without incident
 
-        curl http://172.30.200.104:9000/hooks/ocp-pod-restart-hook?in1=openshift-metrics&in2=prometheus-0&status=firing
+        curl http://172.30.200.104:9000/hooks/ocp-pod-restart-hook?in1=openshift-monitoring&in2=prometheus-0&status=firing
 
 7. Check logs of webhook pod
 
