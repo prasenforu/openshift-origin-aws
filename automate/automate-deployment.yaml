@@ -1,0 +1,177 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: automate
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: automate
+
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - replicationcontrollers
+  - replicationcontrollers/scale
+  - deployments
+  - deployments/scale
+  - replicasets
+  - replicasets/scale
+  - statefulsets
+  - statefulsets/scale
+  verbs:
+  - get
+  - list
+  - watch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  - pods/status
+  - namespaces
+  verbs:
+  - get
+  - delete
+  - list
+  - watch
+  - update
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: automate
+roleRef:
+  kind: ClusterRole
+  name: automate
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: automate 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: automate
+  name: automate-service
+spec:
+  ports:
+  - name: 9000-tcp
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: automate
+    deploymentconfig: automate-dc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: automate
+  name: automate-dc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: automate
+      deploymentconfig: automate-dc
+  template:
+    metadata:
+      labels:
+        app: automate
+        deploymentconfig: automate-dc
+    spec:
+      nodeSelector:
+        host: master
+      serviceAccount: automate
+      containers:
+      - image: XXXXXXXXXXXXXX
+        name: automate-image
+        ports:
+        - name: automate
+          containerPort: 9000
+        volumeMounts:
+        - mountPath: /etc/webhook/hooks.json
+          subPath: hooks.json
+          name: automate-hooks-volume-config
+        - mountPath: /etc/webhook/scale.sh
+          subPath: scale.sh
+          name: automate-scale-script-volume-config
+        - mountPath: /etc/webhook/pod-restart.sh
+          subPath: pod-restart.sh
+          name: automate-pod-restart-volume-config
+        - mountPath: /etc/webhook/node-restart.sh
+          subPath: node-restart.sh
+          name: automate-node-restart-volume-config
+        - mountPath: /etc/webhook/sn.sh
+          subPath: sn.sh
+          name: automate-ocp-sn-volume-config
+        - mountPath: /root/admin.conf
+          subPath: admin.conf
+          name: automate-kubeconfig-volume-config
+        - mountPath: /etc/webhook/prasen.pem
+          subPath: prasen.pem
+          name: automate-keypem-volume-config
+        env:
+        - name: KUBEHOST
+          value: "10.131.37.20"
+        - name: KUBEPORT
+          value: "6443"
+        - name: KUBEUSER
+          value: "admin"
+        - name: KUBEPASS
+          value: "admin2675"
+        - name: KUBETOKEN
+          value: "T O K E N"
+        - name: SNURL
+          value: "dev32029.service-now.com"
+        - name: SNUSER
+          value: "admin"
+        - name: SNPASS
+          value: "Bappa2675"
+        - name: SNCALLID
+          value: "containeradmin"
+        - name: SNPRIORITY
+          value: "1"
+        - name: SNCATAGORY
+          value: "Software"
+        - name: SNASSINGRP
+          value: "Container"
+        - name: SNASSINTO
+          value: ""
+        - name: SNINCID
+          value: "ServiceNow Incident ID"
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: automate-hooks-configmap
+        name: automate-hooks-volume-config
+      - configMap:
+          defaultMode: 493
+          name: automate-scale-script-configmap
+        name: automate-scale-script-volume-config
+      - configMap:
+          defaultMode: 493
+          name: automate-pod-restart-configmap
+        name: automate-pod-restart-volume-config
+      - configMap:
+          defaultMode: 493
+          name: automate-node-restart-configmap
+        name: automate-node-restart-volume-config
+      - configMap:
+          defaultMode: 493
+          name: automate-sn-configmap
+        name: automate-sn-volume-config
+      - configMap:
+          defaultMode: 256
+          name: automate-keypem-configmap
+        name: automate-keypem-volume-config
+      - configMap:
+          defaultMode: 256
+          name: automate-kubeconfig-configmap
+        name: automate-kubeconfig-volume-config
