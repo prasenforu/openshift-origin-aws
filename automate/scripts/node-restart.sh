@@ -5,22 +5,23 @@
     hst=$1
     alrn=$2
     stat=$3
+    ruser=centos
 
     hstip=`echo $hst | cut -d ":" -f1`
 
-    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active docker"`
-    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active origin-node"`
+    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl is-active docker"`
+    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl is-active origin-node"`
 
     if [ $stat == "firing" ]; then
 
     ### Checking OCP Node client
 
      if [ $nodstat == "inactive" ]; then
-        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl start origin-node"
+        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl start origin-node"
         sleep 7
      fi
 
-    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active origin-node"`
+    nodstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl is-active origin-node"`
 
      if [ $nodstat == "active" ]; then
         echo "OCP Node Client is Running in Host : $1 "
@@ -29,11 +30,11 @@
     ### Checking OCP Docker client
 
      if [ $docstat == "inactive" ]; then
-        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl start docker"
+        ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl start docker"
         sleep 7
      fi
 
-    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem centos@$hstip "sudo systemctl is-active docker"`
+    docstat=`ssh -o "StrictHostKeyChecking no" -i /etc/webhook/prasen.pem $ruser@$hstip "sudo systemctl is-active docker"`
 
      if [ $docstat == "active" ]; then
         echo "Docker is Running in Host : $1 "
