@@ -1,1 +1,93 @@
-
+    [
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          }
+        ],
+        "id": "node-restart-hook",
+        "execute-command": "/etc/webhook/node-restart.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.instance"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.annotations.message"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          },
+          {
+            "source": "payload",
+            "name": "alerts.0.labels.severity"
+          }
+        ],
+        "id": "node-sn-hook",
+        "execute-command": "/etc/webhook/sn.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "url",
+            "name": "in1"
+          },
+          {
+            "source": "url",
+            "name": "in2"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          }
+        ],
+        "id": "scale-hook",
+        "execute-command": "/etc/webhook/scale.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "url",
+            "name": "in1"
+          },
+          {
+            "source": "url",
+            "name": "in2"
+          },
+          {
+            "source": "payload",
+            "name": "status"
+          }
+        ],
+        "id": "pod-restart-hook",
+        "execute-command": "/etc/webhook/pod-restart.sh",
+        "command-working-directory": "/etc/webhook"
+      },
+      {
+        "pass-arguments-to-command": [
+          {
+            "source": "entire-payload",
+            "name": "output"
+          }
+        ],
+        "id": "ocpwatch-hook",
+        "execute-command": "/etc/webhook/ocpwatch.sh",
+        "command-working-directory": "/etc/webhook"
+      }
+    ]
