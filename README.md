@@ -298,7 +298,7 @@ docker run -d -p 8000:8000 --restart=always --name splunk --hostname splunk \
   -e "SPLUNK_PASSWORD=<password>" \
   -v /root/splunk/etc:/opt/splunk/etc \
   -v /root/splunk/var:/opt/splunk/var \
-  splunk/splunk:7.0.3
+  splunk/splunk:7.3.0
 ```
 
 # Feedback
