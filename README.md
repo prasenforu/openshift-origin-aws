@@ -284,6 +284,23 @@ docker run -d -p 9000:9000 --restart=always --name minio1 \
   minio/minio server /data
 ```
 
+#### Splunk Setup
+
+```
+mkdir -p /root/splunk/etc
+mkdir -p /root/splunk/var
+
+chcon -Rt svirt_sandbox_file_t /root/splunk/etc
+chcon -Rt svirt_sandbox_file_t /root/splunk/var
+
+docker run -d -p 8000:8000 --restart=always --name splunk --hostname splunk \
+  -e "SPLUNK_START_ARGS=--accept-license" \
+  -e "SPLUNK_PASSWORD=<password>" \
+  -v /root/splunk/etc:/opt/splunk/etc \
+  -v /root/splunk/var:/opt/splunk/var \
+  splunk/splunk:7.0.3
+```
+
 # Feedback
 
 We'll love to hear feedback and ideas on how we can make it more useful. Just create an issue.
