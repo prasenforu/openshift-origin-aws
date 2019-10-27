@@ -293,7 +293,7 @@ mkdir -p /root/splunk/var
 chcon -Rt svirt_sandbox_file_t /root/splunk/etc
 chcon -Rt svirt_sandbox_file_t /root/splunk/var
 
-docker run -d -p 8000:8000 --restart=always --name splunk --hostname splunk \
+docker run -d -p 8000:8000 -p 8088:8088 --restart=always --name splunk --hostname splunk \
   -e "SPLUNK_START_ARGS=--accept-license" \
   -e "SPLUNK_PASSWORD=<password>" \
   -v /root/splunk/etc:/opt/splunk/etc \
