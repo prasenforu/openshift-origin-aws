@@ -208,41 +208,33 @@ chmod 755 *.sh
   echo $url
 ```
 
+### Remove first one space of file
+
+``` sed -i 's/^  //g' <FILE NAME>```
+
 ### Exit container cleanup command
 
-```
-docker rm `docker ps -a | grep -v CONTAINER | grep Exited | awk '{print $1}'`
+```docker rm `docker ps -a | grep -v CONTAINER | grep Exited | awk '{print $1}'` ```
 
-```
 ### Force delete pod command
 
-```
-kubectl delete pod NAME --grace-period=0 --force
-
-```
+```kubectl delete pod NAME --grace-period=0 --force```
 
 ### Permission denied on accessing host directory in docker
 
 It is an selinux issue.
 
 You can temporarily issue
-```
-su -c "setenforce 0"
-```
+```su -c "setenforce 0"```
 OR
 
 on the host to access or else add an selinux rule by running
 
-```
-chcon -Rt svirt_sandbox_file_t /path/to/volume
-```
+```chcon -Rt svirt_sandbox_file_t /path/to/volume```
 
 #### For security reason, you can delete access-key, secret-access-key and pem files
 
-```
-rm ~/.aws/config install-aws-cli.sh prasen.pem
-
-```
+```rm ~/.aws/config install-aws-cli.sh prasen.pem```
 #### Grafana Setup
 
 ```
