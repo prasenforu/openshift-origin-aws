@@ -65,3 +65,9 @@ rules:
     - statefulsets/scale
     verbs:
     - '*'
+  - apiGroups: ["velero.io"]
+    resources: ["backups", "backupstoragelocations", "downloadrequests", "podvolumebackups", "resticrepositories", "serverstatusrequests", "volumesnapshotlocations"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["velero.io"]
+    resources: ["podvolumerestores", "restores"]
+    verbs: ["create", "get", "watch", "list", "patch", "update"]    
